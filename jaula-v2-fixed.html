@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>La Jaula Transparente</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --bg: #06060a;
+    --ink: #cec9c0;
+    --ink-dim: #6e6860;
+    --gold: #b8a06e;
+    --gold-bright: #d4b87a;
+    --gold-dim: #4a3f28;
+    --line: rgba(184,160,110,0.1);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { height: 100%; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ─── GRAIN OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px;
+  }
+
+  /* ─── CAGE BACKGROUND CANVAS ─── */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  main {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 0 0 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-3d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
+  }
+
+  /*
+   * VIGNETTE ARQUITECTÓNICO:
+   * Un panel sólido que emerge desde abajo-izquierda como una sombra estructural.
+   * No es un círculo borroso — es una forma que respira con el layout.
+   * La jaula brilla sobre negro profundo, nunca compite con las letras.
+   */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* Gradiente vertical: negro sólido abajo donde vive el texto */
+    background: linear-gradient(
+      to top,
+      rgba(6,6,10,1)    0%,
+      rgba(6,6,10,0.97) 12%,
+      rgba(6,6,10,0.88) 24%,
+      rgba(6,6,10,0.55) 38%,
+      rgba(6,6,10,0.18) 55%,
+      rgba(6,6,10,0)    72%
+    );
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* Gradiente horizontal: refuerza el lado izquierdo donde está el texto */
+    background: linear-gradient(
+      to right,
+      rgba(6,6,10,0.65) 0%,
+      rgba(6,6,10,0.25) 40%,
+      rgba(6,6,10,0)    65%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 0 max(2rem, 8vw);
+    max-width: 680px;
+  }
+
+  /* Línea decorativa vertical antes del eyebrow */
+  .hero-content::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, transparent, var(--gold-dim));
+    margin-bottom: 1.8rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.2s forwards;
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-weight: 300;
+    font-size: clamp(0.48rem, 1.3vw, 0.6rem);
+    letter-spacing: 0.42em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+    margin-bottom: 1.6rem;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(3.2rem, 9vw, 7.5rem);
+    line-height: 0.92;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    opacity: 0;
+    animation: fadeUp 1.6s ease 0.8s forwards;
+  }
+
+  /* "La Jaula" — más ligero, color pálido */
+  h1 span.title-light {
+    display: block;
+    font-weight: 300;
+    color: #e8e2d8;
+  }
+
+  /* "Transparente" — itálica dorada, ligeramente más grande */
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+    font-size: 1.08em;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-rule {
+    width: 2rem;
+    height: 1px;
+    background: var(--gold-dim);
+    margin: 2.2rem 0;
+    opacity: 0;
+    animation: expand 1.2s ease 1.6s forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.2vw, 1.15rem);
+    color: rgba(206,201,192,0.65);
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 1.4s ease 2s forwards;
+    max-width: 34ch;
+  }
+
+  /* Número de página / índice — esquina superior derecha */
+  .hero-index {
+    position: absolute;
+    top: 2.5rem;
+    right: max(2rem, 6vw);
+    z-index: 3;
+    font-family: 'Cinzel', serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s ease 1s forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.6rem;
+  }
+
+  .hero-index::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 2.5rem;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.8rem;
+    right: max(2rem, 6vw);
+    z-index: 3;
+    font-family: 'Cinzel', serif;
+    font-size: 0.48rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s ease 3s forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    writing-mode: vertical-rl;
+  }
+
+  .scroll-cue::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 2.5rem;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  /* ─── POEM SECTION ─── */
+  .poem-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100svh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media (min-width: 900px) {
+    .poem-section {
+      grid-template-columns: 1fr 1fr;
+      min-height: 90svh;
+    }
+    .poem-section.flip { direction: rtl; }
+    .poem-section.flip > * { direction: ltr; }
+  }
+
+  .section-sculpture {
+    position: relative;
+    min-height: 60vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (min-width: 900px) {
+    .section-sculpture { min-height: unset; }
+  }
+
+  .sculpture-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  /* Vignette sobre la escultura — más pronunciado hacia el panel de texto */
+  .section-sculpture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 55% 55% at 50% 50%, transparent 25%, rgba(6,6,10,0.95) 100%);
+    z-index: 2;
+  }
+
+  /* En desktop, el fade va hacia el lado del texto */
+  @media (min-width: 900px) {
+    .poem-section:not(.flip) .section-sculpture::after {
+      background:
+        radial-gradient(ellipse 70% 60% at 40% 50%, transparent 20%, rgba(6,6,10,0.8) 75%),
+        linear-gradient(to right, transparent 50%, rgba(6,6,10,0.95) 100%);
+    }
+    .poem-section.flip .section-sculpture::after {
+      background:
+        radial-gradient(ellipse 70% 60% at 60% 50%, transparent 20%, rgba(6,6,10,0.8) 75%),
+        linear-gradient(to left, transparent 50%, rgba(6,6,10,0.95) 100%);
+    }
+  }
+
+  /* Panel de texto: fondo con leve tinte oscuro para máxima legibilidad */
+  .section-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(3.5rem, 8vw, 7rem) max(2rem, 7vw);
+    border-top: 1px solid var(--line);
+    background: rgba(6,6,10,0.55);
+    position: relative;
+  }
+
+  /* Línea dorada sutil en el borde interior */
+  @media (min-width: 900px) {
+    .section-text {
+      border-top: none;
+      border-left: 1px solid rgba(184,160,110,0.15);
+      background: linear-gradient(to right, rgba(6,6,10,0.7) 0%, rgba(6,6,10,0.5) 100%);
+    }
+    .poem-section.flip .section-text {
+      border-left: none;
+      border-right: 1px solid rgba(184,160,110,0.15);
+      background: linear-gradient(to left, rgba(6,6,10,0.7) 0%, rgba(6,6,10,0.5) 100%);
+    }
+  }
+
+  /* Número de sección — grande y fantasma, decorativo */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-weight: 300;
+    font-size: clamp(0.45rem, 1.2vw, 0.55rem);
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 2.8rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  /* Línea antes del label */
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 1.5rem;
+    height: 1px;
+    background: var(--gold-dim);
+    flex-shrink: 0;
+  }
+
+  .section-text.in-view .section-label { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+
+  .stanza {
+    margin-bottom: 2.2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .section-text.in-view .stanza:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.12s; }
+  .section-text.in-view .stanza:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.26s; }
+  .section-text.in-view .stanza:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.40s; }
+  .section-text.in-view .stanza:nth-child(5) { opacity: 1; transform: none; transition-delay: 0.54s; }
+  .section-text.in-view .stanza:nth-child(6) { opacity: 1; transform: none; transition-delay: 0.68s; }
+  .section-text.in-view .stanza:nth-child(7) { opacity: 1; transform: none; transition-delay: 0.82s; }
+  .section-text.in-view .stanza:nth-child(8) { opacity: 1; transform: none; transition-delay: 0.96s; }
+
+  .stanza:last-child { margin-bottom: 0; }
+
+  p {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(1.05rem, 2vw, 1.18rem);
+    line-height: 2.0;
+    color: rgba(206,201,192,0.9);
+    letter-spacing: 0.005em;
+  }
+
+  p.em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.22rem, 2.6vw, 1.48rem);
+    color: var(--gold);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+  }
+
+  p.ghost {
+    color: rgba(110,104,96,0.85);
+    font-size: clamp(0.95rem, 1.9vw, 1.08rem);
+    line-height: 1.95;
+  }
+
+  p.large {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3.8vw, 2.3rem);
+    font-weight: 300;
+    line-height: 1.3;
+    color: rgba(232,226,216,0.95);
+    letter-spacing: -0.015em;
+  }
+
+  .ornament {
+    text-align: left;
+    color: var(--gold-dim);
+    font-size: 0.65rem;
+    letter-spacing: 0.6em;
+    margin: 1.8rem 0;
+    opacity: 0.45;
+  }
+
+  .pull-quote {
+    margin: 2.4rem 0;
+    padding: 1.6rem 1.8rem;
+    border-left: 1px solid rgba(184,160,110,0.5);
+    background: rgba(184,160,110,0.04);
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.9s ease 0.3s, transform 0.9s ease 0.3s;
+    position: relative;
+  }
+
+  /* Punto dorado en la esquina del pull-quote */
+  .pull-quote::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+  }
+
+  .section-text.in-view .pull-quote { opacity: 1; transform: none; }
+
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.08rem, 2.3vw, 1.4rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.6;
+    color: rgba(206,201,192,0.9);
+  }
+
+  /* ─── FINALE ─── */
+  .finale-section {
+    padding: clamp(7rem, 14vw, 14rem) max(2rem, 8vw) clamp(8rem, 16vw, 16rem);
+    border-top: 1px solid var(--line);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .finale-3d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.22;
+  }
+
+  /* Vignette escalonado: negro profundo en el centro donde vive el texto */
+  .finale-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 65% 55% at 50% 50%, rgba(6,6,10,0.92) 0%, rgba(6,6,10,0.6) 50%, transparent 100%),
+      linear-gradient(to bottom, rgba(6,6,10,0.7) 0%, transparent 20%, transparent 80%, rgba(6,6,10,0.7) 100%);
+  }
+
+  .finale-content {
+    position: relative;
+    z-index: 3;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* Each stanza fades up individually */
+  .finale-content .stanza,
+  .finale-content .pull-quote,
+  .finale-content .final-mark {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 1.1s ease, transform 1.1s ease;
+  }
+
+  .finale-content.in-view .stanza:nth-child(1)  { opacity: 1; transform: none; transition-delay: 0.0s; }
+  .finale-content.in-view .pull-quote           { opacity: 1; transform: none; transition-delay: 0.3s; }
+  .finale-content.in-view .stanza:nth-child(3)  { opacity: 1; transform: none; transition-delay: 0.6s; }
+  .finale-content.in-view .stanza:nth-child(4)  { opacity: 1; transform: none; transition-delay: 0.9s; }
+  .finale-content.in-view .stanza:nth-child(5)  { opacity: 1; transform: none; transition-delay: 1.2s; }
+  .finale-content.in-view .final-mark           { opacity: 1; transform: none; transition-delay: 1.8s; }
+
+  .finale-content p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.8vw, 1.55rem);
+    font-style: italic;
+    line-height: 1.7;
+    color: rgba(110,104,96,0.9);
+    margin-bottom: 1.2rem;
+  }
+
+  .finale-content p.bright {
+    color: rgba(232,226,216,0.98);
+    font-size: clamp(1.7rem, 5.5vw, 2.8rem);
+    font-style: italic;
+    margin: 1.4rem 0;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+  }
+
+  .finale-content p.em {
+    font-size: clamp(1.2rem, 2.8vw, 1.7rem);
+    color: var(--gold);
+  }
+
+  .pull-quote.finale-quote {
+    max-width: 440px;
+    margin: 3rem auto;
+    text-align: left;
+    background: rgba(6,6,10,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-left-color: rgba(184,160,110,0.6);
+    padding: 2rem 2rem;
+  }
+
+  .pull-quote.finale-quote p {
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    color: rgba(206,201,192,0.85);
+  }
+
+  .final-mark {
+    margin-top: 5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: rgba(74,63,40,0.7);
+    letter-spacing: 0;
+  }
+
+  /* ─── ANIMS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes expand {
+    from { opacity: 0; transform: scaleX(0); }
+    to   { opacity: 1; transform: scaleX(1); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.8; }
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 0.9; transform: scaleY(1.15); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<style>
+/* ── BACK NAV — always visible, top right ── */
+#back-nav {
+  position:fixed; top:0; left:0; right:0; z-index:999;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:20px 36px;
+  background:linear-gradient(to bottom, rgba(4,3,6,.88) 0%, rgba(4,3,6,.0) 100%);
+  pointer-events:none;
+}
+#back-btn {
+  display:inline-flex; align-items:center; gap:12px;
+  font-family:'Space Mono', monospace; font-size:10px;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:rgba(184,160,110,.7);
+  background:rgba(4,3,6,.75);
+  border:1px solid rgba(184,160,110,.2);
+  padding:11px 22px;
+  text-decoration:none;
+  pointer-events:auto;
+  transition:color .3s, border-color .3s, background .3s, gap .3s;
+  backdrop-filter:blur(12px);
+}
+#back-btn::before { content:'←'; transition:transform .3s; }
+#back-btn:hover {
+  color:rgba(184,160,110,.98);
+  border-color:rgba(184,160,110,.55);
+  background:rgba(4,3,6,.9);
+  gap:16px;
+}
+#back-btn:hover::before { transform:translateX(-3px); }
+#back-nav-title {
+  font-family:'Cinzel', serif; font-size:9px;
+  letter-spacing:.3em; text-transform:uppercase;
+  color:rgba(184,160,110,.3);
+}
+</style>
+
+<body>
+
+<!-- ── BACK NAVIGATION ── -->
+<nav id="back-nav">
+  <a id="back-btn" href="javascript:history.back()" onclick="goBack(event)">Volver al mapa</a>
+  <span id="back-nav-title">La Jaula Transparente</span>
+</nav>
+
+<script>
+function goBack(e) {
+  e.preventDefault();
+  // Fade out then go back
+  document.body.style.transition = 'opacity .5s ease';
+  document.body.style.opacity = '0';
+  setTimeout(() => window.close(), 520);
+}
+</script>
+
+<!-- Background cage canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<main>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <canvas class="hero-3d" id="hero-canvas"></canvas>
+    <div class="hero-index">La Jaula Transparente</div>
+    <div class="hero-content">
+      <div class="eyebrow">Ensayo filosófico · 2026</div>
+      <h1>
+        <span class="title-light">La Jaula</span>
+        <em>Transparente</em>
+      </h1>
+      <div class="hero-rule"></div>
+      <p class="hero-sub">No conocemos la realidad.<br>Conocemos la forma en que estamos obligados a conocerla.</p>
+    </div>
+    <div class="scroll-cue">Continuar</div>
+  </section>
+
+  <!-- ═══ I — La Máquina de Reducción ═══ -->
+  <section class="poem-section">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s1-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s1-text">
+      <div class="section-label">I — La Máquina de Reducción</div>
+      <div class="stanza">
+        <p>La conciencia no apareció para revelar el mundo,</p>
+        <p>sino para domesticarlo dentro de un esquema tolerable.</p>
+      </div>
+      <div class="stanza">
+        <p class="em">El cerebro es una máquina de reducción.</p>
+        <p>Filtra, comprime, abstrae.</p>
+        <p>Convierte el abismo en geometría.</p>
+      </div>
+      <div class="stanza">
+        <p>Y luego, ingenuamente, llama "realidad"</p>
+        <p>a la versión simplificada que puede soportar sin desintegrarse.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ II — Arquitecturas Invisibles ═══ -->
+  <section class="poem-section flip">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s2-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s2-text">
+      <div class="section-label">II — Arquitecturas Invisibles</div>
+      <div class="stanza">
+        <p>Toda especie vive dentro de una arquitectura invisible.</p>
+        <p>El murciélago vibra en ultrasonidos.</p>
+        <p>El perro lee el mundo en capas de olfato sin nombre.</p>
+      </div>
+      <div class="pull-quote">
+        <p>No es que el mundo tenga tres dimensiones.<br>Es que nuestro sistema nervioso no tolera más.</p>
+      </div>
+      <div class="stanza">
+        <p class="em">La cárcel no tiene barrotes.</p>
+        <p class="em">Tiene sinapsis.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ III — El Tablero Fijo ═══ -->
+  <section class="poem-section">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s3-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s3-text">
+      <div class="section-label">III — El Tablero Fijo</div>
+      <div class="stanza">
+        <p>El conocimiento ha sido un juego dentro de un tablero fijo.</p>
+      </div>
+      <div class="stanza">
+        <p>Las reglas pueden expandirse.</p>
+        <p>La geometría puede refinarse.</p>
+        <p class="em">Pero el tablero permanece.</p>
+      </div>
+      <div class="stanza">
+        <p>Un sistema no puede representar lo que su propia estructura no le permite codificar.</p>
+        <p class="ghost">Y no puede siquiera sospechar aquello que no cabe en su sintaxis.</p>
+      </div>
+      <div class="ornament">· · ·</div>
+      <div class="stanza">
+        <p class="large">Lo verdaderamente inaccesible no es lo complejo.</p>
+        <p class="large">Es lo inconcebible.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ IV — Fuera de la Gramática ═══ -->
+  <section class="poem-section flip">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s4-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s4-text">
+      <div class="section-label">IV — Fuera de la Gramática</div>
+      <div class="stanza">
+        <p>Imaginemos que exista un nivel de realidad que nuestra biología no puede simbolizar.</p>
+        <p>No una verdad más profunda.</p>
+        <p class="em">Sino una categoría entera fuera de nuestra gramática.</p>
+      </div>
+      <div class="stanza">
+        <p class="ghost">No sería mística.</p>
+        <p class="ghost">Sería estructural.</p>
+      </div>
+      <div class="stanza">
+        <p>Como intentar explicar el color a una ecuación.</p>
+        <p>Como pedirle a un pez que imagine el fuego.</p>
+      </div>
+      <div class="stanza">
+        <p class="em">Tal vez el mayor límite del conocimiento no es la ignorancia,</p>
+        <p class="em">sino la imposibilidad de formular la pregunta correcta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ V — La Lógica Provincial ═══ -->
+  <section class="poem-section">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s5-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s5-text">
+      <div class="section-label">V — La Lógica Provincial</div>
+      <div class="stanza">
+        <p>Creemos que el universo se rige por causalidad porque nuestra mente necesita secuencia.</p>
+        <p>Creemos que la lógica es universal porque no podemos pensar fuera de ella.</p>
+      </div>
+      <div class="pull-quote">
+        <p>¿Y si la lógica humana es solo una sección local de una estructura mayor?</p>
+      </div>
+      <div class="stanza">
+        <p>Sería como descubrir que hemos vivido en una habitación sin saber que era habitación.</p>
+        <p class="em">Porque nunca tuvimos el concepto de "afuera".</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VI — La Relativización ═══ -->
+  <section class="poem-section flip">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s6-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s6-text">
+      <div class="section-label">VI — La Relativización</div>
+      <div class="stanza">
+        <p>La ironía es que nada de esto cambia nuestra experiencia inmediata.</p>
+        <p>Seguimos sintiendo frío. Seguimos amando. Seguimos temiendo a la muerte.</p>
+      </div>
+      <div class="stanza">
+        <p class="em">Solo la relativiza.</p>
+        <p>Y el ego sufre cuando se relativiza.</p>
+      </div>
+      <div class="stanza">
+        <p class="ghost">Durante siglos creímos ser el centro del cosmos.</p>
+        <p class="ghost">Luego descubrimos que somos apenas un experimento químico autoconsciente.</p>
+      </div>
+      <div class="stanza">
+        <p>Si mañana descubrimos que nuestra lógica es provincial,</p>
+        <p>solo perderemos otra ilusión de centralidad.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VII — La Interfaz ═══ -->
+  <section class="poem-section">
+    <div class="section-sculpture">
+      <canvas class="sculpture-canvas" id="s7-canvas"></canvas>
+    </div>
+    <div class="section-text" id="s7-text">
+      <div class="section-label">VII — La Interfaz</div>
+      <div class="stanza">
+        <p>Tal vez la conciencia no sea una ventana hacia lo absoluto.</p>
+        <p class="em">Tal vez sea una interfaz adaptativa.</p>
+        <p>Un panel de control evolutivo.</p>
+      </div>
+      <div class="stanza">
+        <p>Lo que llamamos "mundo" podría ser solo el menú reducido que la supervivencia necesitaba mostrar.</p>
+      </div>
+      <div class="ornament">· · ·</div>
+      <div class="stanza">
+        <p class="large">No vemos la realidad.</p>
+        <p class="large">Vemos lo necesario.</p>
+      </div>
+      <div class="stanza">
+        <p class="em">Y confundimos necesidad con verdad.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FINALE ═══ -->
+  <section class="finale-section">
+    <canvas class="finale-3d" id="finale-canvas"></canvas>
+    <div class="finale-content" id="finale-content">
+
+      <div class="stanza">
+        <p>Hay un vértigo en admitirlo:</p>
+        <p>Podría haber dimensiones del ser que jamás atravesaremos.</p>
+        <p>Estructuras que jamás simbolizaremos.</p>
+        <p>Preguntas que jamás sabremos que existen.</p>
+      </div>
+
+      <div class="pull-quote finale-quote">
+        <p>La tragedia no es estar limitados.<br>La tragedia sería no sospecharlo.</p>
+      </div>
+
+      <div class="stanza">
+        <p>Y tal vez esa sospecha</p>
+        <p>— esa grieta en la seguridad del modelo —</p>
+        <p>sea lo más cercano que tenemos a trascenderlo.</p>
+      </div>
+
+      <div class="stanza">
+        <p>No salir de la jaula.</p>
+        <p class="bright">Sino verla.</p>
+      </div>
+
+      <div class="stanza">
+        <p>Y en verla, aceptar que la realidad que habitamos</p>
+        <p>no es la totalidad,</p>
+        <p>sino la versión que nuestra biología puede soportar</p>
+        <p class="em">sin romperse.</p>
+      </div>
+
+      <div class="final-mark">∎</div>
+
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ═══════════════════════════════════════════════════════
+  //  SHARED MATERIAL PALETTE
+  // ═══════════════════════════════════════════════════════
+  var GOLD    = 0xb8a06e;
+  var GOLD2   = 0xd4b87a;
+  var DARK    = 0x0d0b08;
+  var BLACK   = 0x030304;
+
+  function goldMaterial(rough, metal, emit) {
+    return new THREE.MeshStandardMaterial({
+      color: GOLD,
+      roughness: rough !== undefined ? rough : 0.25,
+      metalness: metal !== undefined ? metal : 0.95,
+      emissive: new THREE.Color(GOLD2),
+      emissiveIntensity: emit !== undefined ? emit : 0.04,
+    });
+  }
+
+  function darkMaterial(rough) {
+    return new THREE.MeshStandardMaterial({
+      color: BLACK,
+      roughness: rough !== undefined ? rough : 0.6,
+      metalness: 0.7,
+    });
+  }
+
+  function addLights(scene, intensity) {
+    intensity = intensity || 1;
+    var amb = new THREE.AmbientLight(0x1a1506, 0.4 * intensity);
+    scene.add(amb);
+
+    var key = new THREE.DirectionalLight(0xf0dfa0, 2.2 * intensity);
+    key.position.set(3, 5, 4);
+    scene.add(key);
+
+    var fill = new THREE.DirectionalLight(0xb8a06e, 0.7 * intensity);
+    fill.position.set(-4, 2, -2);
+    scene.add(fill);
+
+    var rim = new THREE.DirectionalLight(0xd4b87a, 1.0 * intensity);
+    rim.position.set(0, -3, -5);
+    scene.add(rim);
+
+    var pt = new THREE.PointLight(0xc8aa7a, 1.5 * intensity, 20);
+    pt.position.set(0, 2, 3);
+    scene.add(pt);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  GENERIC SCENE FACTORY
+  // ═══════════════════════════════════════════════════════
+  function makeScene(canvasId, buildFn) {
+    var el = document.getElementById(canvasId);
+    if (!el) return null;
+
+    var renderer = new THREE.WebGLRenderer({ canvas: el, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.physicallyCorrectLights = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 0, 6);
+
+    addLights(scene);
+
+    var obj = buildFn(scene, THREE);
+
+    function resize() {
+      var w = el.clientWidth || el.parentElement && el.parentElement.clientWidth || window.innerWidth;
+      var h = el.clientHeight || el.parentElement && el.parentElement.clientHeight || window.innerHeight;
+      if (w === 0 || h === 0) {
+        // Retry once the element is painted
+        requestAnimationFrame(resize);
+        return;
+      }
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    // ResizeObserver catches cases where clientWidth is 0 on first call
+    // (e.g. canvas inside a position:absolute container not yet laid out)
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(function() { resize(); });
+      ro.observe(el);
+    }
+
+    var t = 0;
+    var active = false;
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { active = e.isIntersecting; });
+    }, { threshold: 0 });
+    io.observe(el);
+
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!active) return;
+      t += 0.008;
+      if (obj && obj.tick) obj.tick(t);
+      renderer.render(scene, camera);
+    }
+    tick();
+
+    return { scene: scene, camera: camera, renderer: renderer };
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  BACKGROUND CAGE CANVAS
+  // ═══════════════════════════════════════════════════════
+  (function() {
+    var c = document.getElementById('bg-canvas');
+    var ctx = c.getContext('2d');
+    function resize() {
+      c.width  = window.innerWidth;
+      c.height = window.innerHeight;
+      draw();
+    }
+    function draw() {
+      var W = c.width, H = c.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(184,160,110,0.5)';
+      ctx.lineWidth = 0.4;
+      var cols = 8, rows = 6;
+      var bx1 = W * 0.12, bx2 = W * 0.88;
+      var by1 = H * 0.12, by2 = H * 0.88;
+      var px = [], py = [];
+      for (var i = 0; i <= cols; i++) px.push(bx1 + (bx2 - bx1) * i / cols);
+      for (var j = 0; j <= rows; j++) py.push(by1 + (by2 - by1) * j / rows);
+      ctx.globalAlpha = 1;
+      for (var i2 = 0; i2 <= cols; i2++) { ctx.beginPath(); ctx.moveTo(px[i2], by1); ctx.lineTo(px[i2], by2); ctx.stroke(); }
+      for (var j2 = 0; j2 <= rows; j2++) { ctx.beginPath(); ctx.moveTo(bx1, py[j2]); ctx.lineTo(bx2, py[j2]); ctx.stroke(); }
+      ctx.globalAlpha = 0.4;
+      for (var i3 = 0; i3 <= cols; i3++) { var t = i3/cols; ctx.beginPath(); ctx.moveTo(px[i3], by1); ctx.lineTo(t*W, 0); ctx.stroke(); ctx.beginPath(); ctx.moveTo(px[i3], by2); ctx.lineTo(t*W, H); ctx.stroke(); }
+      for (var j3 = 0; j3 <= rows; j3++) { var t2 = j3/rows; ctx.beginPath(); ctx.moveTo(bx1, py[j3]); ctx.lineTo(0, t2*H); ctx.stroke(); ctx.beginPath(); ctx.moveTo(bx2, py[j3]); ctx.lineTo(W, t2*H); ctx.stroke(); }
+    }
+    resize();
+    var rt; window.addEventListener('resize', function() { clearTimeout(rt); rt = setTimeout(resize, 120); }, { passive: true });
+  })();
+
+  // ═══════════════════════════════════════════════════════
+  //  HERO — Jaula cósmica épica, escala monumental
+  // ═══════════════════════════════════════════════════════
+  (function() {
+    var el = document.getElementById('hero-canvas');
+    if (!el) return;
+
+    var renderer = new THREE.WebGLRenderer({ canvas: el, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.physicallyCorrectLights = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.4;
+
+    var scene = new THREE.Scene();
+
+    // Cámara con FOV muy amplio — sensación de estar DENTRO de la jaula
+    var camera = new THREE.PerspectiveCamera(72, 1, 0.01, 200);
+    // Dentro de la escultura, ligeramente descentrada — el texto vive a la izquierda
+    camera.position.set(2.2, 0.5, 2.8);
+
+    // ── ILUMINACIÓN DRAMÁTICA ──
+    var amb = new THREE.AmbientLight(0x0a0805, 0.3);
+    scene.add(amb);
+
+    // Luz clave dorada desde arriba-derecha
+    var key = new THREE.DirectionalLight(0xf5e0a0, 4.0);
+    key.position.set(6, 8, 4);
+    scene.add(key);
+
+    // Rim light fría desde atrás
+    var rim = new THREE.DirectionalLight(0xd4b87a, 1.8);
+    rim.position.set(-5, -2, -8);
+    scene.add(rim);
+
+    // Fill suave
+    var fill = new THREE.DirectionalLight(0xb89050, 0.8);
+    fill.position.set(-3, 4, 2);
+    scene.add(fill);
+
+    // Point light pulsante en el centro de la escultura
+    var centerLight = new THREE.PointLight(0xd4b060, 3.5, 18);
+    centerLight.position.set(0, 0, 0);
+    scene.add(centerLight);
+
+    var group = new THREE.Group();
+    scene.add(group);
+
+    // ── ESFERA EXTERIOR — JAULA DORADA MASIVA ──
+    var cageRadius = 5.5;
+
+    var barMat = new THREE.MeshStandardMaterial({
+      color: 0xb8a06e, roughness: 0.1, metalness: 0.99,
+      emissive: new THREE.Color(0xd4b87a), emissiveIntensity: 0.1,
+    });
+    var thinMat = new THREE.MeshStandardMaterial({
+      color: 0x8a7040, roughness: 0.28, metalness: 0.96,
+      emissive: new THREE.Color(0xa08050), emissiveIntensity: 0.04,
+    });
+
+    // Paralelos (latitud)
+    var latCount = 12;
+    for (var lat = 0; lat < latCount; lat++) {
+      var theta = (lat / (latCount - 1)) * Math.PI;
+      var r = cageRadius * Math.sin(theta);
+      if (r < 0.1) continue;
+      var isEquator = lat === Math.floor(latCount / 2) || lat === Math.floor(latCount / 2) - 1;
+      var thick = isEquator ? 0.065 : 0.032;
+      var m = isEquator ? barMat : thinMat;
+      var g = new THREE.TorusGeometry(r, thick, 10, 100);
+      var mesh = new THREE.Mesh(g, m);
+      mesh.position.y = cageRadius * Math.cos(theta);
+      group.add(mesh);
+    }
+
+    // Meridianos (longitud) — más densos
+    var lonCount = 20;
+    for (var lon = 0; lon < lonCount; lon++) {
+      var phi = (lon / lonCount) * Math.PI * 2;
+      var thick2 = lon % 5 === 0 ? 0.06 : 0.028;
+      var m2 = lon % 5 === 0 ? barMat : thinMat;
+      var g2 = new THREE.TorusGeometry(cageRadius, thick2, 10, 140, Math.PI);
+      var mesh2 = new THREE.Mesh(g2, m2);
+      mesh2.rotation.y = phi;
+      mesh2.rotation.z = Math.PI / 2;
+      group.add(mesh2);
+    }
+
+    // ── NODOS en intersecciones ──
+    for (var la = 1; la < latCount - 1; la += 2) {
+      var th = (la / (latCount - 1)) * Math.PI;
+      for (var lo = 0; lo < lonCount; lo += 2) {
+        var ph = (lo / lonCount) * Math.PI * 2;
+        var ng = new THREE.IcosahedronGeometry(0.11, 1);
+        var nm = new THREE.MeshStandardMaterial({
+          color: 0xd4b87a, roughness: 0.06, metalness: 1.0,
+          emissive: new THREE.Color(0xd4b87a), emissiveIntensity: 0.3,
+        });
+        var nd = new THREE.Mesh(ng, nm);
+        nd.position.set(
+          cageRadius * Math.sin(th) * Math.cos(ph),
+          cageRadius * Math.cos(th),
+          cageRadius * Math.sin(th) * Math.sin(ph)
+        );
+        group.add(nd);
+      }
+    }
+
+    // ── ORBE INTERIOR — núcleo oscuro reflectante ──
+    var coreGeo = new THREE.IcosahedronGeometry(1.4, 5);
+    var coreMat = new THREE.MeshStandardMaterial({
+      color: 0x050305, roughness: 0.03, metalness: 1.0,
+      envMapIntensity: 1.0,
+    });
+    var core = new THREE.Mesh(coreGeo, coreMat);
+    scene.add(core);
+
+    // ── ANILLOS ORBITALES INTERIORES ──
+    var rings = [];
+    var ringDefs = [
+      { r: 2.2, thick: 0.04, tilt: 0.0, speed: 0.15 },
+      { r: 2.8, thick: 0.028, tilt: Math.PI/3, speed: -0.11 },
+      { r: 1.7, thick: 0.032, tilt: Math.PI/2, speed: 0.19 },
+      { r: 3.2, thick: 0.018, tilt: Math.PI*2/3, speed: -0.08 },
+    ];
+    ringDefs.forEach(function(def) {
+      var rg = new THREE.TorusGeometry(def.r, def.thick, 10, 100);
+      var rm = new THREE.MeshStandardMaterial({
+        color: 0xb8a06e, roughness: 0.1, metalness: 0.99,
+        emissive: new THREE.Color(0xd4b87a), emissiveIntensity: 0.12,
+      });
+      var ring = new THREE.Mesh(rg, rm);
+      ring.rotation.x = def.tilt;
+      ring._speed = def.speed;
+      group.add(ring);
+      rings.push(ring);
+    });
+
+    // ── ESQUIRLAS / partículas flotantes ──
+    var shards = [];
+    for (var s = 0; s < 40; s++) {
+      var sg = new THREE.TetrahedronGeometry(0.05 + Math.random() * 0.12, 0);
+      var sm = new THREE.MeshStandardMaterial({
+        color: 0xb8a06e, roughness: 0.15, metalness: 0.98,
+        emissive: new THREE.Color(0xd4b87a), emissiveIntensity: 0.1,
+      });
+      var sh = new THREE.Mesh(sg, sm);
+      var sPhi = Math.random() * Math.PI * 2;
+      var sTheta = Math.random() * Math.PI;
+      var sR = 1.6 + Math.random() * 2.6;
+      sh.position.set(
+        sR * Math.sin(sTheta) * Math.cos(sPhi),
+        sR * Math.cos(sTheta),
+        sR * Math.sin(sTheta) * Math.sin(sPhi)
+      );
+      sh._sPhi = sPhi; sh._sTheta = sTheta; sh._sR = sR;
+      sh._os = 0.004 + Math.random() * 0.007;
+      sh._yOff = Math.random() * Math.PI * 2;
+      group.add(sh);
+      shards.push(sh);
+    }
+
+    function resize() {
+      var w = el.clientWidth || window.innerWidth;
+      var h = el.clientHeight || window.innerHeight;
+      if (w === 0 || h === 0) { requestAnimationFrame(resize); return; }
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', function() { resize(); }, { passive: true });
+    if (window.ResizeObserver) {
+      var roHero = new ResizeObserver(function() { resize(); });
+      roHero.observe(el);
+    }
+
+    // Siempre activo (el hero es la primera pantalla)
+    var t = 0;
+    function tick() {
+      requestAnimationFrame(tick);
+      t += 0.005;
+
+      // Rotación lenta y majestuosa de toda la jaula
+      group.rotation.y = t * 0.06;
+      group.rotation.x = Math.sin(t * 0.08) * 0.04;
+
+      // Anillos interiores rotan independientemente
+      rings.forEach(function(r) {
+        r.rotation.z += r._speed * 0.01;
+      });
+
+      // Núcleo oscuro contra-rota
+      core.rotation.y = -t * 0.08;
+      core.rotation.z = Math.sin(t * 0.12) * 0.03;
+
+      // Pulso de la luz central
+      centerLight.intensity = 3.0 + Math.sin(t * 1.2) * 0.8;
+
+      // Esquirlas orbitan suavemente
+      shards.forEach(function(sh) {
+        sh._sPhi += sh._os;
+        sh.position.x = sh._sR * Math.sin(sh._sTheta) * Math.cos(sh._sPhi);
+        sh.position.z = sh._sR * Math.sin(sh._sTheta) * Math.sin(sh._sPhi);
+        sh.position.y = sh._sR * Math.cos(sh._sTheta) + Math.sin(t * 0.5 + sh._yOff) * 0.15;
+        sh.rotation.x += 0.008;
+        sh.rotation.y += 0.005;
+      });
+
+      // Cámara hace un lentísimo dolly orbital — como Awwwards
+      camera.position.x = 1.5 + Math.sin(t * 0.07) * 0.4;
+      camera.position.y = 0.3 + Math.sin(t * 0.05) * 0.25;
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
+    }
+    tick();
+  })();
+
+
+  // ─── SHARED GEOMETRY HELPERS ───────────────────────────
+  function makeBar(a, b, radius, mat) {
+    var dir = new THREE.Vector3().subVectors(b, a);
+    var len = dir.length();
+    var mid = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
+    var g = new THREE.CylinderGeometry(radius, radius, len, 6, 1);
+    var m = new THREE.Mesh(g, mat);
+    m.position.copy(mid);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir.clone().normalize());
+    return m;
+  }
+
+  function makeStep(x, y, z, w, h, d, mat) {
+    var g = new THREE.BoxGeometry(w, h, d);
+    var m = new THREE.Mesh(g, mat);
+    m.position.set(x, y, z);
+    return m;
+  }
+
+  // Hexagonal ring helper: returns a Group of 6 bar-edges
+  function makeHexRing(radius, tubeR, mat) {
+    var g = new THREE.Group();
+    for (var i = 0; i < 6; i++) {
+      var a1 = (i / 6) * Math.PI * 2;
+      var a2 = ((i + 1) / 6) * Math.PI * 2;
+      var p1 = new THREE.Vector3(Math.cos(a1) * radius, Math.sin(a1) * radius, 0);
+      var p2 = new THREE.Vector3(Math.cos(a2) * radius, Math.sin(a2) * radius, 0);
+      g.add(makeBar(p1, p2, tubeR, mat));
+    }
+    return g;
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  S1 — La Máquina de Reducción
+  //  REF: Túnel hexagonal que colapsa (img 2)
+  //  Anillos hex decrecientes que convergen en un punto de luz lejano
+  //  Concepto: la conciencia filtra/comprime el abismo en geometría tolerable
+  // ═══════════════════════════════════════════════════════
+  makeScene('s1-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var N = 16; // número de anillos
+    var rings = [];
+    for (var i = 0; i < N; i++) {
+      var t2 = i / (N - 1);                // 0..1 de boca a punto
+      var radius = 2.8 * (1 - t2 * 0.92); // encoge
+      var depth  = -i * 0.55;              // se aleja en Z
+      var bright = t2;                     // más brillo al fondo (el punto)
+      var mat = new THREE.MeshStandardMaterial({
+        color: GOLD,
+        roughness: 0.15 + t2 * 0.25,
+        metalness: 0.98,
+        emissive: new THREE.Color(GOLD2),
+        emissiveIntensity: 0.04 + t2 * 0.22,
+      });
+      var ring = makeHexRing(radius, 0.028 - t2 * 0.016, mat);
+      ring.position.z = depth;
+      ring._t = t2;
+      ring._baseZ = depth;
+      // Conectar con barras radiales al siguiente anillo (perspectiva)
+      if (i < N - 1) {
+        var r2 = 2.8 * (1 - (i+1)/(N-1) * 0.92);
+        var d2 = -(i+1) * 0.55;
+        for (var j = 0; j < 6; j++) {
+          var a = (j / 6) * Math.PI * 2;
+          var p1 = new THREE.Vector3(Math.cos(a)*radius, Math.sin(a)*radius, depth);
+          var p2 = new THREE.Vector3(Math.cos(a)*r2, Math.sin(a)*r2, d2);
+          var lMat = new THREE.MeshStandardMaterial({
+            color: 0x5a4820, roughness: 0.4, metalness: 0.9,
+            emissive: new THREE.Color(0x3a2c10), emissiveIntensity: 0.04,
+          });
+          group.add(makeBar(p1, p2, 0.01, lMat));
+        }
+      }
+      group.add(ring);
+      rings.push(ring);
+    }
+
+    // Punto de luz al fondo — la "realidad comprimida"
+    var coreGeo = new THREE.IcosahedronGeometry(0.08, 2);
+    var coreMat = new THREE.MeshStandardMaterial({ color: GOLD2, roughness: 0.0, metalness: 1.0, emissive: new THREE.Color(GOLD2), emissiveIntensity: 2.0 });
+    var core = new THREE.Mesh(coreGeo, coreMat);
+    core.position.z = -(N - 1) * 0.55;
+    var coreLight = new THREE.PointLight(GOLD2, 2.5, 12);
+    coreLight.position.copy(core.position);
+    scene.add(coreLight);
+    group.add(core);
+
+    // Cámara mirando dentro del túnel
+    scene._cam && (scene._cam.position.set(0, 0, 4.5));
+
+    return {
+      tick: function(t) {
+        // Túnel respira — se contrae y expande rítmicamente
+        var breathe = 1 + Math.sin(t * 0.7) * 0.08;
+        // Rotación del eje del túnel más pronunciada
+        group.rotation.z = Math.sin(t * 0.18) * 0.28;
+        group.rotation.x = Math.sin(t * 0.13) * 0.18;
+        // Cada anillo rota sobre su propio eje Z a velocidad distinta
+        // y pulsa en escala — los del fondo más rápido (efecto de succión)
+        rings.forEach(function(r, i) {
+          var speed = 0.008 + r._t * 0.022; // fondo más rápido
+          r.rotation.z = t * speed * (i % 2 === 0 ? 1 : -1);
+          var pulse = breathe + Math.sin(t * 1.1 + i * 0.35) * 0.04;
+          r.scale.setScalar(pulse);
+        });
+        // Núcleo pulsa con más intensidad
+        core.rotation.y = t * 1.4;
+        core.scale.setScalar(1 + Math.sin(t * 2.2) * 0.35);
+        coreLight.intensity = 1.8 + Math.sin(t * 2.2) * 1.4;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  S2 — Arquitecturas Invisibles
+  //  REF: Dodecaedro anidado / tensegridad (img 1)
+  //  Poliedro dentro de poliedro — estructuras que contienen estructuras
+  //  Concepto: cada especie vive dentro de su propia arquitectura invisible
+  // ═══════════════════════════════════════════════════════
+  makeScene('s2-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    // Helper: poliedro regular por sus vértices
+    function makePoly(verts, edges, scale, tubeR, mat) {
+      var g = new THREE.Group();
+      edges.forEach(function(e) {
+        var a = new THREE.Vector3(verts[e[0]][0]*scale, verts[e[0]][1]*scale, verts[e[0]][2]*scale);
+        var b = new THREE.Vector3(verts[e[1]][0]*scale, verts[e[1]][1]*scale, verts[e[1]][2]*scale);
+        g.add(makeBar(a, b, tubeR, mat));
+      });
+      // Vértices como esferas
+      verts.forEach(function(v) {
+        var sg = new THREE.SphereGeometry(tubeR * 2.2, 6, 6);
+        var sm = new THREE.Mesh(sg, mat);
+        sm.position.set(v[0]*scale, v[1]*scale, v[2]*scale);
+        g.add(sm);
+      });
+      return g;
+    }
+
+    // Icosaedro exterior (dorado)
+    var phi = (1 + Math.sqrt(5)) / 2;
+    var icoVerts = [
+      [0,1,phi],[0,-1,phi],[0,1,-phi],[0,-1,-phi],
+      [1,phi,0],[-1,phi,0],[1,-phi,0],[-1,-phi,0],
+      [phi,0,1],[-phi,0,1],[phi,0,-1],[-phi,0,-1]
+    ];
+    var icoEdges = [
+      [0,1],[0,4],[0,5],[0,8],[0,9],
+      [1,6],[1,7],[1,8],[1,9],
+      [2,3],[2,4],[2,5],[2,10],[2,11],
+      [3,6],[3,7],[3,10],[3,11],
+      [4,5],[4,8],[4,10],[5,9],[5,11],
+      [6,7],[6,8],[6,10],[7,9],[7,11],[8,10],[9,11]
+    ];
+    var outerMat = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.12, metalness: 0.99, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.08 });
+    var outer = makePoly(icoVerts, icoEdges, 1.65, 0.032, outerMat);
+    group.add(outer);
+
+    // Cubo interior rotado (estructura diferente dentro)
+    var cubeVerts = [
+      [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
+      [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]
+    ];
+    var cubeEdges = [
+      [0,1],[1,2],[2,3],[3,0],
+      [4,5],[5,6],[6,7],[7,4],
+      [0,4],[1,5],[2,6],[3,7]
+    ];
+    var innerMat = new THREE.MeshStandardMaterial({ color: 0x7a6030, roughness: 0.3, metalness: 0.92, emissive: new THREE.Color(GOLD), emissiveIntensity: 0.04 });
+    var inner = makePoly(cubeVerts, cubeEdges, 0.95, 0.022, innerMat);
+    inner.rotation.set(0.4, 0.7, 0.2);
+    group.add(inner);
+
+    // Octaedro central (núcleo oscuro)
+    var octVerts = [[0,1,0],[0,-1,0],[1,0,0],[-1,0,0],[0,0,1],[0,0,-1]];
+    var octEdges = [[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]];
+    var coreMat2 = new THREE.MeshStandardMaterial({ color: 0x0a0806, roughness: 0.05, metalness: 1.0 });
+    var coreOct = makePoly(octVerts, octEdges, 0.5, 0.035, coreMat2);
+    group.add(coreOct);
+
+    // Tensegridad: cables dorados tenues desde vértices exteriores al centro
+    var tenseMat = new THREE.MeshStandardMaterial({ color: 0x3a2c10, roughness: 0.6, metalness: 0.8, emissive: new THREE.Color(0x2a1c08), emissiveIntensity: 0.04 });
+    icoVerts.forEach(function(v, idx) {
+      if (idx % 3 === 0) {
+        var a = new THREE.Vector3(v[0]*1.65, v[1]*1.65, v[2]*1.65);
+        var b = new THREE.Vector3(0, 0, 0);
+        group.add(makeBar(a, b, 0.006, tenseMat));
+      }
+    });
+
+    return {
+      tick: function(t) {
+        outer.rotation.y = t * 0.08;
+        outer.rotation.x = Math.sin(t * 0.12) * 0.06;
+        inner.rotation.y = -t * 0.13;
+        inner.rotation.z = t * 0.07;
+        coreOct.rotation.y = t * 0.22;
+        coreOct.rotation.x = t * 0.15;
+        group.rotation.y = Math.sin(t * 0.1) * 0.2;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  S3 — El Tablero Fijo
+  //  Tablero de ajedrez dorado-negro con obelisco central
+  //  que flota y rota — el tablero permanece, la pieza se mueve
+  //  pero las reglas no cambian nunca
+  // ═══════════════════════════════════════════════════════
+  makeScene('s3-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var goldM  = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.1, metalness: 0.99, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.08 });
+    var darkM  = new THREE.MeshStandardMaterial({ color: 0x050308, roughness: 0.05, metalness: 0.99 });
+    var tileGM = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.08, metalness: 0.98, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.06 });
+    var tileDM = new THREE.MeshStandardMaterial({ color: 0x060408, roughness: 0.7, metalness: 0.5 });
+
+    // Tablero — 9×9 casillas, más denso y oscuro
+    var N = 9;
+    var tiles = [];
+    var tileSize = 0.58;
+    for (var r = 0; r < N; r++) {
+      for (var c = 0; c < N; c++) {
+        var isGold = (r + c) % 2 === 0;
+        var tg = new THREE.BoxGeometry(tileSize - 0.03, 0.07, tileSize - 0.03);
+        var tm = isGold ? tileGM : tileDM;
+        var tile = new THREE.Mesh(tg, tm);
+        tile.position.set(
+          (c - (N-1)/2) * tileSize,
+          0,
+          (r - (N-1)/2) * tileSize
+        );
+        tile._r = r; tile._c = c;
+        group.add(tile);
+        tiles.push(tile);
+      }
+    }
+
+    // Marco del tablero — borde dorado fino
+    var frameGeo = new THREE.BoxGeometry(N * tileSize + 0.18, 0.1, 0.06);
+    var frameMat = goldM;
+    [[0, 0, (N * tileSize)/2 + 0.03], [0, 0, -(N * tileSize)/2 - 0.03]].forEach(function(pos) {
+      var f = new THREE.Mesh(frameGeo, frameMat);
+      f.position.set(pos[0], pos[1], pos[2]);
+      group.add(f);
+    });
+    var frameGeo2 = new THREE.BoxGeometry(0.06, 0.1, N * tileSize + 0.18);
+    [[(N * tileSize)/2 + 0.03, 0, 0], [-(N * tileSize)/2 - 0.03, 0, 0]].forEach(function(pos) {
+      var f = new THREE.Mesh(frameGeo2, frameMat);
+      f.position.set(pos[0], pos[1], pos[2]);
+      group.add(f);
+    });
+
+    // Fase aleatoria única por tile — nunca dos casillas se mueven igual
+    tiles.forEach(function(tile) {
+      tile._phase = Math.random() * Math.PI * 2;
+      tile._freq  = 0.38 + Math.random() * 0.18; // velocidad individual leve
+    });
+
+    // Inclinación del tablero
+    group.rotation.x = -0.45;
+    group.position.y = -0.5;
+
+    // Luz
+    var boardLight = new THREE.PointLight(GOLD2, 1.8, 10);
+    boardLight.position.set(0, 3, 1);
+    scene.add(boardLight);
+
+    return {
+      tick: function(t) {
+        tiles.forEach(function(tile) {
+          // Cada casilla tiene su propia frecuencia y fase → movimiento desincronizado
+          var wave = Math.sin(t * tile._freq + tile._phase);
+          tile.position.y = wave * 0.55; // amplitud visible pero contenida
+        });
+        group.rotation.y = Math.sin(t * 0.11) * 0.22;
+        boardLight.intensity = 1.6 + Math.sin(t * 0.9) * 0.3;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  S4 — Fuera de la Gramática
+  //  Nudo toroidal hipnótico + satélites en órbitas imposibles
+  //  Una forma que no puede existir en 2D — inconcebible sin el 3er eje
+  //  Rodeado de anillos entrelazados que se auto-intersectan
+  // ═══════════════════════════════════════════════════════
+  makeScene('s4-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var goldM   = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.1, metalness: 0.99, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.1 });
+    var goldDimM= new THREE.MeshStandardMaterial({ color: 0x7a6030, roughness: 0.3, metalness: 0.92, emissive: new THREE.Color(GOLD), emissiveIntensity: 0.04 });
+    var darkM   = new THREE.MeshStandardMaterial({ color: 0x050308, roughness: 0.04, metalness: 1.0 });
+
+    // Nudo toroidal central (3,5) — la forma imposible en 2D
+    var knotGeo = new THREE.TorusKnotGeometry(1.1, 0.18, 200, 16, 3, 5);
+    var knot    = new THREE.Mesh(knotGeo, goldM);
+    group.add(knot);
+
+    // Esfera oscura envolvente semi-transparente — la gramática que lo contiene
+    var shellGeo = new THREE.IcosahedronGeometry(1.9, 3);
+    var shellMat = new THREE.MeshStandardMaterial({
+      color: 0x0a0608, roughness: 0.02, metalness: 0.99,
+      transparent: true, opacity: 0.12, side: THREE.BackSide,
+    });
+    group.add(new THREE.Mesh(shellGeo, shellMat));
+
+    // Tres anillos grandes que se entrecruzan — los "ejes" del pensamiento imposible
+    var crossRings = [];
+    [
+      { rx: 0,         ry: 0,          rz: 0          },
+      { rx: Math.PI/2, ry: 0,          rz: 0          },
+      { rx: 0,         ry: Math.PI/2,  rz: Math.PI/4  },
+    ].forEach(function(rot, i) {
+      var rg = new THREE.TorusGeometry(1.6 + i * 0.12, 0.022 - i * 0.004, 8, 100);
+      var m  = i === 0 ? goldM : goldDimM;
+      var ring = new THREE.Mesh(rg, m);
+      ring.rotation.set(rot.rx, rot.ry, rot.rz);
+      ring._baseRot = { x: rot.rx, y: rot.ry, z: rot.rz };
+      ring._speed   = (0.06 + i * 0.03) * (i % 2 ? -1 : 1);
+      group.add(ring);
+      crossRings.push(ring);
+    });
+
+    // Nodos pequeños en los puntos de cruce de los anillos
+    for (var n = 0; n < 12; n++) {
+      var angle3 = (n / 12) * Math.PI * 2;
+      var ng = new THREE.OctahedronGeometry(0.065, 0);
+      var nm = new THREE.MeshStandardMaterial({ color: GOLD2, roughness: 0.05, metalness: 1.0, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.3 });
+      var node = new THREE.Mesh(ng, nm);
+      node.position.set(Math.cos(angle3) * 1.6, Math.sin(angle3) * 0.4, Math.sin(angle3) * 1.6);
+      group.add(node);
+    }
+
+    // Luz central pulsante
+    var knotLight = new THREE.PointLight(GOLD2, 2.5, 8);
+    scene.add(knotLight);
+
+    return {
+      tick: function(t) {
+        knot.rotation.y = t * 0.15;
+        knot.rotation.x = t * 0.09;
+        crossRings.forEach(function(r) {
+          r.rotation.x = r._baseRot.x + t * r._speed;
+          r.rotation.z = r._baseRot.z + t * r._speed * 0.7;
+        });
+        group.rotation.y = Math.sin(t * 0.12) * 0.35;
+        knotLight.intensity = 2.0 + Math.sin(t * 1.8) * 0.7;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  S5 — La Lógica Provincial
+  //  Dos esferas geodésicas idénticas, rotando en sentidos opuestos
+  //  dentro de una misma jaula — misma estructura, lógica contraria
+  //  El anillo-frontera que las separa: el límite del pensamiento local
+  // ═══════════════════════════════════════════════════════
+  makeScene('s5-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var goldM  = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.1, metalness: 0.99, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.1 });
+    var goldDimM = new THREE.MeshStandardMaterial({ color: 0x5a4220, roughness: 0.35, metalness: 0.92, emissive: new THREE.Color(0x3a2c10), emissiveIntensity: 0.04 });
+    var darkM  = new THREE.MeshStandardMaterial({ color: 0x050308, roughness: 0.03, metalness: 1.0 });
+
+    // Función: esfera geodésica de barras (icosaedro subdividido)
+    function makeGeodesicWire(freq, radius, tubeR, mat) {
+      var g = new THREE.Group();
+      // Usar IcosahedronGeometry y extraer edges únicos
+      var icoGeo = new THREE.IcosahedronGeometry(radius, freq);
+      var pos = icoGeo.attributes.position;
+      // Mapa de edges únicos via hash
+      var edgeSet = {};
+      var faces = pos.count / 3;
+      for (var f = 0; f < faces; f++) {
+        var idxs = [f*3, f*3+1, f*3+2];
+        for (var e = 0; e < 3; e++) {
+          var i1 = idxs[e], i2 = idxs[(e+1)%3];
+          var v1 = new THREE.Vector3().fromBufferAttribute(pos, i1);
+          var v2 = new THREE.Vector3().fromBufferAttribute(pos, i2);
+          // Simple hash por posición redondeada
+          var k1 = v1.toArray().map(function(x){return Math.round(x*100);}).join(',');
+          var k2 = v2.toArray().map(function(x){return Math.round(x*100);}).join(',');
+          var key = k1 < k2 ? k1+'|'+k2 : k2+'|'+k1;
+          if (!edgeSet[key]) {
+            edgeSet[key] = true;
+            g.add(makeBar(v1, v2, tubeR, mat));
+          }
+        }
+      }
+      return g;
+    }
+
+    // Esfera A — dorada, gira en sentido horario
+    var sphereA = makeGeodesicWire(2, 1.35, 0.018, goldM);
+    group.add(sphereA);
+
+    // Esfera B — más tenue, gira en sentido antihorario
+    var sphereB = makeGeodesicWire(2, 1.35, 0.012, goldDimM);
+    sphereB.rotation.y = Math.PI / 3; // desfasada
+    group.add(sphereB);
+
+    // Anillo ecuatorial — la frontera que separa las dos lógicas
+    var equGeo = new THREE.TorusGeometry(1.42, 0.04, 12, 100);
+    var equMesh = new THREE.Mesh(equGeo, goldM);
+    equMesh.rotation.x = Math.PI / 2;
+    group.add(equMesh);
+
+    // Jaula exterior — el espacio que las contiene a ambas
+    var cageGeo = new THREE.IcosahedronGeometry(2.0, 1);
+    var cageMat = new THREE.MeshStandardMaterial({
+      color: 0x3a2c10, roughness: 0.5, metalness: 0.85,
+      transparent: true, opacity: 0.35, wireframe: true,
+    });
+    var cage = new THREE.Mesh(cageGeo, cageMat);
+    group.add(cage);
+
+    // Luz central
+    var cLight = new THREE.PointLight(GOLD2, 2.0, 8);
+    scene.add(cLight);
+
+    return {
+      tick: function(t) {
+        sphereA.rotation.y =  t * 0.12;
+        sphereA.rotation.x =  t * 0.05;
+        sphereB.rotation.y = -t * 0.14;
+        sphereB.rotation.z =  t * 0.06;
+        equMesh.rotation.z =  t * 0.04;
+        cage.rotation.y    =  t * 0.03;
+        group.rotation.y   =  Math.sin(t * 0.1) * 0.3;
+        cLight.intensity   =  1.8 + Math.sin(t * 1.1) * 0.4;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  S6 — La Relativización
+  //  Sistema de jaulas esféricas concéntricas a escalas distintas
+  //  La más interior brilla, las exteriores son oscuras y frías
+  //  El ego en el centro cree ser el sol — solo es una más
+  // ═══════════════════════════════════════════════════════
+  makeScene('s6-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    // Cada capa: jaula esférica de meridianos y paralelos
+    function makeCageSphere(radius, latN, lonN, tubeR, mat) {
+      var g = new THREE.Group();
+      // Paralelos
+      for (var la = 1; la < latN; la++) {
+        var theta = (la / latN) * Math.PI;
+        var r = radius * Math.sin(theta);
+        var y = radius * Math.cos(theta);
+        if (r < 0.05) continue;
+        var rg = new THREE.TorusGeometry(r, tubeR, 6, 48);
+        var ring = new THREE.Mesh(rg, mat);
+        ring.position.y = y;
+        g.add(ring);
+      }
+      // Meridianos
+      for (var lo = 0; lo < lonN; lo++) {
+        var phi2 = (lo / lonN) * Math.PI * 2;
+        var mg2 = new THREE.TorusGeometry(radius, tubeR * 0.7, 6, 64, Math.PI);
+        var mer = new THREE.Mesh(mg2, mat);
+        mer.rotation.y = phi2;
+        mer.rotation.z = Math.PI / 2;
+        g.add(mer);
+      }
+      return g;
+    }
+
+    // Capa 1 — interior brillante (el ego, el "centro")
+    var matIn = new THREE.MeshStandardMaterial({ color: GOLD2, roughness: 0.06, metalness: 1.0, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.35 });
+    var cage1 = makeCageSphere(0.55, 5, 8, 0.028, matIn);
+    group.add(cage1);
+
+    // Luz desde el interior
+    var innerLight2 = new THREE.PointLight(GOLD2, 3.0, 10);
+    scene.add(innerLight2);
+
+    // Capa 2 — media
+    var matMid = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.15, metalness: 0.98, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.08 });
+    var cage2 = makeCageSphere(1.15, 6, 10, 0.022, matMid);
+    group.add(cage2);
+
+    // Capa 3 — exterior
+    var matOut = new THREE.MeshStandardMaterial({ color: 0x5a4820, roughness: 0.35, metalness: 0.90, emissive: new THREE.Color(0x2a1c08), emissiveIntensity: 0.04 });
+    var cage3 = makeCageSphere(1.9, 7, 12, 0.016, matOut);
+    group.add(cage3);
+
+    // Capa 4 — la más exterior, casi invisible
+    var matFar = new THREE.MeshStandardMaterial({ color: 0x2a1e0a, roughness: 0.6, metalness: 0.82 });
+    var cage4 = makeCageSphere(2.7, 5, 8, 0.01, matFar);
+    group.add(cage4);
+
+    // Pequeño nodo brillante en el centro absoluto
+    var nucGeo = new THREE.IcosahedronGeometry(0.14, 2);
+    var nucMat = new THREE.MeshStandardMaterial({ color: GOLD2, roughness: 0.0, metalness: 1.0, emissive: new THREE.Color(GOLD2), emissiveIntensity: 2.0 });
+    var nuc = new THREE.Mesh(nucGeo, nucMat);
+    group.add(nuc);
+
+    return {
+      tick: function(t) {
+        cage1.rotation.y  =  t * 0.18;
+        cage1.rotation.x  =  t * 0.07;
+        cage2.rotation.y  = -t * 0.11;
+        cage2.rotation.z  =  t * 0.05;
+        cage3.rotation.y  =  t * 0.07;
+        cage3.rotation.x  = -t * 0.04;
+        cage4.rotation.y  = -t * 0.04;
+        group.rotation.y  =  Math.sin(t * 0.09) * 0.3;
+        nuc.scale.setScalar(1 + Math.sin(t * 2.0) * 0.15);
+        innerLight2.intensity = 2.5 + Math.sin(t * 1.5) * 0.7;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  FINALE — No salir de la jaula. Sino verla.
+  //  La jaula esférica completa se abre en respiración:
+  //  meridianos y paralelos se separan lentamente,
+  //  revelando adentro un dodecaedro de barras (todas las estructuras del ensayo)
+  //  y en el núcleo absoluto, una luz que pulsa como corazón.
+  //  Épico: múltiples capas, múltiples velocidades, escala total.
+  // ═══════════════════════════════════════════════════════
+  //  S7 — La Interfaz
+  //  Cuadrícula hexagonal cóncava — la "pantalla" del cerebro
+  //  Núcleo oscuro con anillos orbitales: el panel de control evolutivo
+  // ═══════════════════════════════════════════════════════
+  makeScene('s7-canvas', function(scene) {
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var goldM  = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.12, metalness: 0.99, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.1 });
+    var dimM   = new THREE.MeshStandardMaterial({ color: 0x5a4820, roughness: 0.35, metalness: 0.9, emissive: new THREE.Color(0x2a1c08), emissiveIntensity: 0.04 });
+    var darkM  = new THREE.MeshStandardMaterial({ color: 0x040204, roughness: 0.04, metalness: 1.0 });
+
+    // Cuadrícula hexagonal en superficie curva cóncava
+    var HCOLS = 7, HROWS = 6;
+    var hSize = 0.38;
+    var hW = hSize * Math.sqrt(3);
+    var hH = hSize * 2;
+    var curvR = 5.0;
+
+    for (var row = 0; row < HROWS; row++) {
+      for (var col = 0; col < HCOLS; col++) {
+        var oddRow = (row % 2 === 1);
+        var hx = (col - (HCOLS-1)/2) * hW + (oddRow ? hW/2 : 0);
+        var hy = (row - (HROWS-1)/2) * hH * 0.86;
+        var angle2 = hx / curvR;
+        var px = Math.sin(angle2) * curvR;
+        var pz = Math.cos(angle2) * curvR - curvR;
+        var scale2 = 1 - Math.abs(row - (HROWS-1)/2) / HROWS * 0.5
+                       - Math.abs(col - (HCOLS-1)/2) / HCOLS * 0.3;
+        var mat = (row + col) % 3 === 0 ? goldM : dimM;
+        var hexRing = makeHexRing(hSize * scale2, 0.022 * scale2, mat);
+        hexRing.position.set(px, hy, pz);
+        hexRing.rotation.y = -angle2;
+        group.add(hexRing);
+      }
+    }
+
+    // Esfera negra central — el núcleo de la interfaz
+    var coreGeo7 = new THREE.IcosahedronGeometry(0.45, 4);
+    var core7 = new THREE.Mesh(coreGeo7, darkM);
+    group.add(core7);
+
+    // Anillos concéntricos orbitales alrededor del núcleo
+    var orbRings7 = [];
+    [
+      { r: 0.70, thick: 0.025, tilt: 0.0,        speed:  0.12 },
+      { r: 1.00, thick: 0.018, tilt: Math.PI/5,   speed: -0.09 },
+      { r: 1.35, thick: 0.012, tilt: Math.PI*2/5, speed:  0.07 },
+    ].forEach(function(def, i) {
+      var rg = new THREE.TorusGeometry(def.r, def.thick, 8, 80);
+      var rm = i === 0 ? goldM : dimM;
+      var ring = new THREE.Mesh(rg, rm);
+      ring.rotation.x = def.tilt;
+      ring._speed = def.speed;
+      group.add(ring);
+      orbRings7.push(ring);
+    });
+
+    var ifLight7 = new THREE.PointLight(GOLD2, 2.0, 10);
+    scene.add(ifLight7);
+
+    return {
+      tick: function(t) {
+        group.rotation.y = Math.sin(t * 0.08) * 0.2;
+        core7.rotation.y = t * 0.12;
+        orbRings7.forEach(function(r) { r.rotation.z += r._speed * 0.01; });
+        ifLight7.intensity = 1.8 + Math.sin(t * 2.0) * 0.5;
+      }
+    };
+  });
+
+  // ═══════════════════════════════════════════════════════
+  makeScene('finale-canvas', function(scene) {
+    scene.background = null;
+    var group = new THREE.Group();
+    scene.add(group);
+
+    var goldM   = goldMaterial(0.1, 0.99, 0.12);
+    var goldDimM= new THREE.MeshStandardMaterial({ color: 0x6a5028, roughness: 0.3, metalness: 0.92, emissive: new THREE.Color(0x3a2810), emissiveIntensity: 0.06 });
+    var darkM   = darkMaterial(0.95);
+    var glowM   = new THREE.MeshStandardMaterial({ color: GOLD2, roughness: 0.0, metalness: 1.0, emissive: new THREE.Color(GOLD2), emissiveIntensity: 2.5 });
+
+    // ── JAULA EXTERIOR — meridianos y paralelos que respiran ──
+    var LATS = 10, LONS = 16, cageR = 2.6;
+    var bars = [];
+
+    for (var lat = 1; lat < LATS; lat++) {
+      var theta = (lat / LATS) * Math.PI;
+      var r     = cageR * Math.sin(theta);
+      var y     = cageR * Math.cos(theta);
+      if (r < 0.05) continue;
+      var isEquator = (lat === Math.floor(LATS / 2));
+      var rg = new THREE.TorusGeometry(r, isEquator ? 0.038 : 0.022, 8, 72);
+      var bar = new THREE.Mesh(rg, isEquator ? goldM : goldDimM);
+      bar.position.y = y;
+      bar._explode = new THREE.Vector3(0, y * 0.45, 0);
+      group.add(bar); bars.push(bar);
+    }
+    for (var lon = 0; lon < LONS; lon++) {
+      var phi = (lon / LONS) * Math.PI * 2;
+      var isPrime = lon % 4 === 0;
+      var mg = new THREE.TorusGeometry(cageR, isPrime ? 0.032 : 0.018, 8, 96, Math.PI);
+      var mbar = new THREE.Mesh(mg, isPrime ? goldM : goldDimM);
+      mbar.rotation.y = phi;
+      mbar.rotation.z = Math.PI / 2;
+      mbar._explode = new THREE.Vector3(Math.cos(phi) * 0.55, (Math.random()-0.5)*0.2, Math.sin(phi) * 0.55);
+      group.add(mbar); bars.push(mbar);
+    }
+
+    // ── NODOS en intersecciones clave ──
+    for (var la2 = 2; la2 < LATS - 1; la2 += 2) {
+      var th2 = (la2 / LATS) * Math.PI;
+      for (var lo2 = 0; lo2 < LONS; lo2 += 4) {
+        var ph2 = (lo2 / LONS) * Math.PI * 2;
+        var ng2 = new THREE.OctahedronGeometry(0.065, 0);
+        var nm2 = new THREE.MeshStandardMaterial({ color: GOLD2, roughness: 0.05, metalness: 1.0, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.4 });
+        var nd2 = new THREE.Mesh(ng2, nm2);
+        nd2.position.set(
+          cageR * Math.sin(th2) * Math.cos(ph2),
+          cageR * Math.cos(th2),
+          cageR * Math.sin(th2) * Math.sin(ph2)
+        );
+        group.add(nd2);
+      }
+    }
+
+    // ── ICOSAEDRO INTERIOR — toda la estructura que contiene el ensayo ──
+    var phi3 = (1 + Math.sqrt(5)) / 2;
+    var icoV = [
+      [0,1,phi3],[0,-1,phi3],[0,1,-phi3],[0,-1,-phi3],
+      [1,phi3,0],[-1,phi3,0],[1,-phi3,0],[-1,-phi3,0],
+      [phi3,0,1],[-phi3,0,1],[phi3,0,-1],[-phi3,0,-1]
+    ];
+    var icoE = [
+      [0,1],[0,4],[0,5],[0,8],[0,9],
+      [1,6],[1,7],[1,8],[1,9],
+      [2,3],[2,4],[2,5],[2,10],[2,11],
+      [3,6],[3,7],[3,10],[3,11],
+      [4,5],[4,8],[4,10],[5,9],[5,11],
+      [6,7],[6,8],[6,10],[7,9],[7,11],[8,10],[9,11]
+    ];
+    var icoGroup = new THREE.Group();
+    var icoScale = 0.85;
+    var icoMat = new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.12, metalness: 0.99, emissive: new THREE.Color(GOLD2), emissiveIntensity: 0.1 });
+    icoE.forEach(function(e) {
+      var a = new THREE.Vector3(icoV[e[0]][0]*icoScale, icoV[e[0]][1]*icoScale, icoV[e[0]][2]*icoScale);
+      var b = new THREE.Vector3(icoV[e[1]][0]*icoScale, icoV[e[1]][1]*icoScale, icoV[e[1]][2]*icoScale);
+      icoGroup.add(makeBar(a, b, 0.022, icoMat));
+    });
+    group.add(icoGroup);
+
+    // ── NUDO TOROIDAL CENTRAL — la forma imposible en el corazón ──
+    var coreKnotGeo = new THREE.TorusKnotGeometry(0.38, 0.055, 120, 10, 3, 5);
+    var coreKnot = new THREE.Mesh(coreKnotGeo, goldM);
+    group.add(coreKnot);
+
+    // ── PUNTO DE LUZ ABSOLUTO — el núcleo, la grieta ──
+    var sparkGeo = new THREE.IcosahedronGeometry(0.1, 2);
+    var spark = new THREE.Mesh(sparkGeo, glowM);
+    group.add(spark);
+    var heartLight = new THREE.PointLight(GOLD2, 5.0, 15);
+    scene.add(heartLight);
+
+    // Segundo anillo de luz exterior
+    var rimLight = new THREE.DirectionalLight(0xd4b87a, 1.2);
+    rimLight.position.set(-4, 3, -5);
+    scene.add(rimLight);
+
+    return {
+      tick: function(t) {
+        var breathe = Math.sin(t * 0.3) * 0.5 + 0.5; // 0→1→0
+
+        // Jaula exterior respira — se abre y cierra
+        group.rotation.y = t * 0.06;
+        bars.forEach(function(b) {
+          b.position.x = b._explode.x * breathe * 1.8;
+          b.position.y = b._explode.y * breathe * 1.8;
+          b.position.z = b._explode.z * breathe * 1.8;
+        });
+
+        // Icosaedro interior contra-rota, levemente
+        icoGroup.rotation.y = -t * 0.08;
+        icoGroup.rotation.x =  Math.sin(t * 0.15) * 0.1;
+
+        // Nudo central acelera cuando la jaula está abierta
+        coreKnot.rotation.y = t * (0.2 + breathe * 0.25);
+        coreKnot.rotation.x = t * 0.13;
+        coreKnot.scale.setScalar(1 + breathe * 0.25);
+
+        // Chispa nuclear pulsa
+        spark.scale.setScalar(0.8 + breathe * 1.0);
+        spark.rotation.y = t * 1.2;
+
+        // Luz: mínima cuando cerrada, explosiva cuando abierta
+        heartLight.intensity = 2.5 + breathe * 7.0;
+      }
+    };
+  });
+
+  //  INTERSECTION OBSERVER — reveal text panels
+  // ═══════════════════════════════════════════════════════
+  var textPanels = document.querySelectorAll('.section-text');
+  var finaleContent = document.getElementById('finale-content');
+
+  var panelObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        panelObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+
+  textPanels.forEach(function(p) { panelObs.observe(p); });
+
+  // Finale observer — separate, very permissive
+  if (finaleContent) {
+    var finaleObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          finaleObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+    finaleObs.observe(finaleContent);
+  }
+
+  // Scroll fallback — check all elements on every scroll
+  function checkVisible() {
+    var vH = window.innerHeight;
+    textPanels.forEach(function(p) {
+      if (p.classList.contains('in-view')) return;
+      var r = p.getBoundingClientRect();
+      if (r.top < vH * 0.95 && r.bottom > 0) p.classList.add('in-view');
+    });
+    if (finaleContent && !finaleContent.classList.contains('in-view')) {
+      var r2 = finaleContent.getBoundingClientRect();
+      if (r2.top < vH && r2.bottom > 0) finaleContent.classList.add('in-view');
+    }
+  }
+
+  checkVisible();
+  window.addEventListener('scroll', checkVisible, { passive: true });
+
+  // Hard fallback — reveal everything after 5s no matter what
+  setTimeout(function() {
+    textPanels.forEach(function(p) { p.classList.add('in-view'); });
+    if (finaleContent) finaleContent.classList.add('in-view');
+  }, 5000);
+
+  // Resize all Three.js renderers once layout is fully painted
+  // Fixes: renderers initialized when clientWidth/clientHeight was 0
+  window.addEventListener('load', function() {
+    window.dispatchEvent(new Event('resize'));
+    setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 150);
+    setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 500);
+  });
+
+})();
+</script>
+</body>
+</html>
