@@ -3,11 +3,11 @@
 // ══════════════════════════════════════════
 const NODES = {
   WORK: {
-    size: 32, angle: 10, dist: 185,
+    size: 42, angle: -110, dist: 215,
     col: [107, 159, 255], theme: 't-work',
     eye: 'Portfolio', title: 'Work',
     desc: 'Professional applications. Campaigns, branding, motion graphics, 3D, and visual development that shipped into the world.',
-    body: 'work', badgeR: 55,
+    body: 'work', badgeR: 40,
   },
   THOUGHTS: {
     size: 22, angle: 135, dist: 175,
@@ -17,7 +17,7 @@ const NODES = {
     body: 'thoughts', badgeR: 42,
   },
   EXPERIMENTS: {
-    size: 18, angle: -130, dist: 165,
+    size: 18, angle: 10, dist: 165,
     col: [220, 220, 215], theme: 't-experiments',
     eye: 'Lab', title: 'Experiments',
     desc: 'Visual and technical explorations outside commercial constraints. Curiosity made visible.',

@@ -201,7 +201,7 @@ const panelContent = {
         <div class="pn-n">Essay I</div>
         <div class="pn-name">La Jaula Transparente</div>
         <div class="pn-sub">On ego, consciousness, and the transparent cage we cannot see from within.</div>
-        <a class="p-item-cta gold" href="jaula-v2-fixed.html" target="_blank" onclick="navigateOut(event, 'jaula-v2-fixed.html')" onmouseenter="playCTAHover('thoughts')">Leer ensayo</a>
+        <a class="p-item-cta gold" href="jaula-v2-fixed.html" onclick="navigateOut(event, 'jaula-v2-fixed.html')" onmouseenter="playCTAHover('thoughts')">Leer ensayo</a>
       </div>
       <div class="p-node">
         <div class="pn-n">Framework</div>
@@ -317,6 +317,8 @@ function openPanel(key) {
   const [wx, wy] = angleToXY(d.angle, d.dist);
   camTarget.x = wx * 0.25; camTarget.y = -wy * 0.25; camTarget.z = 450;
   updateSideNav('panel');
+  document.getElementById('node-aura').classList.add('on');
+  document.getElementById('depth-blur').classList.add('on');
 }
 
 function closePanel() {
@@ -324,8 +326,10 @@ function closePanel() {
   activeKey = null;
   updateLabels();
   setAudioMood(null);
-  camTarget.x = 0; camTarget.y = 0; camTarget.z = 580;
+  camTarget.x = 0; camTarget.y = 0; camTarget.z = 460;
   updateSideNav('map');
+  document.getElementById('node-aura').classList.remove('on');
+  document.getElementById('depth-blur').classList.remove('on');
 }
 
 // ══════════════════════════════════════════
@@ -440,7 +444,8 @@ function updateLabels() {
     const safeY = Math.max(SAFE, Math.min(innerHeight - SAFE, sy));
     el.style.left = safeX + 'px';
     el.style.top  = safeY + 'px';
-    el.classList.toggle('hovered', hoveredKey === key);
-    el.classList.toggle('active',  key !== 'INFO' && activeKey === key);
+    el.classList.toggle('hovered',   hoveredKey === key);
+    el.classList.toggle('active',    key !== 'INFO' && activeKey === key);
+    el.classList.toggle('depth-bg',  !!(activeKey && activeKey !== key && !hoveredKey));
   });
 }

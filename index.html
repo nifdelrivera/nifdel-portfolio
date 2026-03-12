@@ -118,6 +118,12 @@
 <!-- ══ FOCUS OVERLAY ══ -->
 <div id="focus-overlay"></div>
 
+<!-- ══ NODE AURA ══ -->
+<div id="node-aura"></div>
+
+<!-- ══ DEPTH BLUR ══ -->
+<div id="depth-blur"></div>
+
 <!-- ══ HUD ══ -->
 <div id="hud">
   <div class="h-tl">
@@ -282,6 +288,12 @@ if (new URLSearchParams(location.search).get('back')) {
       document.getElementById('audio-btn').classList.add('playing');
       document.getElementById('ab-label').textContent = 'Audio On';
     } catch(e) {}
+  }
+
+  const returnPanel = sessionStorage.getItem('returnPanel');
+  if (returnPanel) {
+    sessionStorage.removeItem('returnPanel');
+    setTimeout(() => openPanel(returnPanel), 80);
   }
 
   pageFadeIn();

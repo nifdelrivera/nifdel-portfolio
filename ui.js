@@ -271,7 +271,16 @@ function pageFadeIn() {
 
 function navigateOut(e, url) {
   e.preventDefault();
-  pageFadeOut(() => { window.open(url, '_blank'); pageFadeIn(); }, 380);
+  if (typeof activeKey !== 'undefined' && activeKey) {
+    sessionStorage.setItem('returnPanel', activeKey);
+  }
+  if (typeof audioPlaying !== 'undefined' && audioPlaying) {
+    sessionStorage.setItem('audioOn', '1');
+    if (gainNode) gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.3);
+  } else {
+    sessionStorage.removeItem('audioOn');
+  }
+  pageFadeOut(() => { window.location.href = url; }, 380);
   return false;
 }
 

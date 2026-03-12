@@ -644,10 +644,71 @@
 <script>
 function goBack(e) {
   e.preventDefault();
-  // Fade out then go back
+  if (window._ambCtx && window._ambGain) {
+    window._ambGain.gain.setTargetAtTime(0, window._ambCtx.currentTime, 0.3);
+    sessionStorage.setItem('audioOn', '1');
+  }
   document.body.style.transition = 'opacity .5s ease';
   document.body.style.opacity = '0';
-  setTimeout(() => window.close(), 520);
+  setTimeout(() => { window.location.href = 'index.html?back=1'; }, 520);
+}
+
+// ── Ambient audio (mirrors index.html oscillator layers) ──
+function startPageAmbient() {
+  if (window._ambCtx) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    window._ambCtx = ctx;
+    const now = ctx.currentTime;
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0, now);
+    window._ambGain = masterGain;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value=-18; comp.knee.value=20; comp.ratio.value=4;
+    comp.attack.value=0.08; comp.release.value=0.5;
+    const masterLP = ctx.createBiquadFilter();
+    masterLP.type='lowpass'; masterLP.frequency.value=3500; masterLP.Q.value=0.4;
+    masterGain.connect(masterLP); masterLP.connect(comp); comp.connect(ctx.destination);
+    const filterNode = ctx.createBiquadFilter();
+    filterNode.type='lowpass'; filterNode.frequency.value=800; filterNode.Q.value=0.6;
+    const fLFO=ctx.createOscillator(), fLFOG=ctx.createGain();
+    fLFO.type='sine'; fLFO.frequency.value=0.025; fLFOG.gain.value=180;
+    fLFO.connect(fLFOG); fLFOG.connect(filterNode.frequency); fLFO.start(now);
+    filterNode.connect(masterGain);
+    const layers = [
+      [55.00,55.07,.048,0,.011,.6,0],[82.41,82.50,.036,-.2,.017,.6,.8],
+      [110.0,110.09,.030,.25,.013,.5,1.6],[130.8,130.88,.022,-.3,.019,.5,2.4],
+      [98.00,98.06,.020,.3,.015,.4,3.2],[220.0,220.11,.014,0,.022,.3,4.0]
+    ];
+    layers.forEach(([f1,f2,vol,pan,lfoF,lfoA,delay]) => {
+      [f1,f2].forEach((f,j) => {
+        const osc=ctx.createOscillator(), g=ctx.createGain(), p=ctx.createStereoPanner(), lp=ctx.createBiquadFilter();
+        osc.type = f<100?'triangle':'sine'; osc.frequency.value=f;
+        lp.type='lowpass'; lp.frequency.value=f*6; lp.Q.value=0.5;
+        p.pan.value=pan+(j===1?-pan*0.3:0);
+        const v=vol*(j===1?.65:1);
+        g.gain.setValueAtTime(0,now+delay); g.gain.setTargetAtTime(v,now+delay,4.5+j*.5);
+        const lfo=ctx.createOscillator(), lfoG=ctx.createGain();
+        lfo.type='sine'; lfo.frequency.value=lfoF+j*.003; lfoG.gain.value=v*lfoA*.18;
+        lfo.connect(lfoG); lfoG.connect(g.gain); lfo.start(now+delay);
+        osc.connect(lp); lp.connect(g); g.connect(p); p.connect(filterNode);
+        osc.start(now+delay);
+      });
+    });
+    masterGain.gain.setTargetAtTime(0.7, now, 2.5);
+    ctx.resume().catch(()=>{});
+  } catch(err) {}
+}
+
+// Auto-start if audio was active on previous page
+if (sessionStorage.getItem('audioOn')) {
+  sessionStorage.removeItem('audioOn');
+  // Try immediately (may work since page was reached via user gesture)
+  startPageAmbient();
+  // Fallback: resume on first interaction
+  const resume = () => { startPageAmbient(); document.removeEventListener('click', resume); document.removeEventListener('scroll', resume); };
+  document.addEventListener('click', resume, { once: true });
+  document.addEventListener('scroll', resume, { once: true });
 }
 </script>
 

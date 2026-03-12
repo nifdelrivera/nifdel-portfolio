@@ -54,7 +54,7 @@ Object.entries(NODES).forEach(([key, d]) => {
   const glowMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(r * 2.8, 1), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 }));
   glowMesh.position.set(wx, wy, -8); scene.add(glowMesh);
   const driftSeed = Math.random() * Math.PI * 2;
-  const driftRadius = 3 + Math.random() * 4;
+  const driftRadius = 1 + Math.random() * 2;
   const driftSpeed = 0.12 + Math.random() * 0.08;
   objects[key] = { ring, ring2, ring3, coreMesh, glowMesh, wx, wy, driftSeed, driftRadius, driftSpeed };
 });
@@ -64,32 +64,35 @@ const connectionMap = {};
 const crossConnections = [];
 
 function makeLine(x1, y1, z1, x2, y2, z2, opacity=0.15) {
-  const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x1,y1,z1), new THREE.Vector3(x2,y2,z2)]);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([x1,y1,z1, x2,y2,z2]), 3));
   const mat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity });
   const line = new THREE.Line(geo, mat);
   scene.add(line);
-
-  // Fade overlay on endpoints
-  const mx = (x1+x2)/2, my = (y1+y2)/2, mz = (z1+z2)/2;
-  const q1x=(x1+mx)/2, q1y=(y1+my)/2;
-  const q3x=(mx+x2)/2, q3y=(my+y2)/2;
-  const fadeS = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x1,y1,z1), new THREE.Vector3(q1x,q1y,mz)]),
-    new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.82 })
-  );
-  const fadeE = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(q3x,q3y,mz), new THREE.Vector3(x2,y2,z2)]),
-    new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.82 })
-  );
-  scene.add(fadeS); scene.add(fadeE);
-  line._fadeStart = fadeS; line._fadeEnd = fadeE;
   return line;
+}
+
+// N solid-color segments per center→node line, interpolating white→nodeColor
+const GRADIENT_SEGS = 5;
+function makeGradientLine(x1, y1, z1, x2, y2, z2, opacity=0.1) {
+  const segs = [];
+  for (let i = 0; i < GRADIENT_SEGS; i++) {
+    const t0 = i / GRADIENT_SEGS, t1 = (i + 1) / GRADIENT_SEGS;
+    const tmid = (i + 0.5) / GRADIENT_SEGS;
+    segs.push({
+      line: makeLine(x1+(x2-x1)*t0, y1+(y2-y1)*t0, z1, x1+(x2-x1)*t1, y1+(y2-y1)*t1, z2, opacity),
+      tmid
+    });
+  }
+  return segs;
 }
 
 const keys = Object.keys(NODES);
 Object.entries(NODES).forEach(([key, d]) => {
   const [wx, wy] = angleToXY(d.angle, d.dist);
-  connectionMap[key] = makeLine(0, 0, 0, wx, wy, 0, 0.1);
+  const lineEnd = (d.lineDist ?? d.dist) - d.size;
+  const [lx, ly] = angleToXY(d.angle, lineEnd);
+  connectionMap[key] = makeGradientLine(0, 0, 0, lx, ly, 0, 0.1);
 });
 for (let i = 0; i < keys.length; i++) {
   for (let j = i + 1; j < keys.length; j++) {
@@ -136,7 +139,7 @@ for (let i = 0; i < 120; i++) {
 
 // ── PULSE PARTICLES ──
 function makePulse(fromKey, toKey) {
-  const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 }));
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(1.4, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 }));
   scene.add(mesh);
   const fromPos = fromKey === 'CENTER' ? {wx:0,wy:0} : objects[fromKey];
   const toPos   = toKey   === 'CENTER' ? {wx:0,wy:0} : objects[toKey];
@@ -190,6 +193,8 @@ let entered = false;
 let hoveredKey = null;
 let activeKey = null;
 let t = 0;
+const _nodeAura  = document.getElementById('node-aura');
+const _depthBlur = document.getElementById('depth-blur');
 
 function getNodeColor(key, isHover, isActive) {
   if (isActive || isHover) return NODES[key].col;
@@ -250,11 +255,11 @@ function loop() {
     if (key==='THOUGHTS')    obj.ring.rotation.x=Math.sin(t*.15)*.25;
     const col=getNodeColor(key,isHover,isActive);
     const colHex=(col[0]<<16)|(col[1]<<8)|col[2];
-    const basePres={WORK:.15,THOUGHTS:.10,EXPERIMENTS:.08,SYSTEMS:.09};
+    const basePres={WORK:.25,THOUGHTS:.10,EXPERIMENTS:.08,SYSTEMS:.09};
     const base=basePres[key];
     let tOpacity,tCore,tGlow;
-    if (isHover) { tOpacity=.7+b*.25; tCore=1.0; tGlow=.09+b*.06; }
-    else if (isActive) { tOpacity=.5+b*.2; tCore=.9; tGlow=.06+b*.04; }
+    if (isHover) { tOpacity=.7+b*.25; tCore=1.0; tGlow=.03+b*.02; }
+    else if (isActive) { tOpacity=.5+b*.2; tCore=.9; tGlow=0; }
     else if (isOther) { tOpacity=base*.25; tCore=.1; tGlow=0; }
     else { tOpacity=base+b*.04; tCore=.25+b*.15; tGlow=0; }
     obj.ring.material.opacity=lerp(obj.ring.material.opacity,tOpacity,.08);
@@ -264,27 +269,47 @@ function loop() {
     obj.glowMesh.material.opacity=lerp(obj.glowMesh.material.opacity,tGlow,.05);
     obj.ring.material.color.setHex(colHex); obj.ring2.material.color.setHex(colHex);
     obj.ring3.material.color.setHex(colHex); obj.coreMesh.material.color.setHex(colHex); obj.glowMesh.material.color.setHex(colHex);
-    const hoverScale=key==='WORK'?1.2:1.14;
-    const tScale=isHover?hoverScale:isActive?1.08:isOther?.92:1.0;
-    obj.ring.scale.setScalar(lerp(obj.ring.scale.x,tScale,.07));
+    const hoverScale=key==='WORK'?1.22:1.16;
+    const tScale=isHover?hoverScale:isActive?1.30:isOther?.85:1.0;
+    const sc=lerp(obj.ring.scale.x,tScale,.07);
+    obj.ring.scale.setScalar(sc); obj.ring2.scale.setScalar(sc);
+    obj.ring3.scale.setScalar(sc); obj.coreMesh.scale.setScalar(sc);
     if (isHover) playHoverTone(key);
   });
   if (!hoveredKey) lastHoveredForTone=null;
 
-  // CONNECTIONS
-  // FIX: use nodeIndices[key] instead of Object.keys(NODES).indexOf(key)
-  Object.entries(connectionMap).forEach(([key, line]) => {
+  // CONNECTIONS — multi-segment gradient: white at center → node color at node end
+  Object.entries(connectionMap).forEach(([key, segs]) => {
     const isHover=hoveredKey===key, isActive=activeKey===key;
     const isOther=(hoveredKey||activeKey)&&!isHover&&!isActive;
     const pulse=Math.sin(t*1.5+nodeIndices[key])*.5+.5;
     let tOp;
-    if (isHover) tOp=.55+pulse*.25;
-    else if (isActive) tOp=.35+pulse*.15;
+    if (isHover) tOp=.60+pulse*.25;
+    else if (isActive) tOp=.42+pulse*.18;
     else if (isOther) tOp=.02;
     else tOp=.08+pulse*.04;
-    const col=(isHover||isActive)?NODES[key].col:[255,255,255];
-    line.material.opacity=lerp(line.material.opacity,tOp,.08);
-    line.material.color.setHex((col[0]<<16)|(col[1]<<8)|col[2]);
+    const col = (isHover||isActive) ? NODES[key].col : null;
+    segs.forEach(({ line, tmid }) => {
+      line.material.opacity = lerp(line.material.opacity, tOp, .08);
+      if (col && Array.isArray(col)) {
+        let r, g, b;
+        if (key === 'EXPERIMENTS') {
+          // Inverted: desaturated dim gray at origin → pure intense white at node end
+          r = 0.28 + 0.72 * tmid;
+          g = 0.28 + 0.72 * tmid;
+          b = 0.26 + 0.74 * tmid;
+        } else {
+          // Boost saturation at node end — push color further from white
+          const sat = key === 'WORK' ? 0.60 : 1.0;
+          r = 1 + (col[0]/255*sat - 1) * tmid;
+          g = 1 + (col[1]/255*sat - 1) * tmid;
+          b = 1 + (col[2]/255*sat - 1) * tmid;
+        }
+        line.material.color.setRGB(r, g, b);
+      } else {
+        line.material.color.setRGB(1, 1, 1);
+      }
+    });
   });
   crossConnections.forEach(line => {
     const tOp=(hoveredKey||activeKey)?.008:.022;
@@ -323,6 +348,43 @@ function loop() {
     }
     starsRef.geometry.attributes.position.needsUpdate=true;
     starsRef.material.opacity=.10+Math.sin(t*.18)*.04;
+  }
+
+  // ATMOSPHERIC AURA — project active node to screen, drive CSS radial gradient
+  if (_nodeAura && activeKey && objects[activeKey]) {
+    const obj = objects[activeKey];
+    // Include drift so aura tracks the visual node position exactly
+    const driftX = Math.sin(t*obj.driftSpeed+obj.driftSeed)*obj.driftRadius;
+    const driftY = Math.cos(t*obj.driftSpeed*.7+obj.driftSeed)*obj.driftRadius*.6;
+    const v = new THREE.Vector3(obj.wx+driftX, obj.wy+driftY, 0);
+    v.project(camera);
+    const rawX = (v.x + 1) / 2 * innerWidth;
+    const rawY = (-v.y + 1) / 2 * innerHeight;
+    // Clamp gradient center to viewport — keeps aura visible even when node is off-screen on zoom
+    const sx = Math.max(0, Math.min(innerWidth,  rawX));
+    const sy = Math.max(0, Math.min(innerHeight, rawY));
+    // Scale aura size with zoom: closer camera → larger gradient so it fills the screen
+    const zoomScale = 460 / Math.max(camCur.z, 160);
+    const aw = Math.min(160, Math.round(90  * zoomScale));
+    const ah = Math.min(150, Math.round(88  * zoomScale));
+    const col = NODES[activeKey].col;
+    const [r,g,b] = Array.isArray(col) ? col : [200,200,208];
+    const AURA_I = {
+      WORK:        [0.15, 0.07, 0.022],
+      THOUGHTS:    [0.18, 0.09, 0.030],
+      EXPERIMENTS: [0.22, 0.11, 0.040],
+      SYSTEMS:     [0.12, 0.06, 0.018],
+      INFO:        [0.10, 0.05, 0.015],
+    };
+    const [i0,i1,i2] = AURA_I[activeKey] || [0.12, 0.06, 0.018];
+    _nodeAura.style.background = `radial-gradient(ellipse ${aw}vw ${ah}vh at ${sx}px ${sy}px, rgba(${r},${g},${b},${i0}) 0%, rgba(${r},${g},${b},${i1}) 28%, rgba(${r},${g},${b},${i2}) 50%, transparent 68%)`;
+
+    // Depth blur mask — clear lens around selected node, blurred everywhere else
+    if (_depthBlur) {
+      const mask = `radial-gradient(circle at ${rawX}px ${rawY}px, transparent 0%, transparent 160px, black 320px)`;
+      _depthBlur.style.webkitMaskImage = mask;
+      _depthBlur.style.maskImage = mask;
+    }
   }
 
   updateCursor();
