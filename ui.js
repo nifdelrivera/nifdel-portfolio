@@ -108,25 +108,6 @@ function toggleAudio() {
 }
 
 let audioPreEnabled = false;
-function preEnableAudio() {
-  const btn=document.getElementById('i-audio-pre'), lbl=document.getElementById('i-audio-label');
-  if (!audioPreEnabled) {
-    if (!audioCtx) initAudio();
-    gainNode.gain.setTargetAtTime(.55, audioCtx.currentTime, 3.0);
-    audioPlaying=true; audioPreEnabled=true;
-    btn.classList.add('on'); lbl.textContent='Audio ready ✓';
-    [110,164.8,220].forEach((f,i) => {
-      const o=audioCtx.createOscillator(), g=audioCtx.createGain(), lp=audioCtx.createBiquadFilter();
-      o.type='sine'; o.frequency.value=f; lp.type='lowpass'; lp.frequency.value=f*5; lp.Q.value=.4;
-      const d=i*.4;
-      g.gain.setValueAtTime(0,audioCtx.currentTime+d); g.gain.linearRampToValueAtTime(.026,audioCtx.currentTime+d+.6); g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+d+6);
-      o.connect(lp); lp.connect(g); g.connect(masterGain); o.start(audioCtx.currentTime+d); o.stop(audioCtx.currentTime+d+6);
-    });
-  } else {
-    gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 2.5);
-    audioPlaying=false; audioPreEnabled=false; btn.classList.remove('on'); lbl.textContent='Enable audio';
-  }
-}
 
 // FIX: single source-of-truth for audio filter cutoffs; was duplicated in setAudioMood and mousemove handler
 const AUDIO_CUTOFFS = { WORK: 1100, THOUGHTS: 480, EXPERIMENTS: 1400, SYSTEMS: 620, INFO: 800 };
