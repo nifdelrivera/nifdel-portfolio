@@ -42,6 +42,8 @@ centerGroup.add(centerGlow);
 // ── DOMAIN NODES ──
 Object.entries(NODES).forEach(([key, d]) => {
   const [wx, wy] = angleToXY(d.angle, d.dist);
+  const lineEnd = (d.lineDist ?? d.dist) - d.size;
+  const [lx, ly] = angleToXY(d.angle, lineEnd);
   const r = d.size;
   const ring  = new THREE.Mesh(new THREE.TorusGeometry(r, 0.8, 8, 64), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.12 }));
   ring.position.set(wx, wy, 0); scene.add(ring);
@@ -56,7 +58,7 @@ Object.entries(NODES).forEach(([key, d]) => {
   const driftSeed = Math.random() * Math.PI * 2;
   const driftRadius = 1 + Math.random() * 2;
   const driftSpeed = 0.12 + Math.random() * 0.08;
-  objects[key] = { ring, ring2, ring3, coreMesh, glowMesh, wx, wy, driftSeed, driftRadius, driftSpeed };
+  objects[key] = { ring, ring2, ring3, coreMesh, glowMesh, wx, wy, lx, ly, px: wx, py: wy, driftSeed, driftRadius, driftSpeed };
 });
 
 // ── CONNECTIONS with fade effect ──
@@ -88,11 +90,8 @@ function makeGradientLine(x1, y1, z1, x2, y2, z2, opacity=0.1) {
 }
 
 const keys = Object.keys(NODES);
-Object.entries(NODES).forEach(([key, d]) => {
-  const [wx, wy] = angleToXY(d.angle, d.dist);
-  const lineEnd = (d.lineDist ?? d.dist) - d.size;
-  const [lx, ly] = angleToXY(d.angle, lineEnd);
-  connectionMap[key] = makeGradientLine(0, 0, 0, lx, ly, 0, 0.1);
+Object.entries(objects).forEach(([key, obj]) => {
+  connectionMap[key] = makeGradientLine(0, 0, 0, obj.lx, obj.ly, 0, 0.1);
 });
 for (let i = 0; i < keys.length; i++) {
   for (let j = i + 1; j < keys.length; j++) {
@@ -244,6 +243,15 @@ function loop() {
     const driftX=Math.sin(t*obj.driftSpeed+obj.driftSeed)*obj.driftRadius;
     const driftY=Math.cos(t*obj.driftSpeed*.7+obj.driftSeed)*obj.driftRadius*.6;
     const px=obj.wx+driftX, py=obj.wy+driftY;
+    obj.px=px; obj.py=py;
+    const lex=obj.lx+driftX, ley=obj.ly+driftY;
+    if (connectionMap[key]) connectionMap[key].forEach(({line,tmid})=>{
+      const t0=tmid-0.5/GRADIENT_SEGS, t1=tmid+0.5/GRADIENT_SEGS;
+      const pos=line.geometry.attributes.position;
+      pos.array[0]=lex*t0; pos.array[1]=ley*t0; pos.array[2]=0;
+      pos.array[3]=lex*t1; pos.array[4]=ley*t1; pos.array[5]=0;
+      pos.needsUpdate=true;
+    });
     obj.ring.position.set(px,py,0); obj.ring2.position.set(px,py,0);
     obj.ring3.position.set(px,py,0); obj.coreMesh.position.set(px,py,0); obj.glowMesh.position.set(px,py,-8);
     const rotSpeeds={WORK:.05,THOUGHTS:.018,EXPERIMENTS:.09,SYSTEMS:.055,INFO:.008};
@@ -319,8 +327,8 @@ function loop() {
   // PULSE PARTICLES
   pulseParticles.forEach(p => {
     p.t+=p.speed; if (p.t>1) { p.t=0; p.speed=.003+Math.random()*.006; }
-    const fromX=p.fromPos.wx||0, fromY=p.fromPos.wy||0;
-    const toX=p.toPos.wx||0, toY=p.toPos.wy||0;
+    const fromX=p.fromPos.px??p.fromPos.wx??0, fromY=p.fromPos.py??p.fromPos.wy??0;
+    const toX=p.toPos.px??p.toPos.wx??0, toY=p.toPos.py??p.toPos.wy??0;
     p.mesh.position.set(lerp(fromX,toX,p.t),lerp(fromY,toY,p.t),3);
     p.mesh.material.opacity=Math.sin(p.t*Math.PI)*.45;
   });

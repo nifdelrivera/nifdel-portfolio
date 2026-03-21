@@ -250,7 +250,7 @@ const panelContent = {
     </div>`,
 
   systems: `<div class="sys-block"><span class="s-cmd">$ ls ./frameworks</span>
-<span class="s-out">→ bullseye_synapse.md</span>
+<span class="s-out">→ project_synapse.md</span>
 <span class="s-out">→ ai_prompt_architecture/</span>
 <span class="s-out">→ regreso_al_rigor/</span>
 <span class="s-out">→ ue5_game_design/</span>
@@ -258,25 +258,25 @@ const panelContent = {
     <div class="p-nodes" style="margin-top:20px">
       <div class="p-node">
         <div class="pn-n">001</div>
-        <div class="pn-name">Bullseye Synapse</div>
+        <div class="pn-name">Project 1</div>
         <div class="pn-sub">Creative analysis framework. A system for dissecting what makes work land.</div>
         <a class="p-item-cta green" href="#" onclick="return false" onmouseenter="uiSound('hover:panel-cta-systems')">Ver framework</a>
       </div>
       <div class="p-node">
         <div class="pn-n">002</div>
-        <div class="pn-name">AI Prompt Architecture</div>
+        <div class="pn-name">Project 2</div>
         <div class="pn-sub">Structured prompt engineering for cinematic AI video. Labeled sections, constraints, negative prompts.</div>
         <a class="p-item-cta green" href="#" onclick="return false" onmouseenter="uiSound('hover:panel-cta-systems')">Ver sistema</a>
       </div>
       <div class="p-node">
         <div class="pn-n">003</div>
-        <div class="pn-name">Regreso al Rigor</div>
+        <div class="pn-name">Project 3</div>
         <div class="pn-sub">16-week interactive algebra course. Duolingo structure. Feynman-for-teenagers voice. UE5 soul.</div>
         <a class="p-item-cta green" href="#" onclick="return false" onmouseenter="uiSound('hover:panel-cta-systems')">Ver curso</a>
       </div>
       <div class="p-node">
         <div class="pn-n">004</div>
-        <div class="pn-name">Game Design — UE5</div>
+        <div class="pn-name">Project 4</div>
         <div class="pn-sub">Spanish Inquisition / early colonial Latin America. Souls × God of War. La Llorona. El Cadejo.</div>
         <a class="p-item-cta green" href="#" onclick="return false" onmouseenter="uiSound('hover:panel-cta-systems')">En desarrollo</a>
       </div>
