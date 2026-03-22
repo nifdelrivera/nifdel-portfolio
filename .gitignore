@@ -1,0 +1,13 @@
+# Internal docs — never push
+ARCHITECTURE.md
+implementation_plan_v2.md
+quality_tiers_plan.md
+*.bak
+*.bak2
+
+# Dependencies
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

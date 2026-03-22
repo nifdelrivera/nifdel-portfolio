@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nifdel Rivera — Map of Thought</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@300;400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <!-- Import Map: Three.js r160 (módulos) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three":          "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/":  "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══ CUSTOM CURSOR ══ -->
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ══ THREE.JS CANVAS ══ -->
+<canvas id="webgl-canvas"></canvas>
+<div id="css-grain"></div>
+
+<!-- ══ OVERLAYS (detrás del HUD) ══ -->
+<div id="focus-overlay"></div>
+<div id="origin-aura"></div>
+<div id="node-aura"></div>
+<div id="depth-blur"></div>
+
+<!-- ══ NODE LABEL PILLS (3D → 2D overlay) ══ -->
+<div id="ui-layer">
+  <div id="labels-container"></div>
+</div>
+
+<!-- ══ HUD ══ -->
+<div id="hud">
+  <div class="h-tl">
+    <strong>Nifdel Rivera</strong>
+    Creative Technologist
+  </div>
+  <div class="h-tr">
+    <div class="h-tr-dot"></div>
+    <span id="h-state">Exploring</span>
+  </div>
+  <button id="audio-btn" onclick="toggleAudio()" onmouseenter="uiSound('hover:audio-btn')">
+    <div class="ab-icon">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span id="ab-label">Enable Audio</span>
+  </button>
+  <div class="h-br" id="h-br">
+    Hover a node to explore<br>
+    Scroll to orbit · Click to enter
+  </div>
+</div>
+
+<!-- ══ SIDE NAV ══ -->
+<div id="side-nav" class="state-map">
+  <button class="sn-clickable" onclick="sideNavAction()" id="sn-clickable">
+    <div class="sn-state-dot"></div>
+    <span class="sn-label" id="sn-label">Explorar</span>
+    <div class="sn-arrow" id="sn-arrow">←</div>
+    <span class="sn-sub" id="sn-sub">volver</span>
+  </button>
+</div>
+
+<!-- ══ TOOLTIP ══ -->
+<div id="tip">
+  <div class="tip-i">
+    <div class="tip-label" id="tl">—</div>
+    <div class="tip-name"  id="tn">—</div>
+    <div class="tip-sub"   id="ts">—</div>
+  </div>
+</div>
+
+<!-- ══ PANEL ══ -->
+<div id="panel">
+  <button class="p-close" onclick="closePanel()" onmouseenter="uiSound('hover:close-btn')">✕ Close</button>
+  <div class="p-inner" id="p-inner">
+    <div class="p-eye"  id="p-eye">Domain</div>
+    <h2 class="p-title" id="p-title">—</h2>
+    <p  class="p-desc"  id="p-desc">—</p>
+    <div id="p-body"></div>
+  </div>
+</div>
+
+<!-- ══ PORTFOLIO MODE — QUADRANTS ══ -->
+<div id="portfolio-mode">
+  <div id="pm-center-void" onclick="closePortfolioMode()">
+    <div id="pm-center-void-label">← volver<br>al mapa</div>
+  </div>
+
+  <div class="pm-quad" data-domain="WORK" onclick="openPanel('WORK')">
+    <div class="pm-quad-inner">
+      <div>
+        <div class="pm-quad-tag">Portfolio · Work</div>
+        <div class="pm-quad-title">Work</div>
+      </div>
+      <div class="pm-quad-bottom">
+        <div class="pm-quad-desc">Campaigns, branding, motion graphics, 3D, and AI-assisted production that shipped into the world.</div>
+        <button class="pm-quad-enter">Explorar trabajo</button>
+      </div>
+    </div>
+    <div class="pm-quad-count">16 proyectos</div>
+  </div>
+
+  <div class="pm-quad" data-domain="THOUGHTS" onclick="openPanel('THOUGHTS')">
+    <div class="pm-quad-inner">
+      <div>
+        <div class="pm-quad-tag">Escritos · Thoughts</div>
+        <div class="pm-quad-title">Thoughts</div>
+      </div>
+      <div class="pm-quad-bottom">
+        <div class="pm-quad-desc">Essays on ego, consciousness, and paradox. The cognitive substrate everything else emerges from.</div>
+        <button class="pm-quad-enter">Leer ensayos</button>
+      </div>
+    </div>
+    <div class="pm-quad-count">4 ensayos</div>
+  </div>
+
+  <div class="pm-quad" data-domain="EXPERIMENTS" onclick="openPanel('EXPERIMENTS')">
+    <div class="pm-quad-inner">
+      <div>
+        <div class="pm-quad-tag">Lab · Experiments</div>
+        <div class="pm-quad-title">Experiments</div>
+      </div>
+      <div class="pm-quad-bottom">
+        <div class="pm-quad-desc">Visual explorations outside commercial constraints. AI video, 3D, motion, point cloud. Anything.</div>
+        <button class="pm-quad-enter">Ver laboratorio</button>
+      </div>
+    </div>
+    <div class="pm-quad-count">open lab</div>
+  </div>
+
+  <div class="pm-quad" data-domain="SYSTEMS" onclick="openPanel('SYSTEMS')">
+    <div class="pm-quad-inner">
+      <div>
+        <div class="pm-quad-tag">&gt; systems.exe</div>
+        <div class="pm-quad-title">Systems</div>
+      </div>
+      <div class="pm-quad-bottom">
+        <div class="pm-quad-desc">Frameworks, pipelines, and analytical models. The invisible architecture behind everything visible.</div>
+        <button class="pm-quad-enter">Ver sistemas</button>
+      </div>
+    </div>
+    <div class="pm-quad-count">4 frameworks</div>
+  </div>
+</div>
+
+<!-- ══ ENTER TRANSITION ══ -->
+<div id="enter-transition">
+  <span class="et-coord tl">14°37'N · 90°33'W</span>
+  <span class="et-coord tr">Neural Map · v2.0</span>
+  <span class="et-coord bl">© Nifdel Rivera</span>
+  <span class="et-coord br">2025</span>
+  <div class="et-inner">
+    <h2 class="et-title">Nifdel Rivera.<br><em>El punto de origen.</em></h2>
+    <div class="et-rule"></div>
+    <span class="et-sub">Entering the map</span>
+  </div>
+</div>
+
+<!-- ══ INTRO ══ -->
+<div id="intro">
+  <svg id="intro-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <path d="
+      M 720,450
+      C 680,400 580,340 440,290 C 320,248 180,240 60,260
+      M 720,450
+      C 760,400 860,340 1000,290 C 1120,248 1280,238 1400,255
+      M 720,450
+      C 700,520 640,600 560,660 C 480,718 360,750 220,760 C 120,766 40,750 10,730
+      M 720,450
+      C 740,520 800,600 880,660 C 960,718 1080,748 1220,756 C 1340,762 1420,745 1440,728
+      M 720,450
+      C 720,380 720,300 720,210 C 720,140 730,80 740,20
+      M 720,450
+      C 660,430 580,420 480,430 C 380,440 290,460 200,480
+      M 720,450
+      C 780,430 860,418 960,428 C 1060,438 1150,458 1250,474
+    "/>
+    <circle class="d1" cx="440" cy="290" r="3.5"/>
+    <circle class="d2" cx="1000" cy="290" r="3.5"/>
+    <circle class="d3" cx="560" cy="660" r="3.5"/>
+    <circle class="d4" cx="880" cy="660" r="3.5"/>
+    <circle class="d5" cx="720" cy="210" r="3"/>
+    <circle class="d6" cx="720" cy="450" r="6"/>
+  </svg>
+  <div class="i-content" id="i-content">
+    <p class="i-line1">some people build portfolios.</p>
+    <h1 class="i-phrase">this is a<br><em>map of thought.</em></h1>
+    <div class="i-dash"></div>
+    <p class="i-sub">Nifdel Rivera — Creative Technologist</p>
+    <p class="i-disclaimer">⌂ best experienced with headphones</p>
+    <button class="i-enter" onclick="enter()" onmouseenter="uiSound('hover:enter-btn')">Enter</button>
+  </div>
+</div>
+
+<!-- ══ SPLASH ══ -->
+<div id="splash" onclick="activateSplash()">
+  <svg id="splash-bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
+       style="position:absolute;inset:0;width:100%;height:100%;">
+    <path d="
+      M 720,450
+      C 680,400 580,340 440,290 C 320,248 180,240 60,260
+      M 720,450
+      C 760,400 860,340 1000,290 C 1120,248 1280,238 1400,255
+      M 720,450
+      C 700,520 640,600 560,660 C 480,718 360,750 220,760 C 120,766 40,750 10,730
+      M 720,450
+      C 740,520 800,600 880,660 C 960,718 1080,748 1220,756 C 1340,762 1420,745 1440,728
+      M 720,450
+      C 720,380 720,300 720,210 C 720,140 730,80 740,20
+      M 720,450
+      C 660,430 580,420 480,430 C 380,440 290,460 200,480
+      M 720,450
+      C 780,430 860,418 960,428 C 1060,438 1150,458 1250,474
+    "/>
+    <circle class="d1" cx="440" cy="290" r="3.5"/>
+    <circle class="d2" cx="1000" cy="290" r="3.5"/>
+    <circle class="d3" cx="560" cy="660" r="3.5"/>
+    <circle class="d4" cx="880" cy="660" r="3.5"/>
+    <circle class="d5" cx="720" cy="210" r="3"/>
+    <circle class="d6" cx="720" cy="450" r="6"/>
+  </svg>
+  <div id="splash-fade-l"></div>
+  <div id="splash-fade-r"></div>
+  <div id="splash-fade-t"></div>
+  <div id="splash-fade-b"></div>
+  <div class="splash-content">
+    <p class="splash-pre">Nifdel Rivera — Creative Technologist</p>
+    <h1 class="splash-phrase">El pensamiento<br>emite una frecuencia</h1>
+    <div class="splash-dash"></div>
+    <p class="splash-hint">[ toca para sintonizar ]</p>
+  </div>
+</div>
+
+<!-- ══ PAGE FADE ══ -->
+<div id="page-fade" style="
+  position:fixed; inset:0; z-index:2000;
+  background:#000; opacity:0; pointer-events:none;
+  transition:opacity .45s ease;
+"></div>
+<script>
+if (new URLSearchParams(location.search).get('back')) {
+  const pf = document.getElementById('page-fade');
+  pf.style.opacity = '1'; pf.style.pointerEvents = 'auto';
+}
+</script>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS — orden importa:
+     1. ui.js         (splash + enter flow)          [módulo → importa audio.js]
+     2. navigation.js (panels + side nav + tooltip)  [módulo → importa data/nodes + data/content]
+     3. main.js       (Three.js scene + animate loop)[módulo]
+══════════════════════════════════════════ -->
+<script type="module" src="ui.js"></script>
+<script type="module" src="navigation.js"></script>
+<script type="module" src="main.js"></script>
+
+<!-- Retorno desde subpágina con ?back=1 -->
+<script>
+if (new URLSearchParams(location.search).get('back')) {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('intro').style.display  = 'none';
+}
+</script>
+
+<!-- ══ CURSOR TRACKING ══ -->
+<script>
+(function() {
+  const dot  = document.getElementById('cur');
+  const ring = document.getElementById('cur-r');
+  if (!dot || !ring) return;
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx) * 0.18;
+    ry += (my - ry) * 0.18;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+})();
+</script>
+
+</body>
+</html>
