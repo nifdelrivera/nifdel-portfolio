@@ -474,6 +474,11 @@ body.on-node #cur-r { width:44px; height:44px; border-color:rgba(255,255,255,.5)
   transition:color .2s;
 }
 .pli-link:hover { color:#fff; }
+a.p-list-item.pli-link {
+  display:flex; cursor:pointer;
+  transition:background .2s;
+}
+a.p-list-item.pli-link:hover { background:rgba(255,255,255,.04); }
 .p-info-bio {
   font-family:'Space Mono',monospace; font-size:11px;
   line-height:1.9; color:rgba(255,255,255,.38);

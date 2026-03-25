@@ -16,13 +16,13 @@ export const panelContent = {
     <div class="p-section-label">Proyectos destacados</div>
 
     <div class="p-list">
-      <div class="p-list-item" onmouseenter="uiSound('hover:pm-card')">
+      <a class="p-list-item pli-link" href="work/rachin/" onclick="navigateOut(event,'work/rachin/')" onmouseenter="uiSound('hover:pm-card')">
         <span class="pli-num">01</span>
         <div class="pli-body">
           <div class="pli-name">Rachin</div>
           <div class="pli-meta">Personal · 2024 · 3D · Motion</div>
         </div>
-      </div>
+      </a>
       <div class="p-list-item" onmouseenter="uiSound('hover:pm-card')">
         <span class="pli-num">02</span>
         <div class="pli-body">
@@ -63,13 +63,13 @@ export const panelContent = {
     <div class="p-section-label">Escritos</div>
 
     <div class="p-list">
-      <div class="p-list-item" onmouseenter="uiSound('hover:pm-card')">
+      <a class="p-list-item pli-link" href="thoughts/jaula-transparente/" onclick="navigateOut(event,'thoughts/jaula-transparente/')" onmouseenter="uiSound('hover:pm-card')">
         <span class="pli-num">I</span>
         <div class="pli-body">
           <div class="pli-name">La Jaula Transparente</div>
           <div class="pli-meta">Ensayo · Ego · Conciencia</div>
         </div>
-      </div>
+      </a>
       <div class="p-list-item" onmouseenter="uiSound('hover:pm-card')">
         <span class="pli-num">II</span>
         <div class="pli-body">
@@ -166,7 +166,7 @@ export const panelContent = {
       <div class="p-list-item" onmouseenter="uiSound('hover:pm-card')">
         <span class="pli-num">Be</span>
         <div class="pli-body">
-          <a class="pli-name pli-link" href="https://www.behance.net/nifdelrivera" target="_blank">behance.net/nifdelrivera</a>
+          <a class="pli-name pli-link" href="https://www.behance.net/nifdelrive2931" target="_blank">behance.net/nifdelrive2931</a>
         </div>
       </div>
     </div>`,

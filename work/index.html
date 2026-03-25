@@ -33,7 +33,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 
 /* ── CURSOR ──────────────────────────────────────────────────────────── */
 #cur   { position: fixed; width: 6px; height: 6px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
-#cur-r { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .35s cubic-bezier(.25,.46,.45,.94), height .35s, border-color .35s; }
+#cur-r { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(58,102,204,.35); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .35s cubic-bezier(.25,.46,.45,.94), height .35s, border-color .35s; }
 #cur-r.on { width: 50px; height: 50px; border-color: rgba(107,159,255,.65); }
 
 /* ── PAGE FADE ───────────────────────────────────────────────────────── */
@@ -59,7 +59,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 
 /* ── Glass card ── */
 .cnav-card {
-  background: rgba(6,10,22,.52);
+  background: rgba(10,16,34,.60);
   backdrop-filter: blur(48px) saturate(1.6); -webkit-backdrop-filter: blur(48px) saturate(1.6);
   border: none;
   border-radius: 18px;
@@ -72,7 +72,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 .cnav-strip {
   display: flex; align-items: center; gap: 14px;
   padding-bottom: 13px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(58,102,204,.18);
   margin-bottom: 15px;
 }
 .cnav-strip-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -92,7 +92,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 /* Separador vertical en la strip */
 .cnav-strip-sep {
   width: 1px; height: 12px; flex-shrink: 0;
-  background: rgba(255,255,255,.10);
+  background: rgba(58,102,204,.28);
 }
 .cnav-strip-num {
   font-family: 'Space Mono', monospace;
@@ -166,7 +166,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 .cn-btn {
   position: relative;
   width: 72px; height: 72px;
-  border: 1px solid rgba(255,255,255,.18);
+  border: 1px solid rgba(58,102,204,.32);
   background: transparent;
   backdrop-filter: none;
   box-shadow: none;
@@ -220,7 +220,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   transition: transform .38s cubic-bezier(.34,1.56,.64,1);
 }
 .cn-btn:hover {
-  border-color: rgba(255,255,255,.55);
+  border-color: rgba(58,102,204,.65);
   color: rgba(255,255,255,.95);
 }
 #cn-prev:hover .cn-arr { transform: translateX(-5px); }
@@ -241,7 +241,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   padding: 22px 26px 26px;
   background: rgba(6,10,22,.38);
   backdrop-filter: blur(30px) saturate(1.2); -webkit-backdrop-filter: blur(30px) saturate(1.2);
-  border: 1px solid rgba(255,255,255,.11);
+  border: 1px solid rgba(58,102,204,.22);
   border-radius: 16px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 32px rgba(0,0,0,.32);
   /* Grid sutil — textura de nave */
@@ -263,7 +263,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   font-family: 'Space Mono', monospace;
   font-size: 14px; letter-spacing: .28em; text-transform: uppercase;
   color: rgba(255,255,255,.35);
-  border: 1px solid rgba(255,255,255,.10);
+  border: 1px solid rgba(58,102,204,.22);
   padding: 16px 32px;
   background: rgba(2,4,8,.65);
   text-decoration: none;
@@ -275,7 +275,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 .nh-back::before { content: '←'; transition: transform .3s; }
 .nh-back:hover {
   color: rgba(255,255,255,.85);
-  border-color: rgba(255,255,255,.28);
+  border-color: rgba(58,102,204,.45);
   gap: 26px; letter-spacing: .34em;
 }
 .nh-back:hover::before { transform: translateX(-4px); }
@@ -307,7 +307,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 .nh-key {
   font-size: 14px; letter-spacing: .06em;
   color: rgba(255,255,255,.38);
-  border: 1px solid rgba(255,255,255,.12);
+  border: 1px solid rgba(58,102,204,.25);
   padding: 5px 13px;
   background: rgba(255,255,255,.03);
   line-height: 1.4; white-space: nowrap;
@@ -334,7 +334,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   z-index: 100;
   background: rgba(6,10,22,.72);
   backdrop-filter: blur(52px) saturate(1.45); -webkit-backdrop-filter: blur(52px) saturate(1.45);
-  border: none;
+  border: 1px solid rgba(58,102,204,.20);
   border-radius: 20px;
   box-shadow: 0 8px 48px rgba(0,0,0,.55);
   transform: translateX(calc(100% + 16px));
@@ -425,7 +425,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 .pd-stats { display: flex; flex-direction: column; margin-top: 14px; }
 .pd-stat-row {
   display: flex; align-items: baseline; justify-content: space-between;
-  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+  padding: 7px 0; border-bottom: 1px solid rgba(58,102,204,.10);
 }
 .pd-stat-row:last-child { border-bottom: none; }
 .pd-stat-lbl {
@@ -454,7 +454,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 }
 .pd-ctrl-btn {
   width: 34px; height: 34px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.10);
+  border: 1px solid rgba(58,102,204,.22);
   background: rgba(8,12,26,.35);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   color: rgba(255,255,255,.38); font-size: 13px;
@@ -465,7 +465,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   cursor: none;
 }
 .pd-ctrl-btn:hover {
-  border-color: rgba(255,255,255,.28); color: rgba(255,255,255,.85);
+  border-color: rgba(58,102,204,.45); color: rgba(255,255,255,.85);
   background: rgba(107,159,255,.08);
 }
 .pd-ctrl-btn:active { transform: scale(0.93); }
@@ -501,7 +501,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   display: flex; align-items: center; justify-content: space-between;
   text-decoration: none; padding: 11px 16px;
   background: rgba(255,255,255,.02);
-  border: 1px solid rgba(255,255,255,.07);
+  border: 1px solid rgba(58,102,204,.15);
   border-radius: 10px;
   transition: background .25s, border-color .25s;
   cursor: none;
@@ -511,7 +511,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
   font-size: 10px; letter-spacing: .30em; color: rgba(255,255,255,.30);
 }
 .pd-cta-ext .pd-ext-icon { color: rgba(255,255,255,.18); font-size: 13px; transition: transform .25s; }
-.pd-cta-ext:hover { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.16); }
+.pd-cta-ext:hover { background: rgba(58,102,204,.05); border-color: rgba(58,102,204,.32); }
 .pd-cta-ext:hover .pd-ext-icon { transform: translate(2px, -2px); }
 
 
@@ -747,16 +747,17 @@ const PROJECTS = [
     role:'Concept · 3D · Motion', tools:'C4D · Redshift · AE · Kling',
     desc:'Personaje original desarrollado como IP propia. Campaña 360 completa: animación 3D fotorrealista, motion graphics y pipeline de producción asistida por IA.',
     stats:null, awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null,
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
     videoSrc:'rachin/assets/preview.webm'
   },
   {
-    slug:'michelob-ultra', title:'Michelob Ultra NBA', client:'Michelob · AB InBev', year:2023,
-    cat:['Motion','Campaign'], col:[0.10,0.70,0.90],
-    role:'Motion Designer', tools:'AE · Premiere · C4D',
-    desc:'Campaña de activación NBA para Guatemala. Dirección creativa completa, motion design y producción audiovisual end-to-end.',
-    stats:[{l:'Mercado',v:'Guatemala'},{l:'Tipo',v:'ATL + Digital'}], awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    slug:'suntimer', title:'Suntimer', client:'Corona', year:2022,
+    cat:['Motion','3D'], col:[1.00,0.85,0.20],
+    role:'Motion Designer', tools:'C4D · AE · Redshift',
+    desc:'Motion 3D para campaña de verano. Producto, luz y ambiente construidos desde cero en 3D.',
+    stats:[{l:'Views',v:'2.4K'},{l:'Plataforma',v:'Digital'}], awards:null,
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'suntimer/assets/COVER.mp4'
   },
   {
     slug:'pilsener-fomo', title:'Pilsener FOMO', client:'Pilsener · AB InBev', year:2023,
@@ -764,7 +765,8 @@ const PROJECTS = [
     role:'Motion Director', tools:'AE · Premiere · Illustrator',
     desc:'Case film completo. Motion design y dirección de arte para campaña nacional de alto impacto.',
     stats:[{l:'Alcance',v:'Nacional'},{l:'Formato',v:'Case Film'}], awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'rachin/assets/preview.webm'
   },
   {
     slug:'semeantojaGuate', title:'#SeMeAntojaGuate', client:'Pepsi', year:2022,
@@ -773,7 +775,8 @@ const PROJECTS = [
     desc:'Campaña digital de alto engagement. Concepto, motion y producción completa para plataformas sociales.',
     stats:[{l:'Views',v:'8.4K'},{l:'Likes',v:'655'}],
     awards:[{icon:'◆',text:'Behance Featured'}],
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'rachin/assets/preview.webm'
   },
   {
     slug:'paradox', title:'Paradox', client:'Personal', year:2023,
@@ -781,15 +784,17 @@ const PROJECTS = [
     role:'UX · Motion', tools:'Figma · AE · Principle',
     desc:'Film case que cruza interface design con motion. La pieza del portfolio donde UI y narrativa visual convergen.',
     stats:null, awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'rachin/assets/preview.webm'
   },
   {
-    slug:'suntimer', title:'Suntimer', client:'Corona', year:2022,
-    cat:['Motion','3D'], col:[1.00,0.85,0.20],
-    role:'Motion Designer', tools:'C4D · AE · Redshift',
-    desc:'Motion 3D para campaña de verano. Producto, luz y ambiente construidos desde cero en 3D.',
-    stats:[{l:'Views',v:'2.4K'},{l:'Plataforma',v:'Digital'}], awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    slug:'michelob-ultra', title:'Michelob Ultra NBA', client:'Michelob · AB InBev', year:2023,
+    cat:['Motion','Campaign'], col:[0.10,0.70,0.90],
+    role:'Motion Designer', tools:'AE · Premiere · C4D',
+    desc:'Campaña de activación NBA para Guatemala. Dirección creativa completa, motion design y producción audiovisual end-to-end.',
+    stats:[{l:'Mercado',v:'Guatemala'},{l:'Tipo',v:'ATL + Digital'}], awards:null,
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'rachin/assets/preview.webm'
   },
   {
     slug:'imperial-3d', title:'Imperial 3D', client:'Imperial · AB InBev', year:2022,
@@ -797,7 +802,8 @@ const PROJECTS = [
     role:'3D Artist', tools:'C4D · Redshift · PS',
     desc:'Product renders fotorrealistas de alta calidad. Iluminación de estudio, materiales PBR y composición final.',
     stats:null, awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'rachin/assets/preview.webm'
   },
   {
     slug:'pilsener-3d', title:'Pilsener 3D', client:'Pilsener · AB InBev', year:2021,
@@ -805,7 +811,8 @@ const PROJECTS = [
     role:'3D Artist', tools:'C4D · Redshift · PS',
     desc:'Product renders con texturizado fotorrealista. Setup de iluminación y post-producción completa.',
     stats:null, awards:null,
-    behance:'https://www.behance.net/nifdelrivera', link:null
+    behance:'https://www.behance.net/nifdelrive2931', link:null,
+    videoSrc:'rachin/assets/preview.webm'
   },
 ];
 
@@ -845,6 +852,11 @@ const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 300);
 // ══════════════════════════════════════════════════════════════════════
 //  POST-PROCESSING
 // ══════════════════════════════════════════════════════════════════════
+// Depth-only RT — rendered separately in animate loop, read by DOF pass
+const _depthRT = new THREE.WebGLRenderTarget(W, H, {
+  depthTexture: new THREE.DepthTexture(W, H),
+  depthBuffer:  true,
+});
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
@@ -852,7 +864,7 @@ const zoomBlurPass = new ShaderPass(ZoomBlurShader);
 composer.addPass(zoomBlurPass);
 
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(W, H), 1.5, 0.4, 0.32);
-bloomPass.strength = 0.8;
+bloomPass.strength = 0.4;
 bloomPass.radius   = 0.35;
 composer.addPass(bloomPass);
 
@@ -860,9 +872,9 @@ const godRaysPass = new ShaderPass({
   uniforms: {
     tDiffuse:   { value: null },
     uLightPos:  { value: new THREE.Vector2(0.35, 0.5) },
-    uIntensity: { value: 0.06 },
-    uDecay:     { value: 0.93 },
-    uDensity:   { value: 0.96 },
+    uIntensity: { value: 0.008 },
+    uDecay:     { value: 0.91 },
+    uDensity:   { value: 0.94 },
   },
   vertexShader:   GodRaysShader.vertexShader,
   fragmentShader: GodRaysShader.fragmentShader,
@@ -887,7 +899,7 @@ composer.addPass(vignetteChromaPass);
 const LensShader = {
   uniforms: {
     tDiffuse:   { value: null },
-    uStrength:  { value: -0.16 },  // pincushion invertido — centro comprimido, bordes abiertos
+    uStrength:  { value: -0.112 }, // pincushion invertido — centro comprimido, bordes abiertos
     uChroma:    { value: 0.018 },  // split cromático en bordes
     uVignette:  { value: 0.65 },   // caída de vignette
     uAspect:    { value: window.innerWidth / window.innerHeight },
@@ -946,6 +958,79 @@ const LensShader = {
     }
   `,
 };
+// ── PLANET DOF — blur increases toward bottom of screen (planet zone) ──
+const PlanetDOFShader = {
+  uniforms: {
+    tDiffuse:    { value: null },
+    tDepth:      { value: null },   // depth texture from _depthRT
+    uResolution: { value: new THREE.Vector2(W, H) },
+    uNear:       { value: 0.1 },
+    uFar:        { value: 300.0 },
+    uCardFar:    { value: 34.0 },   // linear units — cards < this, planet > this
+    uFocusY:     { value: 0.46 },
+    uMaxBlur:    { value: 6.5 },
+    uFadeStart:  { value: 0.30 },
+    uFadeEnd:    { value: 0.0 },
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
+  `,
+  fragmentShader: `
+    uniform sampler2D tDiffuse;
+    uniform sampler2D tDepth;
+    uniform vec2  uResolution;
+    uniform float uNear;
+    uniform float uFar;
+    uniform float uCardFar;
+    uniform float uFocusY;
+    uniform float uMaxBlur;
+    uniform float uFadeStart;
+    uniform float uFadeEnd;
+    varying vec2 vUv;
+
+    // Convert depth buffer value → linear distance from camera
+    float linearDist(float d) {
+      return uNear * uFar / (uFar - d * (uFar - uNear));
+    }
+
+    void main() {
+      float d   = texture2D(tDepth, vUv).r;
+      float ld  = linearDist(d);
+
+      // 0 = card (close geometry), 1 = planet/background (far)
+      float isBg = smoothstep(uCardFar - 4.0, uCardFar + 4.0, ld);
+
+      float blur = (1.0 - smoothstep(0.0, uFocusY, vUv.y)) * uMaxBlur * isBg;
+      vec4 c;
+      if (blur < 0.4) {
+        c = texture2D(tDiffuse, vUv);
+      } else {
+        vec2 px = blur / uResolution;
+        c  = texture2D(tDiffuse, vUv)                          * 0.20;
+        c += texture2D(tDiffuse, vUv + vec2( 1.0, 0.0) * px)  * 0.09;
+        c += texture2D(tDiffuse, vUv + vec2(-1.0, 0.0) * px)  * 0.09;
+        c += texture2D(tDiffuse, vUv + vec2( 0.0, 1.0) * px)  * 0.09;
+        c += texture2D(tDiffuse, vUv + vec2( 0.0,-1.0) * px)  * 0.09;
+        c += texture2D(tDiffuse, vUv + vec2( 0.71, 0.71) * px)* 0.07;
+        c += texture2D(tDiffuse, vUv + vec2(-0.71, 0.71) * px)* 0.07;
+        c += texture2D(tDiffuse, vUv + vec2( 0.71,-0.71) * px)* 0.07;
+        c += texture2D(tDiffuse, vUv + vec2(-0.71,-0.71) * px)* 0.07;
+        c += texture2D(tDiffuse, vUv + vec2( 1.5,  0.5) * px) * 0.04;
+        c += texture2D(tDiffuse, vUv + vec2(-1.5,  0.5) * px) * 0.04;
+        c += texture2D(tDiffuse, vUv + vec2( 0.5, -1.5) * px) * 0.04;
+        c += texture2D(tDiffuse, vUv + vec2(-0.5, -1.5) * px) * 0.04;
+      }
+      // Cinematic gradient — only on planet/background, not cards
+      float fade = mix(1.0, smoothstep(uFadeEnd, uFadeStart, vUv.y), isBg);
+      gl_FragColor = vec4(c.rgb * fade, 1.0);
+    }
+  `,
+};
+const dofPass = new ShaderPass(PlanetDOFShader);
+dofPass.uniforms.tDepth.value = _depthRT.depthTexture;
+composer.addPass(dofPass);
+
 const lensPass = new ShaderPass(LensShader);
 composer.addPass(lensPass);
 
@@ -953,20 +1038,17 @@ composer.addPass(lensPass);
 //  PLANETA — Cinematic background: dark sphere + rim light + atmosphere
 //  PP.y = -22 garantiza separación mínima 22 units (> PR=18) con todos los cards
 // ══════════════════════════════════════════════════════════════════════
-const PR = 18;
+const PR = 15.3;
 const PP = new THREE.Vector3(-4, -22, -32);
 
 // Direction from planet toward light source (normalized)
 const _lightDir = new THREE.Vector3(64, 62, 82).normalize();
 
-// ── Surface shader — dark planet with ice-blue Fresnel rim ────────────
+// ── Dark core — void sphere revealed only by rim light ────────────────
 const planetMat = new THREE.ShaderMaterial({
   uniforms: {
-    uTime:     { value: 0.0 },
-    uLightDir: { value: _lightDir },
-    uRimColor: { value: new THREE.Color(0.42, 0.62, 1.00) },
-    uRimPow:   { value: 3.8 },
-    uCamPos:   { value: camera.position },
+    uTime:   { value: 0.0 },
+    uCamPos: { value: camera.position },
   },
   vertexShader: `
     varying vec3 vNormal;
@@ -980,65 +1062,25 @@ const planetMat = new THREE.ShaderMaterial({
   `,
   fragmentShader: `
     uniform float uTime;
-    uniform vec3  uLightDir;
-    uniform vec3  uRimColor;
-    uniform float uRimPow;
     uniform vec3  uCamPos;
     varying vec3  vNormal;
     varying vec3  vWorldPos;
 
-    float hash(vec3 p) {
-      p  = fract(p * vec3(127.1, 311.7, 74.7));
-      p += dot(p.zxy, p.yxz + 17.9);
-      return fract(p.x * p.y * p.z * 43758.54);
-    }
-    float vnoise(vec3 p) {
-      vec3 i = floor(p), f = fract(p);
-      f = f*f*(3.0-2.0*f);
-      return mix(
-        mix(mix(hash(i),             hash(i+vec3(1,0,0)), f.x),
-            mix(hash(i+vec3(0,1,0)), hash(i+vec3(1,1,0)), f.x), f.y),
-        mix(mix(hash(i+vec3(0,0,1)), hash(i+vec3(1,0,1)), f.x),
-            mix(hash(i+vec3(0,1,1)), hash(i+vec3(1,1,1)), f.x), f.y),
-        f.z);
-    }
-    float fbm(vec3 p) {
-      float v = 0.0, a = 0.5;
-      for(int i = 0; i < 5; i++) { v += a * vnoise(p); p *= 2.07; a *= 0.48; }
-      return v;
-    }
-
     void main() {
-      vec3 N = normalize(vNormal);
-      vec3 V = normalize(uCamPos - vWorldPos);
-      vec3 L = uLightDir;
+      vec3 N  = normalize(vNormal);
+      vec3 V  = normalize(uCamPos - vWorldPos);
+      float NV = max(0.0, dot(N, V));
 
-      // Surface noise — subtle terrain, slow atmospheric drift
-      float n1 = fbm(N * 2.8 + uTime * 0.0018);
-      float n2 = fbm(N * 7.2 + vec3(5.3, 1.7, 3.9));
+      // Near-black void base
+      vec3 surface = vec3(0.003, 0.005, 0.013);
 
-      // Day/night terminator
-      float NdotL  = dot(N, L);
-      float day    = smoothstep(-0.18, 0.28, NdotL);
+      // Outer rim — soft blue-grey halo
+      float frOuter = pow(1.0 - NV, 3.6);
+      surface += vec3(0.29, 0.45, 0.86) * frOuter * 0.79;
 
-      vec3 dayCol  = vec3(0.038, 0.072, 0.165) + n1 * vec3(0.014, 0.026, 0.052);
-      vec3 nightCol= vec3(0.005, 0.009, 0.020) + n2 * 0.004;
-      vec3 surface = mix(nightCol, dayCol, day);
-
-      // Diffuse — cold blue-white key light
-      surface += dayCol * max(0.0, NdotL) * vec3(0.50, 0.66, 1.0) * 0.50;
-
-      // Specular — icy glint at terminator
-      vec3 H   = normalize(L + V);
-      float sp = pow(max(0.0, dot(N, H)), 72.0) * max(0.0, NdotL);
-      surface += vec3(0.68, 0.84, 1.0) * sp * 0.14;
-
-      // Fresnel rim — main cinematic signature
-      float fr = pow(1.0 - max(0.0, dot(N, V)), uRimPow);
-      surface += uRimColor * fr * 1.10;
-
-      // Night-side rim — deep space undertone
-      surface += vec3(0.02, 0.04, 0.14) * fr * (1.0 - day) * 0.6;
+      // Inner rim — tight bright white-blue edge
+      float frInner = pow(1.0 - NV, 9.0);
+      surface += vec3(0.73, 0.87, 0.99) * frInner * 0.41;
 
       gl_FragColor = vec4(surface, 1.0);
     }
@@ -1078,11 +1120,11 @@ const _atmosFrag = `
 const _atmosBase = { uLightDir:{ value:_lightDir }, uCamPos:{ value:camera.position } };
 
 const atmos = new THREE.Mesh(
-  new THREE.SphereGeometry(PR + 2.8, 48, 48),
+  new THREE.SphereGeometry(PR + 2.38, 48, 48),
   new THREE.ShaderMaterial({
     uniforms: { ..._atmosBase,
-      uColor:     { value: new THREE.Color(0.30, 0.55, 1.0) },
-      uIntensity: { value: 1.05 },
+      uColor:     { value: new THREE.Color(0.27, 0.45, 0.85) },
+      uIntensity: { value: 0.39 },
     },
     vertexShader: _atmosVert, fragmentShader: _atmosFrag,
     transparent: true, blending: THREE.AdditiveBlending,
@@ -1093,11 +1135,11 @@ atmos.position.copy(PP);
 scene.add(atmos);
 
 const halo = new THREE.Mesh(
-  new THREE.SphereGeometry(PR + 9.0, 48, 48),
+  new THREE.SphereGeometry(PR + 7.65, 48, 48),
   new THREE.ShaderMaterial({
     uniforms: { ..._atmosBase,
-      uColor:     { value: new THREE.Color(0.18, 0.38, 0.90) },
-      uIntensity: { value: 0.30 },
+      uColor:     { value: new THREE.Color(0.16, 0.28, 0.73) },
+      uIntensity: { value: 0.08 },
     },
     vertexShader: _atmosVert, fragmentShader: _atmosFrag,
     transparent: true, blending: THREE.AdditiveBlending,
@@ -1107,38 +1149,217 @@ const halo = new THREE.Mesh(
 halo.position.copy(PP);
 scene.add(halo);
 
-// ── Rings — additive glow, cinematic incandescence ────────────────────
+// ── Rings — cinematic shader: NdotV glow + traveling shimmer ──────────
+const _ringVert = `
+  varying vec3  vNormal;
+  varying vec3  vWorldPos;
+  varying float vAngle;
+  void main() {
+    vec4 wp   = modelMatrix * vec4(position, 1.0);
+    vWorldPos = wp.xyz;
+    vNormal   = normalize(mat3(modelMatrix) * normal);
+    vAngle    = atan(position.y, position.x);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const _ringFrag = `
+  uniform float uTime;
+  uniform float uSpeed;
+  uniform vec3  uColor;
+  uniform float uOpacity;
+  uniform vec3  uCamPos;
+  varying vec3  vNormal;
+  varying vec3  vWorldPos;
+  varying float vAngle;
+  void main() {
+    vec3  N  = normalize(vNormal);
+    vec3  V  = normalize(uCamPos - vWorldPos);
+    float NV = max(0.0, dot(N, V));
+
+    // Gas cloud base — very soft falloff
+    float core = pow(NV, 0.65);
+
+    // Wide shimmer wave (multiple lobes)
+    float wave = 0.72 + 0.28 * sin(vAngle * 3.0 - uTime * uSpeed * 1.8);
+
+    // Traveling bright hotspot — sharp peak, single arc
+    float hot  = pow(max(0.0, sin(vAngle * 0.5 - uTime * uSpeed * 0.55)), 18.0);
+
+    // Slow breathing pulse
+    float pulse = 0.86 + 0.14 * sin(uTime * 0.38 + uSpeed);
+
+    // Warm accent on hotspot (matches city node amber)
+    vec3 col = uColor + hot * vec3(0.22, 0.10, -0.05);
+
+    float alpha = core * uOpacity * wave * pulse;
+    // Hotspot — subtle traveling accent
+    alpha += hot * uOpacity * core * 0.28;
+    col   += hot * vec3(0.12, 0.06, 0.0) * core;
+
+    gl_FragColor = vec4(col * alpha, alpha);
+  }
+`;
+
 const RING_DEFS = [
-  { r: PR+12, t: 1.4, col: 0x3a6fff, op: 0.55, rx: Math.PI * 0.13 },
-  { r: PR+24, t: 0.6, col: 0x1a3aaa, op: 0.28, rx: Math.PI * 0.17 },
-  { r: PR+ 6, t: 0.8, col: 0x2a5aee, op: 0.24, rx: Math.PI * 0.10 },
-  { r: PR+38, t: 0.4, col: 0x0d1f60, op: 0.14, rx: Math.PI * 0.20 },
+  { r: PR+12, t: 1.4, col: new THREE.Color(0x3a6fff), op: 0.88, rx: Math.PI * 0.13, sp: 1.00 },
+  { r: PR+24, t: 0.6, col: new THREE.Color(0x2850cc), op: 0.52, rx: Math.PI * 0.17, sp: 0.62 },
+  { r: PR+ 6, t: 0.8, col: new THREE.Color(0x4472ee), op: 0.46, rx: Math.PI * 0.10, sp: 1.38 },
+  { r: PR+38, t: 0.4, col: new THREE.Color(0x1a2e88), op: 0.28, rx: Math.PI * 0.20, sp: 0.45 },
 ];
-const ringMeshes = RING_DEFS.map(({ r, t, col, op, rx }) => {
+const ringMeshes = RING_DEFS.map(({ r, t, col, op, rx, sp }) => {
   const m = new THREE.Mesh(
-    new THREE.TorusGeometry(r, t, 6, 200),
-    new THREE.MeshBasicMaterial({
-      color: col, transparent: true, opacity: op,
-      blending: THREE.AdditiveBlending, depthWrite: false,
+    new THREE.TorusGeometry(r, t, 12, 220),
+    new THREE.ShaderMaterial({
+      uniforms: {
+        uTime:    { value: 0 },
+        uSpeed:   { value: sp },
+        uColor:   { value: col },
+        uOpacity: { value: op },
+        uCamPos:  { value: camera.position },
+      },
+      vertexShader:   _ringVert,
+      fragmentShader: _ringFrag,
+      transparent: true,
+      blending:    THREE.AdditiveBlending,
+      depthWrite:  false,
+      side:        THREE.DoubleSide,
     })
   );
   m.position.copy(PP); m.rotation.x = rx;
   scene.add(m); return m;
 });
 
+// Latitude rings — stored for uTime updates
+const _latCol = new THREE.Color(0x2244bb);
+const latRingMeshes = [];
 for (let i = 1; i < 8; i++) {
-  const a = (i / 8) * Math.PI - Math.PI / 2;
-  const r = Math.cos(a) * PR * 0.998, y = Math.sin(a) * PR;
-  const m = new THREE.Mesh(
-    new THREE.TorusGeometry(r, 0.055, 4, 100),
-    new THREE.MeshBasicMaterial({
-      color: 0x1535aa, transparent: true, opacity: 0.18,
-      blending: THREE.AdditiveBlending, depthWrite: false,
+  const a  = (i / 8) * Math.PI - Math.PI / 2;
+  const r  = Math.cos(a) * PR * 0.998, y = Math.sin(a) * PR;
+  const sp = 0.4 + i * 0.12;
+  const m  = new THREE.Mesh(
+    new THREE.TorusGeometry(r, 0.055, 6, 120),
+    new THREE.ShaderMaterial({
+      uniforms: {
+        uTime:    { value: 0 },
+        uSpeed:   { value: sp },
+        uColor:   { value: _latCol.clone() },
+        uOpacity: { value: 0.22 },
+        uCamPos:  { value: camera.position },
+      },
+      vertexShader:   _ringVert,
+      fragmentShader: _ringFrag,
+      transparent: true,
+      blending:    THREE.AdditiveBlending,
+      depthWrite:  false,
+      side:        THREE.DoubleSide,
     })
   );
   m.position.set(PP.x, PP.y + y, PP.z);
   scene.add(m);
+  latRingMeshes.push(m);
 }
+
+// ── PARTICLE SHELL — data-globe surface layer ─────────────────────────
+let ptsShell = null, linesShell = null;
+(function buildParticleShell() {
+  const N      = 50000;
+  const pos    = new Float32Array(N * 3);
+  const aColor = new Float32Array(N * 3);
+  const aSize  = new Float32Array(N);
+
+  for (let i = 0; i < N; i++) {
+    // Uniform random on sphere surface
+    const u = Math.random(), v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi   = Math.acos(2 * v - 1);
+    const nx = Math.sin(phi) * Math.cos(theta);
+    const ny = Math.sin(phi) * Math.sin(theta);
+    const nz = Math.cos(phi);
+
+    // Slight radial scatter for depth
+    const r = PR + 0.12 + Math.random() * 0.55;
+    pos[i*3]   = nx * r;
+    pos[i*3+1] = ny * r;
+    pos[i*3+2] = nz * r;
+
+    // 2.5% warm amber city nodes, rest cool blue-white
+    const isCity = Math.random() < 0.025;
+    const bright = 0.22 + Math.random() * 0.78;
+    if (isCity) {
+      aColor[i*3] = 0.94 * bright; aColor[i*3+1] = 0.72 * bright; aColor[i*3+2] = 0.36 * bright;
+      aSize[i] = 1.6 + Math.random() * 2.2;
+    } else {
+      aColor[i*3] = 0.36 * bright; aColor[i*3+1] = 0.56 * bright; aColor[i*3+2] = 1.00 * bright;
+      aSize[i] = 0.28 + Math.random() * 0.72;
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('aColor',   new THREE.BufferAttribute(aColor, 3));
+  geo.setAttribute('aSize',    new THREE.BufferAttribute(aSize, 1));
+
+  const mat = new THREE.ShaderMaterial({
+    vertexShader: `
+      attribute float aSize;
+      attribute vec3  aColor;
+      varying   vec3  vCol;
+      void main() {
+        vCol = aColor;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = aSize * (260.0 / -mv.z);
+        gl_Position  = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vCol;
+      void main() {
+        float d = length(gl_PointCoord - 0.5);
+        if (d > 0.5) discard;
+        float a = exp(-d * 7.0);
+        gl_FragColor = vec4(vCol * a, a * 0.88);
+      }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+
+  ptsShell = new THREE.Points(geo, mat);
+  ptsShell.position.copy(PP);
+  scene.add(ptsShell);
+
+  // ── Network lines — data connections between nearby nodes ─────────
+  const SAMPLE = 700;   // particles to sample
+  const THRESH = 3.8;   // max distance to connect
+  const MAX_L  = 900;   // max line segments
+  const step   = Math.max(1, Math.floor(N / SAMPLE));
+  const sub    = [];
+  for (let i = 0; i < N; i += step) sub.push(i);
+
+  const linePos = [];
+  outer: for (let a = 0; a < sub.length; a++) {
+    const ai = sub[a] * 3;
+    for (let b = a + 1; b < sub.length; b++) {
+      const bi = sub[b] * 3;
+      const dx = pos[ai]-pos[bi], dy = pos[ai+1]-pos[bi+1], dz = pos[ai+2]-pos[bi+2];
+      if (dx*dx + dy*dy + dz*dz < THRESH*THRESH) {
+        linePos.push(pos[ai],pos[ai+1],pos[ai+2], pos[bi],pos[bi+1],pos[bi+2]);
+        if (linePos.length >= MAX_L * 6) break outer;
+      }
+    }
+  }
+
+  const lGeo = new THREE.BufferGeometry();
+  lGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePos), 3));
+  const lMat = new THREE.LineBasicMaterial({
+    color: 0x3a66cc, transparent: true, opacity: 0.07,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  linesShell = new THREE.LineSegments(lGeo, lMat);
+  linesShell.position.copy(PP);
+  scene.add(linesShell);
+})();
 
 // ── PARTICLES — mismas 3 capas que el hub (macro dust · micro dust · stars) ─────
 
@@ -1177,11 +1398,12 @@ function _mkParticles(N, rMin, rMax, rPow, szFn, uOpts) {
     uLogoPos:{value:new THREE.Vector2()}, uLogoForce:{value:0},
     uPixelRatio:{value:Math.min(devicePixelRatio,2)}
   };
-  scene.add(new THREE.Points(geo, new THREE.ShaderMaterial({
+  const pts = new THREE.Points(geo, new THREE.ShaderMaterial({
     vertexShader:particleVertexShader, fragmentShader:particleFragmentShader,
     uniforms:uni, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending
-  })));
-  return uni;
+  }));
+  scene.add(pts);
+  return { uni, pts };
 }
 
 // Capa 1 — MACRO DUST · bokeh muy sutiles + polvo fino
@@ -1209,7 +1431,7 @@ window._pUniC = _mkParticles(
 scene.add(new THREE.AmbientLight(0x020408, 1.5));
 const sun = new THREE.DirectionalLight(0x8ab4ff, 2.5);
 sun.position.set(60, 40, 50); scene.add(sun);
-const planetGlow = new THREE.PointLight(0x1a44bb, 1.0, 90);
+const planetGlow = new THREE.PointLight(0x1a44bb, 1.0, 63);
 planetGlow.position.copy(PP); scene.add(planetGlow);
 
 // ══════════════════════════════════════════════════════════════════════
@@ -1231,7 +1453,7 @@ function _buildCards() { PROJECTS.forEach((proj, i) => {
   bgMesh.position.set(lp[0], lp[1], lp[2]);
   bgMesh.rotation.y = lp[3];
 
-  const borderMat = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.22 });
+  const borderMat = new THREE.LineBasicMaterial({ color: 0x3a66cc, transparent: true, opacity: 0.55 });
   const frame     = new THREE.LineSegments(
     new THREE.EdgesGeometry(new THREE.PlaneGeometry(CARD_W, CARD_H)),
     borderMat
@@ -1249,7 +1471,7 @@ function _buildCards() { PROJECTS.forEach((proj, i) => {
   // Categoría
   ctx.font          = `500 20px "Space Mono", monospace`;
   ctx.letterSpacing = '5px';
-  ctx.fillStyle     = `rgba(${colRGB}, 0.55)`;
+  ctx.fillStyle     = `rgba(58,102,204, 0.55)`;
   ctx.fillText(proj.cat[0].toUpperCase(), pad, 90);
 
   // Título
@@ -1287,7 +1509,7 @@ function _buildCards() { PROJECTS.forEach((proj, i) => {
 
   // Corner marks
   const mk = 36;
-  ctx.strokeStyle = `rgba(${colRGB}, 0.60)`;
+  ctx.strokeStyle = `rgba(58,102,204, 0.60)`;
   ctx.lineWidth   = 4;
   [[pad, pad], [CV_W-pad, pad], [pad, CV_H-pad], [CV_W-pad, CV_H-pad]].forEach(([cx, cy], ci) => {
     const sx = ci % 2 === 0 ? 1 : -1, sy = ci < 2 ? 1 : -1;
@@ -1479,7 +1701,7 @@ function _breakTitle(s) {
 
 function updateUI() {
   const p      = PROJECTS[idx];
-  const accent = `rgb(${Math.round(p.col[0]*255)},${Math.round(p.col[1]*255)},${Math.round(p.col[2]*255)})`;
+  const accent = 'rgb(58,102,204)';
   const total  = String(PROJECTS.length).padStart(2,'0');
   const current= String(idx+1).padStart(2,'0');
 
@@ -1557,12 +1779,7 @@ function updateUI() {
 
   // ── Bordes cards ───────────────────────────────────────────────────
   cards.forEach((c, i) => {
-    const a = i === idx;
-    c.borderMat.color.setRGB(
-      a ? PROJECTS[i].col[0]        : PROJECTS[i].col[0] * 0.38,
-      a ? PROJECTS[i].col[1]        : PROJECTS[i].col[1] * 0.38,
-      a ? PROJECTS[i].col[2]        : PROJECTS[i].col[2] * 0.38,
-    );
+    c.borderMat.color.setRGB(0.227, 0.400, 0.800);
   });
 }
 
@@ -1736,7 +1953,7 @@ renderer.domElement.addEventListener('mousemove', e => {
   if (isZooming) return;
   mNDC.set((e.clientX / W) * 2 - 1, -(e.clientY / H) * 2 + 1);
   ray.setFromCamera(mNDC, camera);
-  const hits = ray.intersectObjects(cards.map(c => c.bgMesh));
+  const hits = ray.intersectObjects(cards.filter((c, i) => i === idx).map(c => c.bgMesh));
   hovered = hits.length ? hits[0].object : null;
   if (hovered !== prevHovered) {
     if (hovered) uiSound('hover:pm-card');
@@ -1756,10 +1973,22 @@ renderer.domElement.addEventListener('click', () => {
 // ══════════════════════════════════════════════════════════════════════
 //  CÁMARA — desplaza lookAt 2 units izq para compensar panel derecho
 // ══════════════════════════════════════════════════════════════════════
+// [dx, dy] — micro offset del lookAt por card para variación de composición sutil
+const _CAM_OFFSETS = [
+  [ 0.0,  0.0 ],   // 0 Rachin         — centro exacto
+  [ 0.2,  0.12],   // 1 Suntimer       — barely right, ligeramente bajo
+  [-0.3,  0.10],   // 2 Pilsener FOMO  — leve izquierda, ligeramente bajo
+  [ 0.5,  0.0 ],   // 3 #SeMeAntoja    — algo a la derecha
+  [-0.4, -0.10],   // 4 Paradox        — algo a la izquierda, algo alto
+  [ 0.4, -0.15],   // 5 Michelob       — leve derecha, ligeramente alto
+  [-0.2, -0.08],   // 6 Imperial 3D    — barely left, algo alto
+  [ 0.3,  0.05],   // 7 Pilsener 3D    — leve derecha
+];
 function _camTarget(i) {
   const lp = LAYOUT[i], ry = lp[3];
+  const off = _CAM_OFFSETS[i] || [0, 0];
   camPT.set(lp[0] + Math.sin(ry) * -5.2, 2.8, lp[2] + 5.5);
-  camLT.set(lp[0] - 1.0, lp[1], lp[2]);   // offset -1 en X → más centrado, panel no lo tapa
+  camLT.set(lp[0] - 1.0 + off[0], lp[1] + off[1], lp[2]);
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -1769,7 +1998,10 @@ let _prevCamZ = camera.position.z;
 
 function animate() {
   requestAnimationFrame(animate);
-  if (isZooming) { composer.render(); return; }
+  if (isZooming) {
+    renderer.setRenderTarget(_depthRT); renderer.render(scene, camera); renderer.setRenderTarget(null);
+    composer.render(); return;
+  }
 
   const t     = clock.getElapsedTime();
   const delta = t - (animate._pt || 0);
@@ -1808,13 +2040,16 @@ function animate() {
   grainPass.uniforms.uTime.value = t;
 
   // Particles — tiempo + mouse NDC (black-hole) igual que hub
-  window._pUniA.uTime.value   = t;
-  window._pUniB.uTime.value   = t;
-  window._pUniC.uTime.value   = t;
-  window._pUniB.uMouse.value.copy(mNDC);
-  window._pUniC.uMouse.value.copy(mNDC);
-  window._pUniB.uAspect.value = W / H;
-  window._pUniC.uAspect.value = W / H;
+  window._pUniA.uni.uTime.value   = t;
+  window._pUniB.uni.uTime.value   = t;
+  window._pUniC.uni.uTime.value   = t;
+  window._pUniB.uni.uMouse.value.copy(mNDC);
+  window._pUniC.uni.uMouse.value.copy(mNDC);
+  window._pUniB.uni.uAspect.value = W / H;
+  window._pUniC.uni.uAspect.value = W / H;
+  window._pUniA.pts.rotation.y += 0.00012;
+  window._pUniB.pts.rotation.y += 0.00008; window._pUniB.pts.rotation.x += 0.000025;
+  window._pUniC.pts.rotation.y += 0.00004;
 
   // God rays → planeta
   _ppNDC.copy(PP).project(camera);
@@ -1872,17 +2107,34 @@ function animate() {
     card.textMesh.scale.copy(card.bgMesh.scale);
     if (card.videoMesh) card.videoMesh.scale.copy(card.bgMesh.scale);
 
-    card.borderMat.opacity += ((isA ? 0.88 : isH ? 0.52 : 0.20) - card.borderMat.opacity) * 0.10;
-    card.bgMat.opacity     += ((isA ? 0.80 : isH ? 0.60 : 0.40) - card.bgMat.opacity)     * 0.08;
+    card.borderMat.opacity += ((isA ? 0.88 : 0) - card.borderMat.opacity) * 0.10;
+    card.bgMat.opacity     += ((isA ? 0.80 : 0) - card.bgMat.opacity)     * 0.08;
+
+    card.frame.visible   = card.borderMat.opacity > 0.01;
+    card.bgMesh.visible  = card.bgMat.opacity     > 0.01;
+    if (card.videoMesh) card.videoMesh.visible = isA;
+    if (card.textMesh)  card.textMesh.visible  = isA;
   });
 
   // Planeta
   planetMat.uniforms.uTime.value = t;
   planet.rotation.y        += 0.000055;
-  ringMeshes[0].rotation.z += 0.000065;
-  ringMeshes[1].rotation.z -= 0.000038;
-  ringMeshes[2].rotation.z += 0.000095;
-  ringMeshes[3].rotation.z -= 0.000022;
+  if (ptsShell)   { ptsShell.rotation.y   += 0.00035; ptsShell.rotation.x   += 0.000035; }
+  if (linesShell) { linesShell.rotation.y += 0.00035; linesShell.rotation.x += 0.000035; }
+  ringMeshes[0].rotation.z += 0.000065; ringMeshes[0].rotation.x += 0.000018; ringMeshes[0].rotation.y += 0.000011;
+  ringMeshes[1].rotation.z -= 0.000038; ringMeshes[1].rotation.y += 0.000012; ringMeshes[1].rotation.x -= 0.000016;
+  ringMeshes[2].rotation.z += 0.000095; ringMeshes[2].rotation.x -= 0.000022; ringMeshes[2].rotation.y -= 0.000014;
+  ringMeshes[3].rotation.z -= 0.000022; ringMeshes[3].rotation.y -= 0.000015; ringMeshes[3].rotation.x += 0.000019;
+  ringMeshes.forEach(m    => { m.material.uniforms.uTime.value = t; });
+  latRingMeshes.forEach((m, i) => {
+    m.rotation.y += 0.000028 * (i % 2 === 0 ? 1 : -1);
+    m.material.uniforms.uTime.value = t;
+  });
+
+  // Depth pre-pass — render scene to _depthRT so DOF shader can read per-pixel depth
+  renderer.setRenderTarget(_depthRT);
+  renderer.render(scene, camera);
+  renderer.setRenderTarget(null);
 
   composer.render();
 }
@@ -1890,13 +2142,23 @@ function animate() {
 window.addEventListener('resize', () => {
   W = window.innerWidth; H = window.innerHeight;
   camera.aspect = W / H; camera.updateProjectionMatrix();
-  renderer.setSize(W, H); composer.setSize(W, H);
+  renderer.setSize(W, H); composer.setSize(W, H); _depthRT.setSize(W, H);
   eventHorizonPass.uniforms.uAspect.value   = W / H;
   vignetteChromaPass.uniforms.uAspect.value = W / H;
   lensPass.uniforms.uAspect.value           = W / H;
+  dofPass.uniforms.uResolution.value.set(W, H);
 });
 
-document.fonts.ready.then(() => { _buildCards(); updateProgress(); animate(); });
+document.fonts.ready.then(() => {
+  _buildCards();
+  updateProgress();
+  animate();
+  // Si regresamos desde un proyecto, los cards acaban de construirse — play inmediato
+  if (_fromProject) {
+    const c = cards[idx];
+    if (c && c.videoEl) { c.videoMesh.visible = true; c.videoEl.play().catch(() => {}); }
+  }
+});
 </script>
 </body>
 </html>

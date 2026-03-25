@@ -596,9 +596,16 @@
   }
 </style>
 <link rel="stylesheet" href="../../styles/back-nav.css">
+<style>
+  #pf-fade { position:fixed; inset:0; background:#06060a; z-index:9000; pointer-events:none;
+    animation: pfReveal 500ms ease 80ms forwards; }
+  @keyframes pfReveal { from{opacity:1} to{opacity:0;pointer-events:none} }
+</style>
 </head>
 
 <body>
+
+<div id="pf-fade"></div>
 
 <!-- ── BACK NAVIGATION ── -->
 <div class="page-back-nav" style="--pbn-color:rgba(184,160,110,.7)">
@@ -617,13 +624,15 @@ function goBack(e) {
 }
 
 function goBackNav() {
+  sessionStorage.setItem('returnPanel', 'THOUGHTS');
+  sessionStorage.setItem('returnFlag',  '1');
   if (window._ambCtx && window._ambGain) {
     window._ambGain.gain.setTargetAtTime(0, window._ambCtx.currentTime, 0.3);
     sessionStorage.setItem('audioOn', '1');
   }
   document.body.style.transition = 'opacity .5s ease';
   document.body.style.opacity = '0';
-  setTimeout(() => { window.location.href = '../../index.html?back=1'; }, 520);
+  setTimeout(() => { window.location.href = '../../?back=1'; }, 520);
 }
 
 // ── Ambient audio (mirrors index.html oscillator layers) ──
