@@ -5,33 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Suntimer — Nifdel Rivera</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/tokens.css">
 <link rel="stylesheet" href="../../nav.css">
 <style>
-/* ── RESET ───────────────────────────────────────────────────────────── */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+/* ── PAGE OVERRIDES (tokens.css provee reset + vars base) ────────────── */
+*, *::before, *::after { cursor: none !important; }
 :root {
-  --accent: rgb(58,102,204);
-  --bg:     #020408;
-  --text:   rgba(255,255,255,.82);
-  --dim:    rgba(255,255,255,.38);
-  --faint:  rgba(255,255,255,.14);
-  --mono:   'Space Mono', monospace;
-  --display:'Syne', sans-serif;
+  --accent:  rgb(58,102,204);
+  --bg:      #020408;              /* override tokens — más oscuro */
+  --text:    rgba(255,255,255,.82);
+  --dim:     rgba(255,255,255,.38);
+  --faint:   rgba(255,255,255,.14);
+  --mono:    var(--font-mono);
+  --display: var(--font-display);
 }
 html { scroll-behavior: smooth; }
 body {
   background: var(--bg); color: var(--text);
   font-family: var(--mono);
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
 }
-
-/* ── CURSOR ──────────────────────────────────────────────────────────── */
-#cur   { position: fixed; width: 6px; height: 6px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
-#cur-r { position: fixed; width: 28px; height: 28px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .3s, height .3s, border-color .3s; }
-
-/* ── PAGE FADE ───────────────────────────────────────────────────────── */
-#pf-fade { position: fixed; inset: 0; background: #000; z-index: 9000; pointer-events: none; opacity: 0; }
 
 /* nav.css provee top-nav + side-nav */
 
@@ -76,48 +69,305 @@ body {
   color: rgba(255,255,255,.90); letter-spacing: -.03em; line-height: 1.0;
 }
 
-/* ── META BAR ────────────────────────────────────────────────────────── */
-#meta {
-  padding: 52px 80px 44px 108px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  gap: 8px 48px;
-  border-bottom: 1px solid rgba(255,255,255,.05);
-  margin-bottom: 80px;
-}
-.meta-client {
-  font-size: 12px; letter-spacing: .22em; color: var(--accent);
-  grid-column: 1; grid-row: 1; margin-top: 4px;
-}
-.meta-year {
-  font-size: 11px; letter-spacing: .18em; color: rgba(255,255,255,.22);
-  grid-column: 2; grid-row: 1; align-self: start; margin-top: 6px;
-  text-align: right;
-}
-.meta-tags {
-  display: flex; gap: 8px; flex-wrap: wrap;
-  grid-column: 1; grid-row: 2;
-}
-.meta-tag {
-  font-size: 9px; letter-spacing: .15em; padding: 4px 12px;
-  border: 1px solid rgba(255,255,255,.10); color: rgba(255,255,255,.35);
-}
-
 /* ── BLOCKS ──────────────────────────────────────────────────────────── */
 #blocks {
   max-width: 1200px; margin: 0 auto;
-  padding: 0 80px 140px 108px;
-  display: flex; flex-direction: column; gap: 72px;
+  padding: 140px 80px 48px 108px;
+  display: flex; flex-direction: column; gap: 0;
+}
+/* ── Spacing rhythm — each block type controls its own vertical pause ── */
+.block-case-overview  { margin-top: 0; }
+.editorial-pin-wrap   { margin-top: 0; }
+.block-case-overview + .editorial-pin-wrap { margin-top: 60px; }
+.block-mp4            { margin-top: 140px; }
+.block-stack          { margin-top: 4px; }
+.block-awards         { margin-top: 160px; }
+.block-credits        { margin-top: 180px; }
+.block-closing        { margin-top: 160px; }
+.block-section-label  { margin-top: 120px; }
+.block-text           { margin-top: 24px; }
+
+/* ── CASE OVERVIEW ───────────────────────────────────────────────────── */
+.block-case-overview {
+  max-width: 1000px;
+  margin-left: auto; margin-right: auto;
+  text-align: center;
+  padding: 0 20px;
+}
+/* Line mask — overflow:hidden clips text entering from below */
+.overview-headline .ov-line {
+  display: block;
+  overflow: hidden;
+  line-height: 1.15;
+}
+.overview-headline .js-ov-line { display: inline-block; }
+.overview-headline {
+  font-family: var(--display); font-size: clamp(34px, 5vw, 66px); font-weight: 700;
+  color: rgba(255,255,255,.90);
+  letter-spacing: -.03em;
+  margin-bottom: 36px;
+}
+.overview-sub {
+  font-family: var(--display); font-size: clamp(16px, 1.8vw, 24px); font-weight: 400;
+  color: rgba(255,255,255,.42); line-height: 1.5;
+  letter-spacing: -.01em;
 }
 
+/* ── EDITORIAL PIN SECTIONS ──────────────────────────────────────────── */
+.editorial-pin-wrap {
+  position: relative;
+  height: 170vh;
+}
+.editorial-pin-wrap + .editorial-pin-wrap {
+  margin-top: -75vh;
+}
+.editorial-stage {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.ep-label {
+  font-size: 9px; letter-spacing: .48em; color: rgba(255,255,255,.22);
+  text-transform: uppercase; margin-bottom: 36px;
+  will-change: opacity, transform;
+}
+.ep-headline {
+  font-family: var(--display); font-size: clamp(22px, 3.2vw, 44px); font-weight: 400;
+  color: rgba(255,255,255,.88); line-height: 1.45;
+  letter-spacing: -.02em; max-width: 800px;
+  margin-bottom: 40px;
+  will-change: opacity, transform, filter;
+}
+.ep-body { max-width: 580px; }
+.ep-body p {
+  font-size: 14px; line-height: 2.1; color: rgba(255,255,255,.46);
+  margin-bottom: 18px; letter-spacing: .01em;
+  will-change: opacity, transform;
+}
+.ep-body p:last-child { margin-bottom: 0; }
+@media (max-width: 768px) {
+  .editorial-pin-wrap { height: 130vh; }
+}
+
+/* ── EDITORIAL — INSIGHT ─────────────────────────────────────────────── */
+.block-insight {
+  max-width: 680px;
+  margin-left: auto; margin-right: auto;
+  text-align: center;
+  padding: 0 20px;
+}
+.insight-credit {
+  font-size: 10px; letter-spacing: .55em;
+  color: var(--accent); opacity: .80;
+  margin-bottom: 40px;
+}
+.insight-text {
+  font-family: var(--display); font-size: 26px; font-weight: 400;
+  color: rgba(255,255,255,.72); line-height: 1.75;
+  letter-spacing: -.01em;
+}
+
+/* ── EDITORIAL — IDEA ────────────────────────────────────────────────── */
+.block-idea {
+  max-width: 960px;
+  margin-left: auto; margin-right: auto;
+  text-align: center;
+  padding: 0 20px;
+}
+.idea-label {
+  font-size: 9px; letter-spacing: .55em;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 32px;
+}
+.idea-text {
+  font-family: var(--display); font-size: clamp(32px, 3.8vw, 52px); font-weight: 700;
+  color: rgba(255,255,255,.88); line-height: 1.18;
+  letter-spacing: -.02em;
+}
+
+/* ── EDITORIAL — CONTRIBUTION ────────────────────────────────────────── */
+.block-contribution {
+  max-width: 560px;
+  margin-left: auto; margin-right: auto;
+  text-align: center;
+  padding: 0 20px;
+}
+.contribution-label {
+  font-size: 9px; letter-spacing: .55em;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 32px;
+}
+.contribution-text {
+  font-size: 14px; line-height: 2.1;
+  color: rgba(255,255,255,.58);
+}
+
+/* ── AWARDS GRID ─────────────────────────────────────────────────────── */
+.block-awards {
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 56px 0 60px;
+}
+.awards-label {
+  font-size: 8px; letter-spacing: .52em;
+  color: rgba(255,255,255,.22);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.awards-intro {
+  font-size: 14px; line-height: 1.9; color: rgba(255,255,255,.44);
+  max-width: 560px; margin-bottom: 52px; letter-spacing: .01em;
+}
+.awards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+/* ── Column — fixed height card container ── */
+.award-col {
+  position: relative;
+  height: 230px;
+  border-left: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
+  cursor: default;
+  padding: 0 32px;
+}
+.award-col:first-child { border-left: none; padding-left: 0; }
+.award-col:last-child  { padding-right: 0; }
+
+/* ── Icon — always visible, never animated ── */
+.award-icon {
+  width: 48px; height: 48px;
+  margin-bottom: 32px;
+  opacity: .32;
+  flex-shrink: 0;
+}
+.award-icon svg { width: 100%; height: 100%; }
+
+/* ── Both faces sit below the icon ── */
+.award-face {
+  position: absolute;
+  top: 80px;   /* icon height 48 + margin 32 */
+  left: 0; right: 0; bottom: 0;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  will-change: transform, opacity;
+}
+.award-col:first-child .award-face { padding-left: 0; }
+.award-col:last-child  .award-face { padding-right: 0; }
+
+/* ── FRONT face — default visible ── */
+.award-face--front {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity  .34s cubic-bezier(.4,0,1,1),
+    transform .38s cubic-bezier(.4,0,1,1);
+}
+.award-col:hover .award-face--front {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+/* ── BACK face — hidden by default ── */
+.award-face--back {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity  .40s cubic-bezier(0,0,.2,1) .06s,
+    transform .46s cubic-bezier(.16,1,.3,1) .06s;
+}
+.award-col:hover .award-face--back {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Front content ── */
+.award-overline {
+  font-size: 10px; letter-spacing: .28em;
+  color: rgba(255,255,255,.32);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+.award-main {
+  font-family: var(--display); font-size: 20px; font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+.award-main-sub {
+  font-size: 10px; letter-spacing: .06em;
+  color: rgba(255,255,255,.38);
+  line-height: 1.5;
+}
+
+/* ── Tier colors ── */
+.award-col[data-tier="gold"]        .award-main { color: rgba(220,185,110,.88); }
+.award-col[data-tier="recognition"] .award-main { color: rgba(220,185,110,.88); }
+.award-col[data-tier="silver"]      .award-main { color: rgba(192,200,218,.90); }
+.award-col[data-tier="shortlist"]   .award-main { color: rgba(255,255,255,.82); }
+
+/* ── Back content ── */
+.award-back-label {
+  font-size: 10px; letter-spacing: .28em;
+  color: rgba(255,255,255,.22);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+.award-sub-list {
+  list-style: none;
+  flex: 1;
+  overflow: hidden;
+}
+.award-sub-list li {
+  font-size: 10px; line-height: 1.95;
+  color: rgba(255,255,255,.52);
+  letter-spacing: .03em;
+  /* stagger reveal via CSS custom property set in JS */
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity  .35s cubic-bezier(.16,1,.3,1) calc(var(--i, 0) * .04s + .12s),
+    transform .4s  cubic-bezier(.16,1,.3,1) calc(var(--i, 0) * .04s + .12s);
+}
+.award-col:hover .award-sub-list li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .awards-grid { grid-template-columns: 1fr 1fr; }
+  .award-col:nth-child(3) { border-left: none; margin-top: 40px; height: 210px; }
+  .award-col:nth-child(4) { margin-top: 40px; }
+  .award-col:nth-child(3) .award-face { padding-left: 0; }
+}
+@media (max-width: 540px) {
+  .awards-grid { grid-template-columns: 1fr; }
+  .award-col { border-left: none; height: auto; min-height: 210px; }
+  .award-face { position: relative; inset: auto; padding: 0; }
+  .award-face--back { display: none; }
+  .award-sub-list { display: none; }
+}
+
+/* ── SCROLL REVEAL — initial states set by GSAP, not CSS ─────────────── */
+/* Classes kept for GSAP targeting; visibility handled in JS */
+
 .block-section-label {
-  font-size: 9px; letter-spacing: .45em; color: rgba(255,255,255,.20);
+  font-size: 9px; letter-spacing: .45em; color: rgba(255,255,255,.28);
   text-transform: uppercase; margin-bottom: -52px;
 }
 .block-text {
   font-size: 15px; line-height: 2.0;
-  color: rgba(255,255,255,.46); max-width: 660px;
+  color: rgba(255,255,255,.56); max-width: 660px;
 }
 .block-video { width: 100%; aspect-ratio: 16/9; background: #000; }
 .block-video iframe { width: 100%; height: 100%; border: none; display: block; }
@@ -152,28 +402,180 @@ body {
   font-size: 10px; letter-spacing: .3em; color: rgba(255,255,255,.18);
 }
 
+/* ── CREDITS — museum wall ───────────────────────────────────────────── */
+.block-credits {
+  max-width: 760px;
+  padding-bottom: 40px;
+}
+.credits-header {
+  margin-bottom: 64px;
+}
+.credits-section-label {
+  font-size: 9px; letter-spacing: .45em; color: rgba(255,255,255,.28);
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.credits-agency {
+  font-family: var(--display); font-size: 36px; font-weight: 800;
+  color: rgba(255,255,255,.10); letter-spacing: -.02em; line-height: 1.0;
+}
+.credits-groups {
+  display: flex; flex-direction: column; gap: 52px;
+}
+.credits-group {
+  display: grid;
+  grid-template-columns: 148px 1fr;
+  gap: 0 40px;
+  align-items: start;
+}
+.credits-group-label {
+  font-size: 9px; letter-spacing: .42em; color: rgba(255,255,255,.22);
+  text-transform: uppercase; padding-top: 13px; line-height: 2.8;
+}
+.credits-rows { width: 100%; }
+.credits-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.credits-row:first-child { border-top: 1px solid rgba(255,255,255,.04); }
+.credits-name {
+  font-size: 13px; color: rgba(255,255,255,.70); letter-spacing: .01em;
+}
+.credits-role {
+  font-size: 9px; color: rgba(255,255,255,.26); letter-spacing: .08em;
+  text-transform: uppercase; text-align: right; max-width: 260px;
+}
+
+/* ── CLOSING STATEMENT ───────────────────────────────────────────────── */
+.block-closing {
+  max-width: 560px;
+  margin-left: auto; margin-right: auto;
+  text-align: center;
+  padding: 0 20px 120px;
+}
+.closing-rule {
+  width: 32px; height: 1px;
+  background: rgba(255,255,255,.10);
+  margin: 0 auto 64px;
+}
+.closing-text {
+  font-size: clamp(14px, 1.6vw, 19px);
+  letter-spacing: .18em;
+  line-height: 2.0;
+  color: rgba(255,255,255,.75);
+  text-transform: uppercase;
+  text-shadow: 0 0 100px rgba(240,185,80,.06);
+}
+
+/* ── SCROLL HINT ─────────────────────────────────────────────────────── */
+#scroll-hint {
+  position: fixed;
+  bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  z-index: 500;
+  pointer-events: auto;
+  cursor: pointer !important;
+}
+#scroll-hint:hover #scroll-hint-icon {
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.22);
+}
+#scroll-hint-label {
+  font-size: 8px; letter-spacing: .45em;
+  color: rgba(255,255,255,.32);
+  text-transform: uppercase;
+}
+#scroll-hint-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.48);
+}
+#scroll-hint svg { width: 16px; height: 16px; }
+
 /* ── NEXT PROJECT ────────────────────────────────────────────────────── */
+/* Placeholder — reserves page space equal to fixed panel */
+#np-wrapper {
+  height: 52vh;
+}
+/* Fixed panel — always anchored to viewport bottom.
+   clip-path (JS) keeps it invisible until wrapper enters viewport.
+   No z-index trickery needed — clip-path handles everything. */
 #next-project {
-  border-top: 1px solid rgba(255,255,255,.05);
-  padding: 56px 80px 56px 108px;
-  display: flex; align-items: center; justify-content: space-between;
+  display: block;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 52vh;
+  z-index: 2;
   text-decoration: none;
-  transition: background .2s;
+  overflow: hidden;
+  clip-path: inset(100% 0 0 0);
 }
-#next-project:hover { background: rgba(255,255,255,.015); }
-.np-label { font-size: 9px; letter-spacing: .4em; color: rgba(255,255,255,.22); }
+/* text — fixed to bottom of section, never moves */
+.np-text {
+  position: absolute;
+  bottom: 44px; left: 108px;
+  z-index: 3; pointer-events: none;
+}
+.np-label {
+  font-size: 9px; letter-spacing: .45em;
+  color: rgba(255,255,255,.32);
+  margin-bottom: 12px;
+}
 .np-title {
-  font-family: var(--display); font-size: 28px; font-weight: 800;
-  color: rgba(255,255,255,.88); letter-spacing: -.02em; margin-top: 8px;
+  font-family: var(--display); font-size: clamp(36px, 5vw, 62px); font-weight: 800;
+  color: rgba(255,255,255,.92); letter-spacing: -.03em; line-height: 1.0;
 }
-.np-arrow { font-size: 24px; color: rgba(255,255,255,.18); }
+.np-arrow-wrap {
+  position: absolute;
+  bottom: 48px; right: 80px;
+  z-index: 3; pointer-events: none;
+  font-size: 18px; color: rgba(255,255,255,.28);
+  transition: transform .3s, color .3s;
+}
+#next-project:hover .np-arrow-wrap { transform: translateX(8px); color: rgba(255,255,255,.65); }
+/* video panel — fills the section, parallaxes on scroll */
+.np-panel {
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+.np-panel iframe {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 177.78vh; height: 56.25vw;
+  min-width: 100%; min-height: 100%;
+  border: none; pointer-events: none;
+  will-change: transform;
+}
+.np-panel-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(2,4,8,.88) 0%,
+    rgba(2,4,8,.45) 55%,
+    rgba(2,4,8,.15) 100%
+  );
+}
 </style>
 </head>
 <body>
 
-<div id="cur"></div>
-<div id="cur-r"></div>
-<div id="pf-fade"></div>
+<!-- SCROLL HINT -->
+<div id="scroll-hint">
+  <span id="scroll-hint-label">Scroll Down</span>
+  <div id="scroll-hint-icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <polyline points="6,9 12,15 18,9"
+        stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</div>
 
 <!-- TOP NAV -->
 <nav id="top-nav" class="nav-on">
@@ -219,48 +621,36 @@ body {
   </button>
 </div>
 
+<!-- NEXT PROJECT — fixed to viewport bottom, revealed by transparent placeholder -->
+<a href="../" id="next-project">
+  <div class="np-panel">
+    <iframe
+      src="https://player.vimeo.com/video/1128639657?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1&background=1"
+      allow="autoplay; fullscreen; picture-in-picture"
+      id="np-iframe">
+    </iframe>
+    <div class="np-panel-overlay"></div>
+  </div>
+  <div class="np-text">
+    <div class="np-label">SIGUIENTE PROYECTO</div>
+    <div class="np-title" id="np-title">Pilsener FOMO</div>
+  </div>
+  <div class="np-arrow-wrap">→</div>
+</a>
+
 <div id="page-content">
 
 <section id="hero"></section>
 
-<section id="meta">
-  <div class="meta-client" id="meta-client"></div>
-  <div class="meta-year"   id="meta-year"></div>
-  <div class="meta-tags"   id="meta-tags"></div>
-</section>
-
 <main id="blocks"></main>
 
-<a href="../" id="next-project">
-  <div>
-    <div class="np-label">SIGUIENTE PROYECTO</div>
-    <div class="np-title" id="np-title">Pilsener FOMO</div>
-  </div>
-  <div class="np-arrow">→</div>
-</a>
+<!-- transparent placeholder — same height as fixed panel, reveals it -->
+<div id="np-wrapper"></div>
 
 </div>
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-// ── CURSOR ────────────────────────────────────────────────────────────
-const cur = document.getElementById('cur');
-const curR = document.getElementById('cur-r');
-let rx = 0, ry = 0;
-document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
-});
-(function lerpCursor() {
-  const tx = parseFloat(cur.style.left) || 0;
-  const ty = parseFloat(cur.style.top)  || 0;
-  rx += (tx - rx) * 0.12; ry += (ty - ry) * 0.12;
-  curR.style.left = rx + 'px'; curR.style.top = ry + 'px';
-  requestAnimationFrame(lerpCursor);
-})();
-
-// ── ENTRY ─────────────────────────────────────────────────────────────
-document.getElementById('pf-fade').style.opacity = '0';
-
 // ── AUDIO — Vimeo hero volume ─────────────────────────────────────────
 let _heroPlayer = null;
 let _audioOn    = false;
@@ -317,14 +707,6 @@ document.getElementById('back-btn').addEventListener('click', e => {
   window.location.href = '../?r=' + Date.now();
 });
 
-// ── NEXT PROJECT ──────────────────────────────────────────────────────
-document.getElementById('next-project').addEventListener('click', e => {
-  e.preventDefault();
-  sessionStorage.setItem('returnPanel', 'WORK');
-  sessionStorage.setItem('returnFlag',  '1');
-  window.location.href = '../pilsener-fomo/';
-});
-
 // ── PROJECT DATA ──────────────────────────────────────────────────────
 const PROJECT = {
   slug:  'suntimer',
@@ -333,23 +715,59 @@ const PROJECT = {
   year:   2022,
   cat:   ['Motion', '3D'],
   col:   [1.00, 0.85, 0.20],
+  next: {
+    slug:  'rachin',
+    title: 'Rachín',
+    vimeo: '1128639657',
+  },
   hero: {
     type: 'video',
     src:  'https://player.vimeo.com/video/1128639657?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1',
   },
   blocks: [
+    // ── 1. Case overview ──────────────────────────────────────────────
     {
-      type:    'section-label',
-      content: 'Overview',
+      type:     'case-overview',
+      headline: 'People stopped paying<br>attention to sunsets.',
+      sub:      'Corona found a way to bring that ritual back.',
+    },
+    // ── 2. Context / Idea / Execution / How it works ──────────────────
+    {
+      type:  'editorial',
+      label: 'Context',
+      paragraphs: [
+        'Corona is a brand built on disconnection, nature, and the ritual of the Golden Hour. Sunset has always been one of its strongest brand assets.',
+        'But even at Corona Sunsets — a global platform created to celebrate that moment — sunsets were starting to become just another backdrop.',
+        'In a world dominated by screens and distractions, we saw an opportunity: not to create a new ritual, but to reclaim one that was already ours.',
+      ],
     },
     {
-      type:    'text',
-      content: 'Motion 3D para campaña de verano de Corona. Producto, luz y ambiente construidos desde cero — una pieza donde la iluminación cinematográfica y la simplicidad del mensaje se encuentran.',
+      type:  'editorial',
+      label: 'Idea',
+      paragraphs: [
+        'Inspired by one of the oldest human orientation techniques — using the Earth\'s rotation, the horizon, and the extension of the arm — we transformed Corona\'s iconic bottle into a natural sunset timer.',
+        'By aligning it with the horizon, anyone could estimate how many minutes were left until sunset.',
+        'A simple analog gesture became an invitation to pause, find the right spot, and truly experience the moment.',
+      ],
     },
     {
-      type:    'section-label',
-      content: 'Visual',
+      type:  'editorial',
+      label: 'Execution',
+      paragraphs: [
+        'Suntimer came to life across Corona Sunsets activations in Guatemala, adding a new layer to an already established global experience.',
+        'More than 14,000 people experienced it and reconnected with the sunset through a simple physical gesture.',
+        'The bottle was no longer just part of the moment. It became a tool to live the brand\'s promise in the most tangible way possible.',
+      ],
     },
+    {
+      type:  'editorial',
+      label: 'How it works',
+      paragraphs: [
+        'Using the horizon, the sun\'s position, and the bottle as a visual guide, people could estimate how much daylight remained before sunset.',
+        'What had always been an iconic Corona bottle became a real-time invitation to stop, look up, and cherish the Golden Hour.',
+      ],
+    },
+    // ── 3. Gallery ────────────────────────────────────────────────────
     {
       type: 'mp4',
       src:  'assets/COVER.mp4',
@@ -359,21 +777,139 @@ const PROJECT = {
       items: [
         'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774426981/1_ub7qc7.png',
         'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427113/2_jrlhmi.png',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427151/3_y3yqnp.gif',
+        'https://res.cloudinary.com/dsxwplxz8/video/upload/v1774436494/5_2_rg04ja.webm',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427140/6_cff7hz.png',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427138/7_snwwd6.png',
       ],
+    },
+    // ── 4. Recognition ────────────────────────────────────────────────
+    {
+      type:  'awards',
+      intro: 'Recognized across Direct, Design, Innovation, Ambient, Packaging, and Brand Experience.',
+      columns: [
+        {
+          icon:     'eye',
+          festival: 'El Ojo de Iberoamérica',
+          main:     'Silver',
+          sub:      'Directo: Productos',
+          extras: [
+            '4 Shortlists',
+            'Directo: Eventos y Acciones',
+            'Design: Diseño de Producto',
+            'El Ojo Innovación: Producto',
+            'Mejor Idea de Centroamérica & Caribe',
+          ],
+        },
+        {
+          icon:     'diamond',
+          festival: 'Design',
+          main:     '2 Shortlists',
+          sub:      null,
+          extras: [
+            'Best Use / Limited Edition',
+            'Package & Product Design / Innovation',
+          ],
+        },
+        {
+          icon:     'wave',
+          festival: 'Festival / Innovation',
+          main:     '6 Shortlists',
+          sub:      null,
+          extras: [
+            'Live Experience',
+            'Best Use of Ambient Media',
+            'Outdoor / Public Space / Ambient',
+            'Events / Experience',
+            'Activations',
+            'Direct Marketing',
+          ],
+        },
+        {
+          icon:     'star',
+          festival: 'FDA',
+          main:     '4 Recognitions',
+          sub:      null,
+          extras: [
+            'Best Idea Guatemala',
+            'Gold — Branding / Packaging',
+            'Silver — Brand Experience / Street Activations',
+            'Silver — Innovation / Packaging',
+            'Shortlist — Direct',
+          ],
+        },
+      ],
+    },
+    {
+      type: 'credits',
+      groups: [
+        {
+          label: 'Leadership',
+          people: [
+            { name: 'Victor Pardo',           role: 'Chairman Creative Officer' },
+            { name: 'Manuel Madrid',          role: 'CEO' },
+            { name: 'Lukas Calderón Giraldo', role: 'Director General Creativo' },
+          ],
+        },
+        {
+          label: 'Creative',
+          people: [
+            { name: 'Fernando Reiter',    role: 'Creative Director' },
+            { name: 'Miguel Giraldo',     role: 'Creative Director' },
+            { name: 'Daniel Búcaro',      role: 'Senior Creative' },
+            { name: 'Elisa Ajosal',       role: 'Copywriter' },
+            { name: 'Luis Ovando',        role: 'Art Director' },
+            { name: 'Diego Leonel Apen',  role: 'Art Director' },
+            { name: 'Nifdel Rivera',      role: 'Motion' },
+          ],
+        },
+        {
+          label: 'Production',
+          people: [
+            { name: 'Annelise Menendez', role: 'Account Director' },
+            { name: 'Nina Gordillo',     role: 'Production Manager' },
+            { name: 'Eduardo Castañeda', role: 'Editor' },
+            { name: 'Michael Monzón',    role: 'Editor' },
+          ],
+        },
+        {
+          label: 'Collaborators',
+          people: [
+            { name: 'Camilo Lucena',     role: 'Head Composer — Estudios Machina' },
+            { name: 'Andrés Castrillón', role: 'Colorist — Whisky Films' },
+            { name: 'Pablo Lopez',       role: 'Film — Mento Media' },
+          ],
+        },
+      ],
+    },
+    {
+      type:    'closing',
+      content: 'Because every single sunset<br>deserves to be cherished.',
     },
   ],
 };
 
+// ── NEXT PROJECT — populated from PROJECT.next ────────────────────────
+;(function initNextProject(np) {
+  if (!np) return;
+  const panel  = document.getElementById('next-project');
+  const iframe = document.getElementById('np-iframe');
+  const title  = document.getElementById('np-title');
+  if (iframe) iframe.src = `https://player.vimeo.com/video/${np.vimeo}?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1&background=1`;
+  if (title)  title.textContent = np.title;
+  if (panel)  panel.addEventListener('click', e => {
+    e.preventDefault();
+    sessionStorage.setItem('returnPanel', 'WORK');
+    sessionStorage.setItem('returnFlag',  '1');
+    window.location.href = `../${np.slug}/`;
+  });
+})(PROJECT.next);
+
 // ── RENDER ────────────────────────────────────────────────────────────
 (function render(p) {
-  const accent = 'rgb(58,102,204)';
-  document.documentElement.style.setProperty('--accent', accent);
+  document.documentElement.style.setProperty('--accent', 'rgb(58,102,204)');
   document.title = `${p.title} — Nifdel Rivera`;
-  document.getElementById('nav-title').textContent    = `Work · ${p.title}`;
-  document.getElementById('meta-client').textContent  = p.client;
-  document.getElementById('meta-year').textContent    = p.year;
-  document.getElementById('meta-tags').innerHTML      =
-    p.cat.map(c => `<span class="meta-tag">${c}</span>`).join('');
+  document.getElementById('nav-title').textContent = `Work · ${p.title}`;
 
   // Hero
   const hero = document.getElementById('hero');
@@ -401,6 +937,120 @@ const PROJECT = {
     const el = document.createElement('div');
     let caption = null;
     switch (b.type) {
+
+      // ── EDITORIAL ───────────────────────────────────────────────────
+      case 'case-overview': {
+        el.className = 'block-case-overview';
+        // Split headline on <br> → each line gets a mask wrapper
+        const _ovLines = b.headline.split('<br>').map(line =>
+          `<span class="ov-line"><span class="js-ov-line">${line}</span></span>`
+        ).join('');
+        el.innerHTML = `
+          <div class="overview-headline">${_ovLines}</div>
+          <div class="overview-sub">${b.sub}</div>`;
+        break;
+      }
+
+      case 'editorial': {
+        el.className = 'editorial-pin-wrap';
+        const [_first, ..._rest] = b.paragraphs;
+        el.innerHTML = `
+          <div class="editorial-stage">
+            <div class="ep-label">${b.label}</div>
+            <div class="ep-headline">${_first}</div>
+            ${_rest.length ? `<div class="ep-body">${_rest.map(p => `<p>${p}</p>`).join('')}</div>` : ''}
+          </div>`;
+        break;
+      }
+
+      case 'insight':
+        el.className = 'block-insight reveal';
+        el.innerHTML = `
+          <div class="insight-credit">${b.credit || ''}</div>
+          <div class="insight-text">${b.lines.join('<br>')}</div>`;
+        break;
+
+      case 'idea':
+        el.className = 'block-idea reveal';
+        el.innerHTML = `
+          <div class="idea-label">THE IDEA</div>
+          <div class="idea-text">${b.content}</div>`;
+        break;
+
+      case 'contribution':
+        el.className = 'block-contribution reveal';
+        el.innerHTML = `
+          <div class="contribution-label">CONTRIBUTION</div>
+          <div class="contribution-text">${b.content}</div>`;
+        break;
+
+      case 'closing':
+        el.className = 'block-closing reveal';
+        el.innerHTML = `
+          <div class="closing-rule"></div>
+          <div class="closing-text">${b.content}</div>`;
+        break;
+
+      case 'credits':
+        el.className = 'block-credits reveal';
+        el.innerHTML = `
+          <div class="credits-header">
+            <div class="credits-section-label">Credits</div>
+            <div class="credits-agency">el taier DDB Centro</div>
+          </div>
+          <div class="credits-groups">
+            ${b.groups.map(g => `
+              <div class="credits-group">
+                <div class="credits-group-label">${g.label}</div>
+                <div class="credits-rows">
+                  ${g.people.map(p => `
+                    <div class="credits-row">
+                      <span class="credits-name">${p.name}</span>
+                      <span class="credits-role">${p.role}</span>
+                    </div>`).join('')}
+                </div>
+              </div>`).join('')}
+          </div>`;
+        break;
+
+      case 'awards': {
+        el.className = 'block-awards reveal-full';
+        const _icons = {
+          eye:     `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="14" cy="14" rx="12" ry="7.5" stroke="white" stroke-width="1.5"/><circle cx="14" cy="14" r="3.5" fill="white"/><circle cx="14" cy="14" r="1.2" fill="#020408"/></svg>`,
+          diamond: `<svg viewBox="0 0 28 28" fill="none"><polygon points="14,3 25,14 14,25 3,14" stroke="white" stroke-width="1.5"/><polygon points="14,9 20,14 14,19 8,14" stroke="white" stroke-width="1" opacity=".5"/></svg>`,
+          wave:    `<svg viewBox="0 0 28 28" fill="none"><path d="M2 16 Q5.5 9 9 16 Q12.5 23 16 16 Q19.5 9 23 16 Q25 19.5 27 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M2 11 Q5.5 4 9 11 Q12.5 18 16 11 Q19.5 4 23 11" stroke="white" stroke-width="1" stroke-linecap="round" opacity=".35"/></svg>`,
+          star:    `<svg viewBox="0 0 28 28" fill="none"><polygon points="14,2.5 16.9,10.2 25,10.2 18.5,15.3 21,23 14,18.3 7,23 9.5,15.3 3,10.2 11.1,10.2" stroke="white" stroke-width="1.4" stroke-linejoin="round"/></svg>`,
+        };
+        el.innerHTML = `
+          <div class="awards-label">RECOGNITION</div>
+          ${b.intro ? `<div class="awards-intro">${b.intro}</div>` : ''}
+          <div class="awards-grid">
+            ${b.columns.map(col => {
+              const _tier = /silver/i.test(col.main)    ? 'silver'
+                          : /gold/i.test(col.main)      ? 'gold'
+                          : /shortlist/i.test(col.main) ? 'shortlist'
+                          : 'recognition';
+              return `
+              <div class="award-col" data-tier="${_tier}">
+                <div class="award-icon">${_icons[col.icon] || ''}</div>
+                <div class="award-face award-face--front">
+                  <div class="award-overline">${col.festival}</div>
+                  <div class="award-main">${col.main}</div>
+                  ${col.sub ? `<div class="award-main-sub">${col.sub}</div>` : ''}
+                </div>
+                <div class="award-face award-face--back">
+                  <div class="award-back-label">${col.festival}</div>
+                  <ul class="award-sub-list">
+                    ${col.extras.map((e, i) => `<li style="--i:${i}">${e}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>`;
+        break;
+      }
+
+      // ── STANDARD ────────────────────────────────────────────────────
       case 'section-label':
         el.className   = 'block-section-label';
         el.textContent = b.content;
@@ -410,7 +1060,7 @@ const PROJECT = {
         el.textContent = b.content;
         break;
       case 'video':
-        el.className = 'block-video';
+        el.className = 'block-video reveal-full';
         el.innerHTML = `<iframe src="${b.src}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
         caption = b.caption || null;
         break;
@@ -434,12 +1084,17 @@ const PROJECT = {
         ).join('');
         break;
       case 'mp4':
-        el.className = 'block-mp4';
+        el.className = 'block-mp4 reveal-full';
         el.innerHTML = `<video src="${b.src}" autoplay loop muted playsinline></video>`;
         break;
       case 'image-stack':
         el.className = 'block-stack';
-        el.innerHTML = b.items.map(src => `<img src="${src}" alt="">`).join('');
+        el.innerHTML = b.items.map(src => {
+          const isVideo = /\.(mp4|webm|ogg|mov)(\?|$)/i.test(src);
+          return isVideo
+            ? `<video src="${src}" autoplay loop muted playsinline style="width:100%;display:block;"></video>`
+            : `<img src="${src}" alt="">`;
+        }).join('');
         break;
       case 'embed':
         el.className = 'block-embed';
@@ -448,10 +1103,205 @@ const PROJECT = {
         break;
     }
     container.appendChild(el);
-    // Caption se inserta DESPUÉS de que el elemento está en el DOM
     if (caption) el.insertAdjacentHTML('afterend', `<p class="block-caption">${caption}</p>`);
   });
+
+  // ── NEXT PROJECT FIXED REVEAL ────────────────────────────────────────
+  (function initNPReveal() {
+    const panel   = document.getElementById('next-project');
+    const wrapper = document.getElementById('np-wrapper');
+    const iframe  = document.getElementById('np-iframe');
+    if (!panel || !wrapper) return;
+
+    const PEEK = 80; // px always visible at bottom once wrapper enters viewport
+
+    function update() {
+      const rect   = wrapper.getBoundingClientRect();
+      const vh     = window.innerHeight;
+      const panelH = panel.offsetHeight; // 52vh in px
+
+      // px of wrapper scrolled above viewport bottom (0 = just entering)
+      const entered = Math.max(0, vh - rect.top);
+      // Reveal at least PEEK once wrapper is within 40px of viewport
+      const near    = rect.top < vh + 40;
+      const clipPx  = near
+        ? Math.max(0, panelH - Math.max(PEEK, entered))
+        : panelH;
+
+      panel.style.clipPath = `inset(${clipPx.toFixed(0)}px 0 0 0)`;
+
+      // Video: compensate scroll so it appears anchored to viewport bottom
+      if (iframe) {
+        const progress = Math.max(0, Math.min(1, entered / panelH));
+        const vy = (1 - progress) * 40;
+        iframe.style.transform = `translate(-50%, calc(-50% + ${vy.toFixed(1)}px))`;
+      }
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
 })(PROJECT);
+</script>
+
+<script type="module">
+import gsap          from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm'
+import ScrollTrigger  from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/ScrollTrigger/+esm'
+import Lenis          from 'https://cdn.jsdelivr.net/npm/lenis@1.3.13/+esm'
+import { initCursor } from '../../core/cursor.js'
+import { initPage }   from '../../core/transitions.js'
+
+gsap.registerPlugin(ScrollTrigger)
+window.gsap = gsap  // transitions.js lo necesita como global
+
+initCursor()
+initPage({ delay: 0.1 })
+
+// ── LENIS ────────────────────────────────────────────────────────────
+const lenis = new Lenis({ duration: 1.3, smoothWheel: true, smoothTouch: false })
+lenis.on('scroll', ScrollTrigger.update)
+gsap.ticker.add(time => lenis.raf(time * 1000))
+gsap.ticker.lagSmoothing(0)
+
+// ── SCROLL HINT ───────────────────────────────────────────────────────
+const _hint = document.getElementById('scroll-hint')
+if (_hint) {
+  // Fade in on load
+  gsap.fromTo(_hint, { opacity: 0 }, { opacity: 1, duration: 1.0, delay: 1.4, ease: 'power2.out' })
+
+  // Icon pulse — scale only (no position)
+  const _hintIcon = document.getElementById('scroll-hint-icon')
+  if (_hintIcon) {
+    gsap.to(_hintIcon, {
+      scale: 1.10,
+      duration: 1.2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 1.4,
+    })
+  }
+
+  // Label pulse — opacity only
+  const _hintLabel = document.getElementById('scroll-hint-label')
+  if (_hintLabel) {
+    gsap.to(_hintLabel, {
+      opacity: 0.12,
+      duration: 1.2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 1.4,
+    })
+  }
+
+  // Click → scroll to next-project via Lenis
+  _hint.addEventListener('click', () => {
+    lenis.scrollTo('#np-wrapper', { offset: 0, duration: 1.6, easing: t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t })
+  })
+
+  // Hide when next-project wrapper enters viewport
+  ScrollTrigger.create({
+    trigger: '#np-wrapper',
+    start: 'top 90%',
+    onEnter:     () => gsap.to(_hint, { opacity: 0, duration: 0.5, ease: 'power2.out' }),
+    onLeaveBack: () => gsap.to(_hint, { opacity: 1, duration: 0.5, ease: 'power2.out' }),
+  })
+}
+
+// ── CASE OVERVIEW — line mask reveal ─────────────────────────────────
+gsap.from('.js-ov-line', {
+  yPercent: 110,
+  duration: 1.15,
+  stagger: 0.10,
+  ease: 'power3.out',
+  scrollTrigger: { trigger: '.block-case-overview', start: 'top 82%' }
+})
+gsap.fromTo('.overview-sub',
+  { opacity: 0, y: 22 },
+  { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out',
+    scrollTrigger: { trigger: '.block-case-overview', start: 'top 82%', delay: 0.18 }
+  }
+)
+
+// ── EDITORIAL PINS ────────────────────────────────────────────────────
+gsap.utils.toArray('.editorial-pin-wrap').forEach(wrap => {
+  const stage    = wrap.querySelector('.editorial-stage')
+  const label    = wrap.querySelector('.ep-label')
+  const headline = wrap.querySelector('.ep-headline')
+  const paras    = gsap.utils.toArray(wrap.querySelectorAll('.ep-body p'))
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger:    wrap,
+      start:      'top top',
+      end:        'bottom bottom',
+      scrub:      1.4,
+      pin:        stage,
+      pinSpacing: false,
+    }
+  })
+
+  // 0.00 → 0.14 — label + headline entran solos (título se queda fijo)
+  tl.fromTo(label,
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, ease: 'none' }, 0)
+    .fromTo(headline,
+      { scale: 0.88, opacity: 0, filter: 'blur(18px)' },
+      { scale: 1,    opacity: 1, filter: 'blur(0px)',  ease: 'none' }, 0.03)
+
+  // 0.14 → 0.18 — hold solo del título (se "asienta")
+
+  // 0.18 → 0.38 — párrafos aparecen
+  if (paras.length) {
+    tl.fromTo(paras,
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, stagger: 0.07, ease: 'none' }, 0.18)
+  }
+
+  // 0.38 → 0.72 — hold completo, lector lee
+
+  // 0.72 → 0.88 — exit rápido, todo sale junto
+  tl.to(headline,
+      { scale: 1.04, opacity: 0, filter: 'blur(10px)', ease: 'none' }, 0.72)
+    .to(label,
+      { opacity: 0, ease: 'none' }, 0.72)
+
+  if (paras.length) {
+    tl.to(paras,
+      { opacity: 0, y: -10, stagger: { each: 0.02, from: 'end' }, ease: 'none' }, 0.72)
+  }
+  // 0.88 → 1.0 — buffer mínimo antes del siguiente
+})
+
+// ── STANDARD SCROLL REVEALS (awards, credits, closing, mp4, stack) ───
+gsap.utils.toArray('.reveal, .reveal-full').forEach(el => {
+  gsap.fromTo(el,
+    { y: 40, opacity: 0 },
+    { y: 0,  opacity: 1, duration: 1.0, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%' }
+    }
+  )
+})
+
+// ── IMAGE STACK — one by one ─────────────────────────────────────────
+gsap.utils.toArray('.block-stack > *').forEach(item => {
+  gsap.fromTo(item,
+    { opacity: 0, y: 40, scale: 0.98, filter: 'blur(16px)' },
+    { opacity: 1, y: 0,  scale: 1,    filter: 'blur(0px)',
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: item,
+        start:  'top 95%',
+        end:    'top 40%',
+        scrub:  0.8,
+      }
+    }
+  )
+})
+
+ScrollTrigger.refresh()
 </script>
 </body>
 </html>

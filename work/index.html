@@ -900,7 +900,7 @@ const LensShader = {
   uniforms: {
     tDiffuse:   { value: null },
     uStrength:  { value: -0.112 }, // pincushion invertido — centro comprimido, bordes abiertos
-    uChroma:    { value: 0.018 },  // split cromático en bordes
+    uChroma:    { value: 0.014 },  // split cromático en bordes
     uVignette:  { value: 0.65 },   // caída de vignette
     uAspect:    { value: window.innerWidth / window.innerHeight },
   },
@@ -1124,7 +1124,7 @@ const atmos = new THREE.Mesh(
   new THREE.ShaderMaterial({
     uniforms: { ..._atmosBase,
       uColor:     { value: new THREE.Color(0.27, 0.45, 0.85) },
-      uIntensity: { value: 0.39 },
+      uIntensity: { value: 0.33 },
     },
     vertexShader: _atmosVert, fragmentShader: _atmosFrag,
     transparent: true, blending: THREE.AdditiveBlending,
@@ -1139,7 +1139,7 @@ const halo = new THREE.Mesh(
   new THREE.ShaderMaterial({
     uniforms: { ..._atmosBase,
       uColor:     { value: new THREE.Color(0.16, 0.28, 0.73) },
-      uIntensity: { value: 0.08 },
+      uIntensity: { value: 0.068 },
     },
     vertexShader: _atmosVert, fragmentShader: _atmosFrag,
     transparent: true, blending: THREE.AdditiveBlending,
@@ -1410,21 +1410,21 @@ function _mkParticles(N, rMin, rMax, rPow, szFn, uOpts) {
 window._pUniA = _mkParticles(
   7000, 8, 60, 1.5,
   ()=> Math.random()>0.95 ? Math.random()*6+2 : Math.random()*0.9+0.15,
-  { speed:0.05, freq:0.02, amp:8.0, alphaMult:0.08, mouseForce:0.0 }
+  { speed:0.05, freq:0.02, amp:8.0, alphaMult:0.064, mouseForce:0.0 }
 );
 
 // Capa 2 — MICRO DUST · partículas diminutas, reaccionan al mouse (black-hole)
 window._pUniB = _mkParticles(
   20000, 10, 65, 1.0,
   ()=> Math.random()*1.4+0.5,
-  { speed:0.015, freq:0.05, amp:1.5, alphaMult:0.55, mouseForce:0.15 }
+  { speed:0.015, freq:0.05, amp:1.5, alphaMult:0.44, mouseForce:0.15 }
 );
 
 // Capa 3 — STARS · fondo lejano, leve reacción al mouse
 window._pUniC = _mkParticles(
   2500, 65, 200, 0.8,
   ()=> Math.random()>0.95 ? Math.random()*1.2+0.8 : Math.random()*0.4+0.1,
-  { speed:0.008, freq:0.005, amp:1.0, alphaMult:0.06, mouseForce:0.04 }
+  { speed:0.008, freq:0.005, amp:1.0, alphaMult:0.048, mouseForce:0.04 }
 );
 
 // Luces — cinematic: dark ambient, dramatic cold key light
@@ -2047,9 +2047,9 @@ function animate() {
   window._pUniC.uni.uMouse.value.copy(mNDC);
   window._pUniB.uni.uAspect.value = W / H;
   window._pUniC.uni.uAspect.value = W / H;
-  window._pUniA.pts.rotation.y += 0.00012;
-  window._pUniB.pts.rotation.y += 0.00008; window._pUniB.pts.rotation.x += 0.000025;
-  window._pUniC.pts.rotation.y += 0.00004;
+  window._pUniA.pts.rotation.y += 0.000096;
+  window._pUniB.pts.rotation.y += 0.000064; window._pUniB.pts.rotation.x += 0.00002;
+  window._pUniC.pts.rotation.y += 0.000032;
 
   // God rays → planeta
   _ppNDC.copy(PP).project(camera);
