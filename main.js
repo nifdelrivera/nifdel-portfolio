@@ -25,6 +25,7 @@ let lastClosestNode     = null;  // para detectar cambio de nodo en carousel
 let divingToNode        = null;  // nodo objetivo durante el camera dive
 let bloomTarget         = 0.8;   // bloom base
 let _bloomTimer         = null;
+window._zoomBlur        = zoomBlurPass; // expuesto para transitions externas
 let particleScrollVel   = 0;     // velocidad de scroll → parallax rotacional en dust
 
 let macroDustRotY       = 0;     // rotación Y acumulada del macro dust (scroll)
@@ -98,18 +99,18 @@ window.addEventListener('click', (e) => {
     // Ajuste 4: si la cámara ya está dentro de un nodo y hay panel abierto,
     // un click en el canvas (fuera del panel) lo cierra y vuelve a órbita
     if (isInsideNode) {
-        const panel = document.getElementById('panel');
+        const panel   = document.getElementById('panel');
+        const topNav  = document.getElementById('top-nav');
+        const sideNav = document.getElementById('side-nav');
         if (window.activeKey && typeof window.closePanel === 'function') {
-            if (!panel || !panel.contains(e.target)) window.closePanel();
+            const inPanel   = panel   && panel.contains(e.target);
+            const inTopNav  = topNav  && topNav.contains(e.target);
+            const inSideNav = sideNav && sideNav.contains(e.target);
+            if (!inPanel && !inTopNav && !inSideNav) window.closePanel();
         }
         return;
     }
     if (!hoveredNode) return;
-    // INFO navega directamente sin camera dive
-    if (hoveredNode.userData.name === 'INFO') {
-        if (typeof window.onNodeEntered === 'function') window.onNodeEntered('INFO');
-        return;
-    }
     enterNode(hoveredNode);
 });
 

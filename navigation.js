@@ -112,14 +112,6 @@ window.onNodeHovered = function(key) {
 //  HOOK — nodo entrado
 // ══════════════════════════════════════════
 window.onNodeEntered = function(key) {
-  if (key === 'INFO') {
-    if (typeof window.navigateOut === 'function') {
-      window.navigateOut({ preventDefault: () => {} }, 'info/');
-    } else {
-      window.location.href = 'info/';
-    }
-    return;
-  }
   openPanel(key);
 };
 
@@ -152,8 +144,8 @@ function updateSideNav(state) {
 
   if (state === 'map') {
     nav.classList.add('state-map');
-    label.textContent = 'Explorar';
-    if (sub) sub.textContent = '';
+    label.textContent = 'Nifdel';
+    if (sub) sub.textContent = 'Rivera';
     nav.style.removeProperty('--sn-color');
   } else if (state === 'panel') {
     nav.classList.add('state-panel');
@@ -284,7 +276,23 @@ function navigateToPortfolio() {
   } else {
     sessionStorage.removeItem('audioOn');
   }
-  window.pageFadeOut(() => { window.location.href = 'work/'; }, 420);
+
+  // Zoom cinematic — mismo feeling que click en card dentro de Work
+  if (window._zoomBlur) {
+    const zb   = window._zoomBlur;
+    const start = performance.now();
+    const dur   = 480;
+    const tick  = (now) => {
+      const p = Math.min((now - start) / dur, 1);
+      // ease-in cubic: empieza suave, termina con fuerza
+      const e = p * p * p;
+      zb.uniforms.uStrength.value = e * 0.90;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  window.pageFadeOut(() => { window.location.href = 'work/'; }, 480);
 }
 
 // ══════════════════════════════════════════

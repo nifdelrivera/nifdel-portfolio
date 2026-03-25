@@ -21,6 +21,7 @@
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
+  <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -46,32 +47,65 @@
 
 <!-- ══ HUD ══ -->
 <div id="hud">
-  <div class="h-tl">
-    <strong>Nifdel Rivera</strong>
-    Creative Technologist
-  </div>
-  <div class="h-tr">
-    <div class="h-tr-dot"></div>
-    <span id="h-state">Exploring</span>
-  </div>
-  <button id="audio-btn" onclick="toggleAudio()" onmouseenter="uiSound('hover:audio-btn')">
-    <div class="ab-icon">
-      <span></span><span></span><span></span><span></span>
-    </div>
-    <span id="ab-label">Enable Audio</span>
-  </button>
   <div class="h-br" id="h-br">
     Hover a node to explore<br>
     Scroll to orbit · Click to enter
   </div>
 </div>
 
+<!-- ══ TOP NAV ══ -->
+<nav id="top-nav">
+
+  <!-- Logo: standalone, sin pill -->
+  <div class="tn-logo-wrap">
+    <img src="assets/LOGO.svg" alt="Nifdel Rivera" class="tn-logo-img">
+  </div>
+
+  <!-- Pills: 3 burbujas independientes -->
+  <div class="tn-pills">
+
+    <div class="tn-pill" id="pill-identity">
+      <span class="tp-name">Nifdel Rivera</span>
+      <span class="tp-sep">·</span>
+      <span class="tp-role">Creative Technologist</span>
+    </div>
+
+    <div class="tn-pill" id="pill-status">
+      <span class="tn-dot"></span>
+      <span class="tp-state" id="h-state">Exploring</span>
+    </div>
+
+    <button class="tn-pill tn-pill-btn" id="audio-btn"
+            onclick="toggleAudio()" onmouseenter="uiSound('hover:audio-btn')">
+      <div class="ab-icon">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span id="ab-label">Enable Audio</span>
+    </button>
+
+  </div>
+</nav>
+
 <!-- ══ SIDE NAV ══ -->
 <div id="side-nav" class="state-map">
-  <button class="sn-clickable" onclick="sideNavAction()" id="sn-clickable">
+  <button class="sn-clickable" onclick="sideNavAction()" onmouseenter="uiSound('hover:back-btn')" id="sn-clickable">
+
     <div class="sn-state-dot"></div>
     <span class="sn-label" id="sn-label">Explorar</span>
-    <div class="sn-arrow" id="sn-arrow">←</div>
+
+    <!-- Back arrow — ring sweep + chevron -->
+    <div class="sn-arrow" id="sn-arrow">
+      <svg class="sn-ring" viewBox="0 0 44 44" fill="none">
+        <circle class="sn-ring-track"    cx="22" cy="22" r="19"/>
+        <circle class="sn-ring-progress" cx="22" cy="22" r="19"/>
+      </svg>
+      <svg class="sn-chevron" viewBox="0 0 14 14" fill="none">
+        <polyline points="9,2 5,7 9,12"
+          stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
     <span class="sn-sub" id="sn-sub">volver</span>
   </button>
 </div>
@@ -87,12 +121,24 @@
 
 <!-- ══ PANEL ══ -->
 <div id="panel">
-  <button class="p-close" onclick="closePanel()" onmouseenter="uiSound('hover:close-btn')">✕ Close</button>
   <div class="p-inner" id="p-inner">
-    <div class="p-eye"  id="p-eye">Domain</div>
-    <h2 class="p-title" id="p-title">—</h2>
-    <p  class="p-desc"  id="p-desc">—</p>
+
+    <!-- B1: Titular -->
+    <div class="p-b1">
+      <div class="p-b1-header">
+        <span class="p-b1-dot"></span>
+        <span class="p-eye" id="p-eye">DOMAIN</span>
+        <button class="p-close" onclick="closePanel()" onmouseenter="uiSound('hover:close-btn')">✕ CLOSE</button>
+      </div>
+      <h2 class="p-title" id="p-title">—</h2>
+      <p  class="p-desc"  id="p-desc">—</p>
+    </div>
+
+    <div class="p-rule"></div>
+
+    <!-- B2: CTA + B3: Lista — renderizados desde content.js -->
     <div id="p-body"></div>
+
   </div>
 </div>
 

@@ -30,9 +30,9 @@ export const NODES = {
     body: 'systems',
   },
   INFO: {
-    col: [255,255,255], theme: 'info',
-    eye: '◎', title: 'Info',
-    desc: 'Quién soy. Cómo pienso. Dónde encontrarme.',
-    body: null,
+    col: [255,255,255], theme: 't-info',
+    eye: 'Identidad', title: 'Nifdel Rivera',
+    desc: 'Creative Technologist · Guatemala · Since 2010',
+    body: 'info',
   },
 };

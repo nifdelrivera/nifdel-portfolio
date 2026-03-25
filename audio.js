@@ -223,6 +223,8 @@ function _uiSoundBase(type) {
     case 'hover:panel-cta-systems':     uiTone(293.7,.072,.008,.22); break;
     case 'hover:see-all':               uiChord([392,493.8,587.3],.075,.012,.8,.06); break;
     case 'hover:back-btn':              uiTone(493.8,.07,.010,.28); uiTone(392,.042,.015,.35); break;
+    case 'hover:nav-prev':              uiTone(392,.065,.008,.18); uiTone(329.6,.038,.014,.26); break;
+    case 'hover:nav-next':              uiTone(493.8,.065,.008,.18); uiTone(587.3,.038,.012,.24); break;
     case 'hover:pm-card':               uiTone(493.8,.065,.008,.40); break;
     case 'hover:pm-card-cta':           uiChord([493.8,622],.070,.010,.55,.05); break;
   }
