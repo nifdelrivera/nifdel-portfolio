@@ -114,10 +114,9 @@ export function openOverlay() {
   setTimeout(() => _tone(440, 0.018, 0.16), 55)
   setTimeout(() => _tone(554, 0.014, 0.20), 110)
 
-  document.documentElement.style.overflow = 'hidden'
-  document.body.style.overflow = 'hidden'
-
+  document.body.style.overflow = 'hidden'   // lock body — NOT html (html propagates to viewport and kills fixed scroll)
   document.getElementById('portfolio-btn')?.classList.add('active')
+  document.body.classList.add('pf-open')
   _overlay.style.pointerEvents = 'all'
   _scrollEl.scrollTop = 0
 
@@ -157,10 +156,9 @@ export function closeOverlay() {
   _tone(440, 0.020, 0.12)
   setTimeout(() => _tone(330, 0.014, 0.16), 60)
 
-  document.documentElement.style.overflow = ''
   document.body.style.overflow = ''
-
   document.getElementById('portfolio-btn')?.classList.remove('active')
+  document.body.classList.remove('pf-open')
   _overlay.style.pointerEvents = 'none'
   _hideCard()
   _hideSI()
@@ -247,7 +245,13 @@ function _injectCSS() {
   right: 28px; top: 47px;
   z-index: 8100;
   pointer-events: auto !important;
-  transition: background .28s, border-color .32s, color .28s, box-shadow .38s !important;
+  opacity: 0;
+  transition: opacity .55s cubic-bezier(.16,1,.3,1) .4s, background .28s, border-color .32s, color .28s, box-shadow .38s !important;
+}
+/* Reveal after splash/intro dismiss */
+#hud.on ~ #top-nav ~ #portfolio-btn,
+#top-nav.nav-on ~ #portfolio-btn {
+  opacity: 1;
 }
 #portfolio-btn .pb-icon {
   width: 14px; height: 14px;
@@ -451,6 +455,19 @@ function _injectCSS() {
 #pf-card-info  { padding: 16px 18px 18px; background: rgba(6,8,18,.96); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid rgba(255,255,255,.06); }
 #pf-card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: rgba(255,255,255,.90); letter-spacing: -.01em; margin-bottom: 4px; }
 #pf-card-meta  { font-size: 7px; letter-spacing: .34em; color: rgba(255,255,255,.28); text-transform: uppercase; }
+
+/* ── Side nav when Portfolio Mode is open ────────────────────────────── */
+/* Toggle bottom: 47px + 44px height + 16px gap = 107px */
+body.pf-open #side-nav {
+  top: 107px !important;
+  transform: translateX(0) translateY(0) !important;
+  height: 160px !important;
+  opacity: .45 !important;
+  transition: top .45s cubic-bezier(.16,1,.3,1),
+              transform .45s cubic-bezier(.16,1,.3,1),
+              height .45s cubic-bezier(.16,1,.3,1),
+              opacity .45s ease !important;
+}
 
 /* ── Scroll indicator ────────────────────────────────────────────────── */
 #pf-si {

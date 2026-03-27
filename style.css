@@ -304,7 +304,7 @@ body.on-node #cur-r { width:44px; height:44px; border-color:rgba(255,255,255,.5)
    PANEL — lenguaje visual unificado
 ══════════════════════════════════════════ */
 #panel {
-  position:fixed; top:40px; right:40px; bottom:40px;
+  position:fixed; top:127px; right:40px; bottom:40px;
   width:25vw; min-width:320px; z-index:80;
   border-radius:16px;
   border:1px solid rgba(255,255,255,.16);
