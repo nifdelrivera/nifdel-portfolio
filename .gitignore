@@ -5,7 +5,8 @@ quality_tiers_plan.md
 docs/
 *.bak
 *.bak2
-
+*.md
+docs/SESSION_REPORT_*.md
 # Dependencies
 node_modules/
 

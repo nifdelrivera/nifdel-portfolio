@@ -70,6 +70,18 @@ universeGroup.add(orbitGroup);
 export const centerGroup = new THREE.Group();
 universeGroup.add(centerGroup);
 
+// Si no estamos en retorno (?back=1):
+// - Logo arranca cerca de la cámara (z=+30, cámara en z=58) — aparece grande
+// - Rotado 180° en Y — de espaldas a la cámara
+// - Escala mínima — GSAP lo revela mientras el overlay oscurece la escena
+// triggerLogoEntrance() en main.js lo lleva suavemente a (0,0,0) rotando hacia la cámara
+if (!new URLSearchParams(location.search).get('back')) {
+    centerGroup.scale.setScalar(0.001);
+    centerGroup.position.z = 54;   // máximo seguro — cámara en z=58, z=60+ queda detrás
+    centerGroup.position.y = 20;   // compensa elevación cámara y=22: 54*(22/58)≈20.5
+    centerGroup.rotation.y = Math.PI;
+}
+
 // ══════════════════════════════════════════
 //  LOGO GLTF + MATERIAL HOLOGRÁFICO
 // ══════════════════════════════════════════
@@ -129,7 +141,11 @@ for (let i = 0; i < numNodes; i++) {
     const currentColor  = neutralColor.clone();
 
     const s = CONFIG.nodeScales[i];
-    nodeGroup.scale.set(s, s, s);
+    nodeGroup.userData.baseScale = s;
+    // Start invisible — triggerOrbsEntrance() reveals them after the logo sequence.
+    // If returning from a subpage (?back=1), skip the entrance and show immediately.
+    const _isReturning = !!new URLSearchParams(location.search).get('back');
+    nodeGroup.scale.setScalar(_isReturning ? s : 0.001);
 
     // ── Plasma core ──
     const coreUniforms = {

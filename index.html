@@ -19,8 +19,9 @@
   </script>
 
   <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 
+  <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -43,6 +44,12 @@
 <!-- ══ NODE LABEL PILLS (3D → 2D overlay) ══ -->
 <div id="ui-layer">
   <div id="labels-container"></div>
+</div>
+
+<!-- ══ HUB MANIFESTO — Capa 2 ══ -->
+<div id="hub-manifesto">
+  <span>Ideas don't finish.</span>
+  <span>They shift states.</span>
 </div>
 
 <!-- ══ HUD ══ -->
@@ -81,6 +88,13 @@
         <span></span><span></span><span></span><span></span>
       </div>
       <span id="ab-label">Enable Audio</span>
+    </button>
+
+    <button class="tn-pill tn-pill-btn" id="portfolio-btn" aria-label="Portfolio Mode">
+      <div class="pb-icon">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span>Portfolio Mode</span>
     </button>
 
   </div>
@@ -208,15 +222,11 @@
 <!-- ══ ENTER TRANSITION ══ -->
 <div id="enter-transition">
   <span class="et-coord tl">14°37'N · 90°33'W</span>
-  <span class="et-coord tr">Neural Map · v2.0</span>
+  <span class="et-coord tr">v18.1</span>
   <span class="et-coord bl">© Nifdel Rivera</span>
-  <span class="et-coord br">2025</span>
-  <div class="et-inner">
-    <h2 class="et-title">Nifdel Rivera.<br><em>El punto de origen.</em></h2>
-    <div class="et-rule"></div>
-    <span class="et-sub">Entering the map</span>
-  </div>
+  <span class="et-coord br">2026</span>
 </div>
+
 
 <!-- ══ INTRO ══ -->
 <div id="intro">
@@ -245,8 +255,8 @@
     <circle class="d6" cx="720" cy="450" r="6"/>
   </svg>
   <div class="i-content" id="i-content">
-    <p class="i-line1">some people build portfolios.</p>
-    <h1 class="i-phrase">this is a<br><em>map of thought.</em></h1>
+    <p class="i-line1">work · thought · experiment · system</p>
+    <h1 class="i-phrase">four words for<br><em>the same orbit.</em></h1>
     <div class="i-dash"></div>
     <p class="i-sub">Nifdel Rivera — Creative Technologist</p>
     <p class="i-disclaimer">⌂ best experienced with headphones</p>
@@ -286,10 +296,11 @@
   <div id="splash-fade-t"></div>
   <div id="splash-fade-b"></div>
   <div class="splash-content">
-    <p class="splash-pre">Nifdel Rivera — Creative Technologist</p>
-    <h1 class="splash-phrase">El pensamiento<br>emite una frecuencia</h1>
+    <p class="splash-time" id="splash-time">--.--.-- — --:--</p>
+    <h1 class="splash-phrase">This is not a portfolio.</h1>
+    <p class="splash-line2">It's a system.</p>
     <div class="splash-dash"></div>
-    <p class="splash-hint">[ toca para sintonizar ]</p>
+    <p class="splash-hint">[ touch to enter ]</p>
   </div>
 </div>
 
@@ -315,6 +326,10 @@ if (new URLSearchParams(location.search).get('back')) {
 <script type="module" src="ui.js"></script>
 <script type="module" src="navigation.js"></script>
 <script type="module" src="main.js"></script>
+<script type="module">
+  import { initOverlay } from './core/portfolio-overlay.js'
+  initOverlay({ basePath: '' })
+</script>
 
 <!-- Retorno desde subpágina con ?back=1 -->
 <script>

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node \"C:/Users/NIFDEL/AppData/Local/Temp/gen-projects.js\")",
+      "Bash(node _gen-projects.js)"
+    ]
+  }
+}

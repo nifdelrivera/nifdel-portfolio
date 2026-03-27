@@ -31,6 +31,11 @@ let particleScrollVel   = 0;     // velocidad de scroll → parallax rotacional 
 let macroDustRotY       = 0;     // rotación Y acumulada del macro dust (scroll)
 let microDustRotY       = 0;     // rotación Y acumulada del micro dust (scroll)
 
+// Cuando es false el loop NO sobreescribe centerGroup — GSAP tiene el control
+// Se vuelve true al terminar triggerLogoEntrance()
+let logoEntranceDone    = !!new URLSearchParams(location.search).get('back');
+let logoEntranceDoneAt  = 0;   // clock time when entrance completed — para blend-in del idle
+
 // ── Variables reutilizables fuera del loop (evitar GC jank) ──
 const _lightVec = new THREE.Vector3();  // para tracking de god rays
 let   _prevCamZ = CONFIG.cameraOrbitZ; // para calcular velocidad de cámara → chroma
@@ -251,11 +256,14 @@ window.returnToOrbit = function() {
 // ══════════════════════════════════════════
 const raycaster = new THREE.Raycaster();
 const clock     = new THREE.Clock();
+let   _prevTime = 0;  // para calcular delta → AnimationMixer.update(delta)
 
 function animate() {
     requestAnimationFrame(animate);
 
-    const time = clock.getElapsedTime();
+    const time  = clock.getElapsedTime();
+    const delta = time - _prevTime;
+    _prevTime   = time;
 
     // Uniforms de tiempo
     macroUniforms.uTime.value = time;
@@ -318,11 +326,23 @@ function animate() {
         cameraGroup.position.y += (mouse.y * -3 - cameraGroup.position.y) * 0.05;
     }
 
-    // Animación del logo central
-    centerGroup.position.y  = Math.sin(time * 1.2) * 1.5;
-    centerGroup.rotation.y  = Math.sin(time * 0.5) * 0.25;
-    centerGroup.rotation.x  = Math.sin(time * 0.7) * 0.10;
-    centerGroup.rotation.z  = Math.cos(time * 0.4) * 0.05;
+    // Animación idle del logo central — suspendida mientras dura el entrance
+    if (logoEntranceDone) {
+        // blend: 0 en el primer frame → 1 tras 2.5s — hace que el idle se "disuelva"
+        // encima de la posición final de GSAP sin ningún snap visible
+        const blend  = Math.min(1, (time - logoEntranceDoneAt) / 2.5);
+        const lerpK  = 0.04 * blend;   // velocidad de lerp escala con el blend
+        if (lerpK > 0) {
+            const idleY  = Math.sin(time * 1.2) * 1.5;
+            const idleRY = Math.sin(time * 0.5) * 0.25;
+            const idleRX = Math.sin(time * 0.7) * 0.10;
+            const idleRZ = Math.cos(time * 0.4) * 0.05;
+            centerGroup.position.y += (idleY  - centerGroup.position.y) * lerpK;
+            centerGroup.rotation.y += (idleRY - centerGroup.rotation.y) * lerpK;
+            centerGroup.rotation.x += (idleRX - centerGroup.rotation.x) * lerpK;
+            centerGroup.rotation.z += (idleRZ - centerGroup.rotation.z) * lerpK;
+        }
+    }
 
     // Parallax rotacional — scroll acelera cada capa a distinta velocidad
     // Macro (lejano) acumula más rotación, micro (cercano) menos → profundidad
@@ -639,6 +659,95 @@ window.addEventListener('resize', () => {
     microUniforms.uPixelRatio.value  = dpr;
     starUniforms.uPixelRatio.value   = dpr;
 });
+
+// ══════════════════════════════════════════
+//  LOGO ENTRANCE — animación 3D del logo central
+//  El logo viaja desde profundidad (z=-120) hacia la cámara hasta el centro.
+//  3 fases: sombra → materialización → llegada + respiro.
+//  La animación idle del loop queda suspendida hasta onComplete.
+// ══════════════════════════════════════════
+window.triggerLogoEntrance = function() {
+    // ── Passes OFF — cero duro: sin lerp, sin residuo visible durante el viaje ──
+    bloomTarget          = 0;
+    bloomPass.strength   = 0;   // hard zero — no espera al lerp del loop
+    godRaysPass.uniforms.uIntensity.value        = 0;
+    bgRaysPass.uniforms.uIntensity.value         = 0;
+    vignetteChromaPass.uniforms.uIntensity.value = 0;
+    if (chromaPass) chromaPass.uniforms.uIntensity.value = 0;
+
+    // ── Material: arranca opaco/matte — se convierte en vidrio holográfico al girar ──
+    // NUNCA tocar transmission: cambiarla de 0.87→0 y de vuelta fuerza Two recompilaciones
+    // de shader (= blink). El look metálico/matte lo dan metalness+roughness altos.
+    holographicMaterial.roughness = 0.35;
+    holographicMaterial.metalness = 0.6;
+
+    //  Escala
+    gsap.to(centerGroup.scale, {
+        x: 1, y: 1, z: 1,
+        duration: 1.6,
+        ease: 'power2.out'
+    });
+
+    //  Posición
+    gsap.to(centerGroup.position, {
+        z: 0, y: 0,
+        duration: 4.8,
+        ease: 'power1.inOut'
+    });
+
+    //  Rotación Y — 180°→0°
+    gsap.to(centerGroup.rotation, {
+        y: 0,
+        duration: 4.8,
+        ease: 'power2.out',
+        onComplete: () => {
+            // No hard snap — GSAP already landed at 0; snapping on the same frame causes the blink
+
+            // ── Passes ON — se revelan gradualmente después del landing ──
+            // Bloom: tween suave en lugar de jump instantáneo (evita el flash)
+            const _bloomProxy = { val: 0 };
+            gsap.to(_bloomProxy, {
+                val: 0.8, duration: 1.6, ease: 'power2.inOut',
+                onUpdate() { bloomTarget = _bloomProxy.val; }
+            });
+            gsap.to(godRaysPass.uniforms.uIntensity,        { value: 0.07, duration: 2.5, ease: 'power2.inOut' });
+            gsap.to(bgRaysPass.uniforms.uIntensity,         { value: 0.04, duration: 2.0, ease: 'power2.inOut' });
+            gsap.to(vignetteChromaPass.uniforms.uIntensity, { value: 1.0,  duration: 1.8, ease: 'power2.inOut' });
+
+            // Activar idle float — el blend-in en el loop se encarga de la transición suave
+            setTimeout(() => {
+                logoEntranceDoneAt = clock.getElapsedTime();
+                logoEntranceDone   = true;
+            }, 80);
+        }
+    });
+
+    // ── Material swap — roughness/metalness bajan a mitad de rotación
+    // transmission queda en su valor original (0.87) todo el tiempo → sin recompilación de shader
+    gsap.to(holographicMaterial, {
+        roughness: 0.02, metalness: 0.0,
+        delay: 2.2, duration: 2.6, ease: 'power2.inOut'
+    });
+};
+
+// ══════════════════════════════════════════
+//  ORBS ENTRANCE — llamado desde ui.js al final del logo sequence
+//  Cada nodo crece desde 0 hasta su escala base con spring elástico y stagger.
+// ══════════════════════════════════════════
+window.triggerOrbsEntrance = function() {
+    nodes.forEach((n, i) => {
+        const g = n.userData.parentGroup;
+        const s = g.userData.baseScale || CONFIG.nodeScales[i];
+        gsap.to(g.scale, {
+            x: s, y: s, z: s,
+            duration: 1.9,
+            ease: 'elastic.out(1, 0.48)',
+            delay: 0.11 * i
+        });
+    });
+    bloomTarget = 2.2;
+    setTimeout(() => { bloomTarget = 0.8; }, 200);
+};
 
 // ── START ──
 animate();

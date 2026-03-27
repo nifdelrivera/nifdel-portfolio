@@ -64,7 +64,7 @@ window.updateFocusSpot = function(sx, sy) {
   const px = ((sx / window.innerWidth)  * 100).toFixed(2);
   const py = ((sy / window.innerHeight) * 100).toFixed(2);
   fo.style.background =
-    `radial-gradient(circle at ${px}% ${py}%, transparent 8%, rgba(3,3,5,0.88) 38%)`;
+    `radial-gradient(circle at ${px}% ${py}%, transparent 8%, rgba(3,3,5,0.44) 38%)`;
 };
 
 // Vignette del depth-blur centrado en el nodo activo del carousel
@@ -119,7 +119,7 @@ window.onNodeEntered = function(key) {
 //  INIT LABELS — llamado desde ui.js enter()
 // ══════════════════════════════════════════
 function initLabels() {
-  updateSideNav('map');
+  updateSideNav('hidden');
   const hBr = document.getElementById('h-br');
   if (hBr) hBr.style.opacity = '1';
 }
@@ -188,6 +188,16 @@ function openPanel(key) {
   document.getElementById('p-title').textContent = d.title;
   document.getElementById('p-desc').textContent  = d.desc;
 
+  // ── Microinteracciones: contenido entra escalonado tras el slide del panel ──
+  gsap.killTweensOf(['#p-eye,#p-title,#p-desc,.p-rule,#p-body']);
+  gsap.timeline({ defaults:{ ease:'power3.out' } })
+    .fromTo('.p-b1-header', { opacity:0, x:10 }, { opacity:1, x:0, duration:.35 }, 0.12)
+    .fromTo('#p-title',     { opacity:0, y:12 }, { opacity:1, y:0, duration:.45 }, 0.20)
+    .fromTo('#p-desc',      { opacity:0, y:8  }, { opacity:1, y:0, duration:.40 }, 0.30)
+    .fromTo('.p-rule',      { scaleX:0, transformOrigin:'left center' },
+                            { scaleX:1, duration:.5 }, 0.36)
+    .fromTo('#p-body',      { opacity:0, y:14 }, { opacity:1, y:0, duration:.50 }, 0.40);
+
   const pBody = document.getElementById('p-body');
   if (d.body && panelContent[d.body]) {
     pBody.innerHTML = panelContent[d.body];
@@ -222,21 +232,30 @@ function openPanel(key) {
 //  CLOSE PANEL
 // ══════════════════════════════════════════
 function closePanel() {
-  document.getElementById('panel').classList.remove('open');
+  const panel = document.getElementById('panel');
   window.activeKey = null;
 
-  updateSideNav('map');
+  // ── Side effects inmediatos (no visuales) ──
+  updateSideNav('hidden');
   window.setAudioMood && window.setAudioMood(null);
-
   document.getElementById('node-aura').classList.remove('on');
   const _db = document.getElementById('depth-blur');
   _db.classList.remove('on');
   _db.style.background = '';
-
   const hBr = document.getElementById('h-br');
   if (hBr) hBr.style.opacity = '1';
-
   if (typeof window.returnToOrbit === 'function') window.returnToOrbit();
+
+  // ── Microinteracciones: contenido sale → luego el panel desliza ──
+  gsap.timeline()
+    .to(['#p-body', '#p-desc'],      { opacity:0, y:-8, duration:.18, ease:'power2.in', stagger:.04 }, 0)
+    .to(['.p-rule'],                  { scaleX:0, transformOrigin:'left center', duration:.2, ease:'power2.in' }, 0.04)
+    .to(['#p-title', '.p-b1-header'], { opacity:0, y:-6, duration:.22, ease:'power2.in', stagger:.03 }, 0.06)
+    .call(() => {
+      panel.classList.remove('open');
+      // Reset props para la próxima apertura
+      gsap.set(['#p-body','#p-desc','.p-rule','#p-title','.p-b1-header'], { clearProps:'all' });
+    }, null, 0.18);
 }
 
 // ══════════════════════════════════════════
@@ -253,7 +272,7 @@ function openPortfolioMode() {
 
 function closePortfolioMode() {
   document.getElementById('portfolio-mode').classList.remove('open');
-  updateSideNav(window.activeKey ? 'panel' : 'map');
+  updateSideNav(window.activeKey ? 'panel' : 'hidden');
   const ctx = window._getAudioCtx && window._getAudioCtx();
   const gn  = window._getGainNode  && window._getGainNode();
   if (ctx && window._isAudioPlaying && window._isAudioPlaying() && gn)

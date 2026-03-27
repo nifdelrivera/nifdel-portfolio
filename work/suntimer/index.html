@@ -6,13 +6,14 @@
 <title>Suntimer — Nifdel Rivera</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../styles/project.css">
 <link rel="stylesheet" href="../../nav.css">
 <style>
-/* ── PAGE OVERRIDES (tokens.css provee reset + vars base) ────────────── */
+/* ── PAGE OVERRIDES ──────────────────────────────────────────────────── */
 *, *::before, *::after { cursor: none !important; }
 :root {
   --accent:  rgb(58,102,204);
-  --bg:      #020408;              /* override tokens — más oscuro */
+  --bg:      #020408;
   --text:    rgba(255,255,255,.82);
   --dim:     rgba(255,255,255,.38);
   --faint:   rgba(255,255,255,.14);
@@ -20,623 +21,11 @@
   --display: var(--font-display);
 }
 html { scroll-behavior: smooth; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: var(--mono);
-  overflow-x: hidden;
-}
-
-/* nav.css provee top-nav + side-nav */
-
-/* ── HERO ────────────────────────────────────────────────────────────── */
-#hero {
-  width: 100vw; height: 100vh;
-  position: relative; overflow: hidden;
-  background: #000;
-  display: flex; align-items: center; justify-content: center;
-}
-#hero img {
-  width: 100%; height: 100%;
-  border: none; position: absolute; inset: 0; object-fit: cover;
-  pointer-events: none;
-}
-#hero iframe {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  /* cover: siempre llena el contenedor sin perder 16:9 */
-  width: 177.78vh;   /* 16/9 × 100vh */
-  height: 56.25vw;   /* 9/16 × 100vw */
-  min-width: 100%; min-height: 100%;
-  border: none;
-  pointer-events: none;
-}
-.hero-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(2,4,8,.25) 0%, transparent 50%, rgba(2,4,8,.92) 100%);
-  pointer-events: none;
-}
-.hero-meta {
-  position: absolute; bottom: 52px; left: 108px;
-  z-index: 10; pointer-events: none;
-}
-.hero-cat {
-  font-size: 9px; letter-spacing: .45em; color: var(--accent);
-  margin-bottom: 10px; opacity: .8;
-}
-.hero-title {
-  font-family: var(--display); font-size: 58px; font-weight: 800;
-  color: rgba(255,255,255,.90); letter-spacing: -.03em; line-height: 1.0;
-}
-
-/* ── BLOCKS ──────────────────────────────────────────────────────────── */
-#blocks {
-  max-width: 1200px; margin: 0 auto;
-  padding: 140px 80px 48px 108px;
-  display: flex; flex-direction: column; gap: 0;
-}
-/* ── Spacing rhythm — each block type controls its own vertical pause ── */
-.block-case-overview  { margin-top: 0; }
-.editorial-pin-wrap   { margin-top: 0; }
-.block-case-overview + .editorial-pin-wrap { margin-top: 60px; }
-.block-mp4            { margin-top: 140px; }
-.block-stack          { margin-top: 4px; }
-.block-awards         { margin-top: 160px; }
-.block-credits        { margin-top: 180px; }
-.block-closing        { margin-top: 160px; }
-.block-section-label  { margin-top: 120px; }
-.block-text           { margin-top: 24px; }
-
-/* ── CASE OVERVIEW ───────────────────────────────────────────────────── */
-.block-case-overview {
-  max-width: 1000px;
-  margin-left: auto; margin-right: auto;
-  text-align: center;
-  padding: 0 20px;
-}
-/* Line mask — overflow:hidden clips text entering from below */
-.overview-headline .ov-line {
-  display: block;
-  overflow: hidden;
-  line-height: 1.15;
-}
-.overview-headline .js-ov-line { display: inline-block; }
-.overview-headline {
-  font-family: var(--display); font-size: clamp(34px, 5vw, 66px); font-weight: 700;
-  color: rgba(255,255,255,.90);
-  letter-spacing: -.03em;
-  margin-bottom: 36px;
-}
-.overview-sub {
-  font-family: var(--display); font-size: clamp(16px, 1.8vw, 24px); font-weight: 400;
-  color: rgba(255,255,255,.42); line-height: 1.5;
-  letter-spacing: -.01em;
-}
-
-/* ── EDITORIAL PIN SECTIONS ──────────────────────────────────────────── */
-.editorial-pin-wrap {
-  position: relative;
-  height: 170vh;
-}
-.editorial-pin-wrap + .editorial-pin-wrap {
-  margin-top: -75vh;
-}
-.editorial-stage {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-}
-.ep-label {
-  font-size: 9px; letter-spacing: .48em; color: rgba(255,255,255,.22);
-  text-transform: uppercase; margin-bottom: 36px;
-  will-change: opacity, transform;
-}
-.ep-headline {
-  font-family: var(--display); font-size: clamp(22px, 3.2vw, 44px); font-weight: 400;
-  color: rgba(255,255,255,.88); line-height: 1.45;
-  letter-spacing: -.02em; max-width: 800px;
-  margin-bottom: 40px;
-  will-change: opacity, transform, filter;
-}
-.ep-body { max-width: 580px; }
-.ep-body p {
-  font-size: 14px; line-height: 2.1; color: rgba(255,255,255,.46);
-  margin-bottom: 18px; letter-spacing: .01em;
-  will-change: opacity, transform;
-}
-.ep-body p:last-child { margin-bottom: 0; }
-@media (max-width: 768px) {
-  .editorial-pin-wrap { height: 130vh; }
-}
-
-/* ── EDITORIAL — INSIGHT ─────────────────────────────────────────────── */
-.block-insight {
-  max-width: 680px;
-  margin-left: auto; margin-right: auto;
-  text-align: center;
-  padding: 0 20px;
-}
-.insight-credit {
-  font-size: 10px; letter-spacing: .55em;
-  color: var(--accent); opacity: .80;
-  margin-bottom: 40px;
-}
-.insight-text {
-  font-family: var(--display); font-size: 26px; font-weight: 400;
-  color: rgba(255,255,255,.72); line-height: 1.75;
-  letter-spacing: -.01em;
-}
-
-/* ── EDITORIAL — IDEA ────────────────────────────────────────────────── */
-.block-idea {
-  max-width: 960px;
-  margin-left: auto; margin-right: auto;
-  text-align: center;
-  padding: 0 20px;
-}
-.idea-label {
-  font-size: 9px; letter-spacing: .55em;
-  color: rgba(255,255,255,.35);
-  margin-bottom: 32px;
-}
-.idea-text {
-  font-family: var(--display); font-size: clamp(32px, 3.8vw, 52px); font-weight: 700;
-  color: rgba(255,255,255,.88); line-height: 1.18;
-  letter-spacing: -.02em;
-}
-
-/* ── EDITORIAL — CONTRIBUTION ────────────────────────────────────────── */
-.block-contribution {
-  max-width: 560px;
-  margin-left: auto; margin-right: auto;
-  text-align: center;
-  padding: 0 20px;
-}
-.contribution-label {
-  font-size: 9px; letter-spacing: .55em;
-  color: rgba(255,255,255,.35);
-  margin-bottom: 32px;
-}
-.contribution-text {
-  font-size: 14px; line-height: 2.1;
-  color: rgba(255,255,255,.58);
-}
-
-/* ── AWARDS GRID ─────────────────────────────────────────────────────── */
-.block-awards {
-  width: 100%;
-  border-top: 1px solid rgba(255,255,255,.06);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  padding: 56px 0 60px;
-}
-.awards-label {
-  font-size: 8px; letter-spacing: .52em;
-  color: rgba(255,255,255,.22);
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.awards-intro {
-  font-size: 14px; line-height: 1.9; color: rgba(255,255,255,.44);
-  max-width: 560px; margin-bottom: 52px; letter-spacing: .01em;
-}
-.awards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-}
-
-/* ── Column — fixed height card container ── */
-.award-col {
-  position: relative;
-  height: 230px;
-  border-left: 1px solid rgba(255,255,255,.06);
-  overflow: hidden;
-  cursor: default;
-  padding: 0 32px;
-}
-.award-col:first-child { border-left: none; padding-left: 0; }
-.award-col:last-child  { padding-right: 0; }
-
-/* ── Icon — always visible, never animated ── */
-.award-icon {
-  width: 48px; height: 48px;
-  margin-bottom: 32px;
-  opacity: .32;
-  flex-shrink: 0;
-}
-.award-icon svg { width: 100%; height: 100%; }
-
-/* ── Both faces sit below the icon ── */
-.award-face {
-  position: absolute;
-  top: 80px;   /* icon height 48 + margin 32 */
-  left: 0; right: 0; bottom: 0;
-  padding: 0 32px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  will-change: transform, opacity;
-}
-.award-col:first-child .award-face { padding-left: 0; }
-.award-col:last-child  .award-face { padding-right: 0; }
-
-/* ── FRONT face — default visible ── */
-.award-face--front {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity  .34s cubic-bezier(.4,0,1,1),
-    transform .38s cubic-bezier(.4,0,1,1);
-}
-.award-col:hover .award-face--front {
-  opacity: 0;
-  transform: translateY(-12px);
-}
-
-/* ── BACK face — hidden by default ── */
-.award-face--back {
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity  .40s cubic-bezier(0,0,.2,1) .06s,
-    transform .46s cubic-bezier(.16,1,.3,1) .06s;
-}
-.award-col:hover .award-face--back {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ── Front content ── */
-.award-overline {
-  font-size: 10px; letter-spacing: .28em;
-  color: rgba(255,255,255,.32);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  line-height: 1.5;
-  flex-shrink: 0;
-}
-.award-main {
-  font-family: var(--display); font-size: 20px; font-weight: 700;
-  line-height: 1.15;
-  margin-bottom: 6px;
-  flex-shrink: 0;
-}
-.award-main-sub {
-  font-size: 10px; letter-spacing: .06em;
-  color: rgba(255,255,255,.38);
-  line-height: 1.5;
-}
-
-/* ── Tier colors ── */
-.award-col[data-tier="gold"]        .award-main { color: rgba(220,185,110,.88); }
-.award-col[data-tier="recognition"] .award-main { color: rgba(220,185,110,.88); }
-.award-col[data-tier="silver"]      .award-main { color: rgba(192,200,218,.90); }
-.award-col[data-tier="shortlist"]   .award-main { color: rgba(255,255,255,.82); }
-
-/* ── Back content ── */
-.award-back-label {
-  font-size: 10px; letter-spacing: .28em;
-  color: rgba(255,255,255,.22);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  flex-shrink: 0;
-}
-.award-sub-list {
-  list-style: none;
-  flex: 1;
-  overflow: hidden;
-}
-.award-sub-list li {
-  font-size: 10px; line-height: 1.95;
-  color: rgba(255,255,255,.52);
-  letter-spacing: .03em;
-  /* stagger reveal via CSS custom property set in JS */
-  opacity: 0;
-  transform: translateY(5px);
-  transition:
-    opacity  .35s cubic-bezier(.16,1,.3,1) calc(var(--i, 0) * .04s + .12s),
-    transform .4s  cubic-bezier(.16,1,.3,1) calc(var(--i, 0) * .04s + .12s);
-}
-.award-col:hover .award-sub-list li {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (max-width: 900px) {
-  .awards-grid { grid-template-columns: 1fr 1fr; }
-  .award-col:nth-child(3) { border-left: none; margin-top: 40px; height: 210px; }
-  .award-col:nth-child(4) { margin-top: 40px; }
-  .award-col:nth-child(3) .award-face { padding-left: 0; }
-}
-@media (max-width: 540px) {
-  .awards-grid { grid-template-columns: 1fr; }
-  .award-col { border-left: none; height: auto; min-height: 210px; }
-  .award-face { position: relative; inset: auto; padding: 0; }
-  .award-face--back { display: none; }
-  .award-sub-list { display: none; }
-}
-
-/* ── SCROLL REVEAL — initial states set by GSAP, not CSS ─────────────── */
-/* Classes kept for GSAP targeting; visibility handled in JS */
-
-.block-section-label {
-  font-size: 9px; letter-spacing: .45em; color: rgba(255,255,255,.28);
-  text-transform: uppercase; margin-bottom: -52px;
-}
-.block-text {
-  font-size: 15px; line-height: 2.0;
-  color: rgba(255,255,255,.56); max-width: 660px;
-}
-.block-video { width: 100%; aspect-ratio: 16/9; background: #000; }
-.block-video iframe { width: 100%; height: 100%; border: none; display: block; }
-.block-image img { width: 100%; display: block; }
-.block-image.full { margin: 0 -80px 0 -108px; width: calc(100% + 188px); }
-.block-grid { display: grid; gap: 6px; }
-.block-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-.block-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-.block-grid img { width: 100%; display: block; }
-.block-quote {
-  font-family: var(--display); font-size: 26px; font-weight: 700;
-  color: rgba(255,255,255,.80); line-height: 1.4;
-  border-left: 2px solid var(--accent); padding-left: 28px;
-  max-width: 720px;
-}
-.block-embed { width: 100%; }
-.block-embed iframe { width: 100%; border: none; display: block; }
-.block-caption { font-size: 10px; color: rgba(255,255,255,.25); margin-top: 10px; letter-spacing: .1em; }
-.block-mp4 { width: 100%; }
-.block-mp4 video { width: 100%; display: block; }
-.block-stack { display: flex; flex-direction: column; gap: 0; }
-.block-stack img { width: 100%; display: block; }
-
-.block-placeholder {
-  width: 100%; aspect-ratio: 16/9;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.06);
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; gap: 12px;
-}
-.block-placeholder span {
-  font-size: 10px; letter-spacing: .3em; color: rgba(255,255,255,.18);
-}
-
-/* ── CREDITS — museum wall ───────────────────────────────────────────── */
-.block-credits {
-  max-width: 760px;
-  padding-bottom: 40px;
-}
-.credits-header {
-  margin-bottom: 64px;
-}
-.credits-section-label {
-  font-size: 9px; letter-spacing: .45em; color: rgba(255,255,255,.28);
-  text-transform: uppercase; margin-bottom: 20px;
-}
-.credits-agency {
-  font-family: var(--display); font-size: 36px; font-weight: 800;
-  color: rgba(255,255,255,.10); letter-spacing: -.02em; line-height: 1.0;
-}
-.credits-groups {
-  display: flex; flex-direction: column; gap: 52px;
-}
-.credits-group {
-  display: grid;
-  grid-template-columns: 148px 1fr;
-  gap: 0 40px;
-  align-items: start;
-}
-.credits-group-label {
-  font-size: 9px; letter-spacing: .42em; color: rgba(255,255,255,.22);
-  text-transform: uppercase; padding-top: 13px; line-height: 2.8;
-}
-.credits-rows { width: 100%; }
-.credits-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 11px 0;
-  border-bottom: 1px solid rgba(255,255,255,.04);
-}
-.credits-row:first-child { border-top: 1px solid rgba(255,255,255,.04); }
-.credits-name {
-  font-size: 13px; color: rgba(255,255,255,.70); letter-spacing: .01em;
-}
-.credits-role {
-  font-size: 9px; color: rgba(255,255,255,.26); letter-spacing: .08em;
-  text-transform: uppercase; text-align: right; max-width: 260px;
-}
-
-/* ── CLOSING STATEMENT ───────────────────────────────────────────────── */
-.block-closing {
-  max-width: 560px;
-  margin-left: auto; margin-right: auto;
-  text-align: center;
-  padding: 0 20px 120px;
-}
-.closing-rule {
-  width: 32px; height: 1px;
-  background: rgba(255,255,255,.10);
-  margin: 0 auto 64px;
-}
-.closing-text {
-  font-size: clamp(14px, 1.6vw, 19px);
-  letter-spacing: .18em;
-  line-height: 2.0;
-  color: rgba(255,255,255,.75);
-  text-transform: uppercase;
-  text-shadow: 0 0 100px rgba(240,185,80,.06);
-}
-
-/* ── SCROLL HINT ─────────────────────────────────────────────────────── */
-#scroll-hint {
-  position: fixed;
-  bottom: 40px; left: 50%;
-  transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  z-index: 500;
-  pointer-events: auto;
-  cursor: pointer !important;
-}
-#scroll-hint:hover #scroll-hint-icon {
-  background: rgba(255,255,255,.10);
-  border-color: rgba(255,255,255,.22);
-}
-#scroll-hint-label {
-  font-size: 8px; letter-spacing: .45em;
-  color: rgba(255,255,255,.32);
-  text-transform: uppercase;
-}
-#scroll-hint-icon {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.48);
-}
-#scroll-hint svg { width: 16px; height: 16px; }
-
-/* ── NEXT PROJECT ────────────────────────────────────────────────────── */
-/* Placeholder — reserves page space equal to fixed panel */
-#np-wrapper {
-  height: 52vh;
-}
-/* Fixed panel — always anchored to viewport bottom.
-   clip-path (JS) keeps it invisible until wrapper enters viewport.
-   No z-index trickery needed — clip-path handles everything. */
-#next-project {
-  display: block;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 52vh;
-  z-index: 2;
-  text-decoration: none;
-  overflow: hidden;
-  clip-path: inset(100% 0 0 0);
-}
-/* text — fixed to bottom of section, never moves */
-.np-text {
-  position: absolute;
-  bottom: 44px; left: 108px;
-  z-index: 3; pointer-events: none;
-}
-.np-label {
-  font-size: 9px; letter-spacing: .45em;
-  color: rgba(255,255,255,.32);
-  margin-bottom: 12px;
-}
-.np-title {
-  font-family: var(--display); font-size: clamp(36px, 5vw, 62px); font-weight: 800;
-  color: rgba(255,255,255,.92); letter-spacing: -.03em; line-height: 1.0;
-}
-.np-arrow-wrap {
-  position: absolute;
-  bottom: 48px; right: 80px;
-  z-index: 3; pointer-events: none;
-  font-size: 18px; color: rgba(255,255,255,.28);
-  transition: transform .3s, color .3s;
-}
-#next-project:hover .np-arrow-wrap { transform: translateX(8px); color: rgba(255,255,255,.65); }
-/* video panel — fills the section, parallaxes on scroll */
-.np-panel {
-  position: absolute; inset: 0;
-  overflow: hidden;
-}
-.np-panel iframe {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 177.78vh; height: 56.25vw;
-  min-width: 100%; min-height: 100%;
-  border: none; pointer-events: none;
-  will-change: transform;
-}
-.np-panel-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(2,4,8,.88) 0%,
-    rgba(2,4,8,.45) 55%,
-    rgba(2,4,8,.15) 100%
-  );
-}
+body { background: var(--bg); color: var(--text); font-family: var(--mono); overflow-x: hidden; }
+#hero { width: 100vw; height: 100vh; position: relative; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
 </style>
 </head>
 <body>
-
-<!-- SCROLL HINT -->
-<div id="scroll-hint">
-  <span id="scroll-hint-label">Scroll Down</span>
-  <div id="scroll-hint-icon">
-    <svg viewBox="0 0 24 24" fill="none">
-      <polyline points="6,9 12,15 18,9"
-        stroke="currentColor" stroke-width="1.5"
-        stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-</div>
-
-<!-- TOP NAV -->
-<nav id="top-nav" class="nav-on">
-  <div class="tn-logo-wrap">
-    <img src="../../assets/LOGO.svg" alt="Nifdel Rivera" class="tn-logo-img">
-  </div>
-  <div class="tn-pills">
-    <div class="tn-pill">
-      <span class="tp-name">Nifdel Rivera</span>
-      <span class="tp-sep">·</span>
-      <span class="tp-role">Creative Technologist</span>
-    </div>
-    <div class="tn-pill">
-      <span class="tn-dot"></span>
-      <span class="tp-state" id="nav-title">Work · Suntimer</span>
-    </div>
-    <button class="tn-pill tn-pill-btn" id="audio-btn" aria-label="Audio">
-      <div class="ab-icon">
-        <span></span><span></span><span></span><span></span>
-      </div>
-      <span id="ab-label">Enable Audio</span>
-    </button>
-  </div>
-</nav>
-
-<!-- SIDE NAV -->
-<div id="side-nav" class="visible">
-  <button class="sn-clickable" id="back-btn">
-    <div class="sn-state-dot"></div>
-    <span class="sn-label">Volver</span>
-    <div class="sn-arrow">
-      <svg class="sn-ring" viewBox="0 0 44 44" fill="none">
-        <circle class="sn-ring-track"    cx="22" cy="22" r="19"/>
-        <circle class="sn-ring-progress" cx="22" cy="22" r="19"/>
-      </svg>
-      <svg class="sn-chevron" viewBox="0 0 14 14" fill="none">
-        <polyline points="9,2 5,7 9,12"
-          stroke="currentColor" stroke-width="1.5"
-          stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <span class="sn-sub">al trabajo</span>
-  </button>
-</div>
-
-<!-- NEXT PROJECT — fixed to viewport bottom, revealed by transparent placeholder -->
-<a href="../" id="next-project">
-  <div class="np-panel">
-    <iframe
-      src="https://player.vimeo.com/video/1128639657?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1&background=1"
-      allow="autoplay; fullscreen; picture-in-picture"
-      id="np-iframe">
-    </iframe>
-    <div class="np-panel-overlay"></div>
-  </div>
-  <div class="np-text">
-    <div class="np-label">SIGUIENTE PROYECTO</div>
-    <div class="np-title" id="np-title">Pilsener FOMO</div>
-  </div>
-  <div class="np-arrow-wrap">→</div>
-</a>
 
 <div id="page-content">
 
@@ -651,62 +40,6 @@ body {
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-// ── AUDIO — Vimeo hero volume ─────────────────────────────────────────
-let _heroPlayer = null;
-let _audioOn    = false;
-const _audioBtn   = document.getElementById('audio-btn');
-const _audioLabel = document.getElementById('ab-label');
-
-function _applyAudioState(on) {
-  _audioOn = on;
-  if (on) {
-    _audioBtn.classList.add('playing');
-    _audioLabel.textContent = 'Audio On';
-  } else {
-    _audioBtn.classList.remove('playing');
-    _audioLabel.textContent = 'Enable Audio';
-  }
-}
-
-function _setAudio(on) {
-  if (!_heroPlayer) return;
-  if (on) {
-    _heroPlayer.setVolume(0.7).then(() => _heroPlayer.setMuted(false)).then(() => _applyAudioState(true)).catch(() => {});
-  } else {
-    _heroPlayer.setMuted(true).then(() => _applyAudioState(false));
-  }
-}
-
-// Inicializar player y arrancar con audio apenas esté listo
-window.addEventListener('load', () => {
-  const iframe = document.querySelector('#hero iframe');
-  if (!iframe || !window.Vimeo) return;
-  _heroPlayer = new Vimeo.Player(iframe);
-  _heroPlayer.ready().then(() => {
-    // Intento inmediato — funciona si el navegador reconoce el click de navegación
-    _setAudio(true);
-  });
-});
-
-// Fallback — primer click activa audio si el intento automático fue bloqueado
-document.addEventListener('click', () => { if (!_audioOn) _setAudio(true); }, { once: true });
-
-// Botón de audio — toggle
-_audioBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  _setAudio(!_audioOn);
-});
-
-// ── BACK ──────────────────────────────────────────────────────────────
-document.getElementById('back-btn').addEventListener('click', e => {
-  e.preventDefault();
-  sessionStorage.setItem('returnPanel', 'WORK');
-  sessionStorage.setItem('returnFlag',  '1');
-  sessionStorage.setItem('fromProject', '1');
-  sessionStorage.setItem('fromProjectIdx', '1');
-  window.location.href = '../?r=' + Date.now();
-});
-
 // ── PROJECT DATA ──────────────────────────────────────────────────────
 const PROJECT = {
   slug:  'suntimer',
@@ -716,8 +49,8 @@ const PROJECT = {
   cat:   ['Motion', '3D'],
   col:   [1.00, 0.85, 0.20],
   next: {
-    slug:  'rachin',
-    title: 'Rachín',
+    slug:  'pilsener-fomo',
+    title: 'Pilsener FOMO',
     vimeo: '1128639657',
   },
   hero: {
@@ -770,7 +103,7 @@ const PROJECT = {
     // ── 3. Gallery ────────────────────────────────────────────────────
     {
       type: 'mp4',
-      src:  'assets/COVER.mp4',
+      src:  'assets/Cover.webm',
     },
     {
       type:  'image-stack',
@@ -888,28 +221,12 @@ const PROJECT = {
     },
   ],
 };
-
-// ── NEXT PROJECT — populated from PROJECT.next ────────────────────────
-;(function initNextProject(np) {
-  if (!np) return;
-  const panel  = document.getElementById('next-project');
-  const iframe = document.getElementById('np-iframe');
-  const title  = document.getElementById('np-title');
-  if (iframe) iframe.src = `https://player.vimeo.com/video/${np.vimeo}?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1&background=1`;
-  if (title)  title.textContent = np.title;
-  if (panel)  panel.addEventListener('click', e => {
-    e.preventDefault();
-    sessionStorage.setItem('returnPanel', 'WORK');
-    sessionStorage.setItem('returnFlag',  '1');
-    window.location.href = `../${np.slug}/`;
-  });
-})(PROJECT.next);
+window.PROJECT = PROJECT;
 
 // ── RENDER ────────────────────────────────────────────────────────────
 (function render(p) {
   document.documentElement.style.setProperty('--accent', 'rgb(58,102,204)');
   document.title = `${p.title} — Nifdel Rivera`;
-  document.getElementById('nav-title').textContent = `Work · ${p.title}`;
 
   // Hero
   const hero = document.getElementById('hero');
@@ -1021,6 +338,7 @@ const PROJECT = {
           wave:    `<svg viewBox="0 0 28 28" fill="none"><path d="M2 16 Q5.5 9 9 16 Q12.5 23 16 16 Q19.5 9 23 16 Q25 19.5 27 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M2 11 Q5.5 4 9 11 Q12.5 18 16 11 Q19.5 4 23 11" stroke="white" stroke-width="1" stroke-linecap="round" opacity=".35"/></svg>`,
           star:    `<svg viewBox="0 0 28 28" fill="none"><polygon points="14,2.5 16.9,10.2 25,10.2 18.5,15.3 21,23 14,18.3 7,23 9.5,15.3 3,10.2 11.1,10.2" stroke="white" stroke-width="1.4" stroke-linejoin="round"/></svg>`,
         };
+        const _getIcon = icon => _icons[icon] || (icon ? `<img src="${icon}" alt="" style="width:28px;height:28px;object-fit:contain;display:block;">` : '');
         el.innerHTML = `
           <div class="awards-label">RECOGNITION</div>
           ${b.intro ? `<div class="awards-intro">${b.intro}</div>` : ''}
@@ -1032,7 +350,7 @@ const PROJECT = {
                           : 'recognition';
               return `
               <div class="award-col" data-tier="${_tier}">
-                <div class="award-icon">${_icons[col.icon] || ''}</div>
+                <div class="award-icon">${_getIcon(col.icon)}</div>
                 <div class="award-face award-face--front">
                   <div class="award-overline">${col.festival}</div>
                   <div class="award-main">${col.main}</div>
@@ -1106,41 +424,6 @@ const PROJECT = {
     if (caption) el.insertAdjacentHTML('afterend', `<p class="block-caption">${caption}</p>`);
   });
 
-  // ── NEXT PROJECT FIXED REVEAL ────────────────────────────────────────
-  (function initNPReveal() {
-    const panel   = document.getElementById('next-project');
-    const wrapper = document.getElementById('np-wrapper');
-    const iframe  = document.getElementById('np-iframe');
-    if (!panel || !wrapper) return;
-
-    const PEEK = 80; // px always visible at bottom once wrapper enters viewport
-
-    function update() {
-      const rect   = wrapper.getBoundingClientRect();
-      const vh     = window.innerHeight;
-      const panelH = panel.offsetHeight; // 52vh in px
-
-      // px of wrapper scrolled above viewport bottom (0 = just entering)
-      const entered = Math.max(0, vh - rect.top);
-      // Reveal at least PEEK once wrapper is within 40px of viewport
-      const near    = rect.top < vh + 40;
-      const clipPx  = near
-        ? Math.max(0, panelH - Math.max(PEEK, entered))
-        : panelH;
-
-      panel.style.clipPath = `inset(${clipPx.toFixed(0)}px 0 0 0)`;
-
-      // Video: compensate scroll so it appears anchored to viewport bottom
-      if (iframe) {
-        const progress = Math.max(0, Math.min(1, entered / panelH));
-        const vy = (1 - progress) * 40;
-        iframe.style.transform = `translate(-50%, calc(-50% + ${vy.toFixed(1)}px))`;
-      }
-    }
-
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  })();
 
 })(PROJECT);
 </script>
@@ -1149,20 +432,93 @@ const PROJECT = {
 import gsap          from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm'
 import ScrollTrigger  from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/ScrollTrigger/+esm'
 import Lenis          from 'https://cdn.jsdelivr.net/npm/lenis@1.3.13/+esm'
-import { initCursor } from '../../core/cursor.js'
-import { initPage }   from '../../core/transitions.js'
+import { initCursor }          from '../../core/cursor.js'
+import { initPage }            from '../../core/transitions.js'
+import { initShell }           from '../../core/page-shell.js'
+import { initScrollIndicator } from '../../core/scroll-indicator.js'
 
 gsap.registerPlugin(ScrollTrigger)
 window.gsap = gsap  // transitions.js lo necesita como global
 
+// ── SHELL — inyecta nav, side-nav, scroll-hint, next-project ─────────
+const _p = window.PROJECT
+initShell({ backIdx: 1, title: _p.title, next: _p.next })
+
+// ── NEXT PROJECT FIXED REVEAL ─────────────────────────────────────────
+;(function initNPReveal() {
+  const panel   = document.getElementById('next-project')
+  const wrapper = document.getElementById('np-wrapper')
+  const iframe  = document.getElementById('np-iframe')
+  if (!panel || !wrapper) return
+
+  const PEEK = 80
+
+  function update() {
+    const rect   = wrapper.getBoundingClientRect()
+    const vh     = window.innerHeight
+    const panelH = panel.offsetHeight
+
+    const entered = Math.max(0, vh - rect.top)
+    const near    = rect.top < vh + 40
+    const clipPx  = near
+      ? Math.max(0, panelH - Math.max(PEEK, entered))
+      : panelH
+
+    panel.style.clipPath = `inset(${clipPx.toFixed(0)}px 0 0 0)`
+
+    if (iframe) {
+      const progress = Math.max(0, Math.min(1, entered / panelH))
+      const vy = (1 - progress) * 40
+      iframe.style.transform = `translate(-50%, calc(-50% + ${vy.toFixed(1)}px))`
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true })
+  update()
+})()
+
 initCursor()
 initPage({ delay: 0.1 })
+
+// ── AUDIO — Vimeo hero volume ─────────────────────────────────────────
+let _heroPlayer = null
+let _audioOn    = false
+const _audioBtn   = document.getElementById('audio-btn')
+const _audioLabel = document.getElementById('ab-label')
+
+function _applyAudioState(on) {
+  _audioOn = on
+  if (on) {
+    _audioBtn.classList.add('playing')
+    _audioLabel.textContent = 'Audio On'
+  } else {
+    _audioBtn.classList.remove('playing')
+    _audioLabel.textContent = 'Enable Audio'
+  }
+}
+function _setAudio(on) {
+  if (!_heroPlayer) return
+  if (on) {
+    _heroPlayer.setVolume(0.7).then(() => _heroPlayer.setMuted(false)).then(() => _applyAudioState(true)).catch(() => {})
+  } else {
+    _heroPlayer.setMuted(true).then(() => _applyAudioState(false))
+  }
+}
+window.addEventListener('load', () => {
+  const iframe = document.querySelector('#hero iframe')
+  if (!iframe || !window.Vimeo) return
+  _heroPlayer = new Vimeo.Player(iframe)
+  _heroPlayer.ready().then(() => _setAudio(true))
+})
+document.addEventListener('click', () => { if (!_audioOn) _setAudio(true) }, { once: true })
+_audioBtn.addEventListener('click', e => { e.stopPropagation(); _setAudio(!_audioOn) })
 
 // ── LENIS ────────────────────────────────────────────────────────────
 const lenis = new Lenis({ duration: 1.3, smoothWheel: true, smoothTouch: false })
 lenis.on('scroll', ScrollTrigger.update)
 gsap.ticker.add(time => lenis.raf(time * 1000))
 gsap.ticker.lagSmoothing(0)
+initScrollIndicator(lenis)
 
 // ── SCROLL HINT ───────────────────────────────────────────────────────
 const _hint = document.getElementById('scroll-hint')
@@ -1170,35 +526,31 @@ if (_hint) {
   // Fade in on load
   gsap.fromTo(_hint, { opacity: 0 }, { opacity: 1, duration: 1.0, delay: 1.4, ease: 'power2.out' })
 
-  // Icon pulse — scale only (no position)
-  const _hintIcon = document.getElementById('scroll-hint-icon')
-  if (_hintIcon) {
-    gsap.to(_hintIcon, {
-      scale: 1.10,
-      duration: 1.2,
-      ease: 'sine.inOut',
-      yoyo: true,
-      repeat: -1,
-      delay: 1.4,
-    })
-  }
-
-  // Label pulse — opacity only
+  // Coordinated label + icon animation — guides toward next project
+  const _hintIcon  = document.getElementById('scroll-hint-icon')
   const _hintLabel = document.getElementById('scroll-hint-label')
-  if (_hintLabel) {
-    gsap.to(_hintLabel, {
-      opacity: 0.12,
-      duration: 1.2,
-      ease: 'sine.inOut',
-      yoyo: true,
-      repeat: -1,
-      delay: 1.4,
-    })
+
+  if (_hintIcon && _hintLabel) {
+    // Set starting states
+    gsap.set(_hintLabel, { opacity: 0.18 })
+    gsap.set(_hintIcon,  { y: 0 })
+
+    const _hintTl = gsap.timeline({ repeat: -1, delay: 1.6, repeatDelay: 0.8 })
+
+    // Label illuminates → arrow dips down simultaneously
+    _hintTl
+      .to(_hintLabel, { opacity: 0.55, duration: 0.5, ease: 'power2.out' })
+      .to(_hintIcon,  { y: 8, duration: 0.55, ease: 'power2.in' }, '<')
+
+      // Arrow snaps back elastically — label dims with it
+      .to(_hintIcon,  { y: 0, duration: 0.9, ease: 'elastic.out(1, 0.45)' })
+      .to(_hintLabel, { opacity: 0.18, duration: 0.55, ease: 'power2.in' }, '<0.1')
   }
 
   // Click → scroll to next-project via Lenis
   _hint.addEventListener('click', () => {
-    lenis.scrollTo('#np-wrapper', { offset: 0, duration: 1.6, easing: t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t })
+    const _npw = document.getElementById('np-wrapper')
+    if (_npw) lenis.scrollTo(_npw, { offset: 0, duration: 1.6, easing: t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t })
   })
 
   // Hide when next-project wrapper enters viewport
@@ -1209,6 +561,26 @@ if (_hint) {
     onLeaveBack: () => gsap.to(_hint, { opacity: 1, duration: 0.5, ease: 'power2.out' }),
   })
 }
+
+// ── NEXT PROJECT — subtle directional hint ────────────────────────────
+ScrollTrigger.create({
+  trigger: '#np-wrapper',
+  start: 'top 75%',
+  once: true,
+  onEnter: () => {
+    const _npArrow = document.querySelector('.np-arrow-wrap')
+    const _npTitle = document.querySelector('.np-title')
+    if (!_npArrow || !_npTitle) return
+
+    gsap.timeline({ repeat: -1, repeatDelay: 1.4 })
+      // arrow drifts right → title dims very slightly — simultaneous
+      .to(_npArrow, { x: 7, duration: 0.8, ease: 'power2.inOut' })
+      .to(_npTitle, { opacity: 0.68, duration: 0.8, ease: 'power2.inOut' }, '<')
+      // arrow returns — title recovers
+      .to(_npArrow, { x: 0, duration: 0.8, ease: 'power2.inOut' })
+      .to(_npTitle, { opacity: 0.92, duration: 0.8, ease: 'power2.inOut' }, '<')
+  }
+})
 
 // ── CASE OVERVIEW — line mask reveal ─────────────────────────────────
 gsap.from('.js-ov-line', {

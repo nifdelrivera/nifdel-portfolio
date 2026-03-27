@@ -542,7 +542,7 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
 
 <!-- TOP NAV -->
 <nav id="top-nav" class="nav-on">
-  <div class="tn-logo-wrap">
+  <div class="tn-logo-wrap" id="tn-logo-hub" style="cursor:pointer">
     <img src="../assets/LOGO.svg" alt="Nifdel Rivera" class="tn-logo-img">
   </div>
   <div class="tn-pills">
@@ -555,6 +555,18 @@ html, body { width: 100vw; height: 100vh; overflow: hidden; background: #020408;
       <span class="tn-dot"></span>
       <span class="tp-state">Work · Portfolio</span>
     </div>
+    <button class="tn-pill tn-pill-btn" id="audio-btn" aria-label="Audio">
+      <div class="ab-icon">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span id="ab-label">Enable Audio</span>
+    </button>
+    <button class="tn-pill tn-pill-btn" id="portfolio-btn" aria-label="Portfolio Mode">
+      <div class="pb-icon">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span>Portfolio Mode</span>
+    </button>
   </div>
 </nav>
 
@@ -736,6 +748,8 @@ import {
   particleFragmentShader,
 } from '../shaders.js';
 import { uiSound, uiChord } from '../audio.js';
+import { initOverlay } from '../core/portfolio-overlay.js';
+initOverlay({ basePath: '../' });
 
 // ══════════════════════════════════════════════════════════════════════
 //  DATA
@@ -757,7 +771,7 @@ const PROJECTS = [
     desc:'Motion 3D para campaña de verano. Producto, luz y ambiente construidos desde cero en 3D.',
     stats:[{l:'Views',v:'2.4K'},{l:'Plataforma',v:'Digital'}], awards:null,
     behance:'https://www.behance.net/nifdelrive2931', link:null,
-    videoSrc:'suntimer/assets/COVER.mp4'
+    videoSrc:'suntimer/assets/Cover.webm'
   },
   {
     slug:'pilsener-fomo', title:'Pilsener FOMO', client:'Pilsener · AB InBev', year:2023,
@@ -1667,6 +1681,18 @@ document.getElementById('back-btn').addEventListener('click', e => {
   setTimeout(() => { window.location.href = '../?back=1'; }, 320);
 });
 document.getElementById('back-btn').addEventListener('mouseenter', () => uiSound('hover:back-btn'));
+
+// ── Logo → hub ───────────────────────────────────────────────────────────────
+document.getElementById('tn-logo-hub')?.addEventListener('click', () => {
+  pfFade.classList.add('opaque');
+  setTimeout(() => { window.location.href = '../?back=1'; }, 280);
+});
+document.getElementById('tn-logo-hub')?.addEventListener('mouseenter', () => uiSound('hover:back-btn'));
+
+// ── Audio button ─────────────────────────────────────────────────────────────
+document.getElementById('audio-btn')?.addEventListener('click', () => {
+  if (typeof window.toggleAudio === 'function') window.toggleAudio();
+});
 
 // ── Entry timing — orbital descent o retorno limpio desde proyecto ───────────────
 if (_fromProject) {

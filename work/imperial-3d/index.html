@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperial 3D — Nifdel Rivera</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/tokens.css">
+<link rel="stylesheet" href="../styles/project.css">
+<link rel="stylesheet" href="../../nav.css">
+<style>
+/* ── PAGE OVERRIDES ──────────────────────────────────────────────────── */
+*, *::before, *::after { cursor: none !important; }
+:root {
+  --accent:  rgb(58,102,204);
+  --bg:      #020408;
+  --text:    rgba(255,255,255,.82);
+  --dim:     rgba(255,255,255,.38);
+  --faint:   rgba(255,255,255,.14);
+  --mono:    var(--font-mono);
+  --display: var(--font-display);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--mono); overflow-x: hidden; }
+#hero { width: 100vw; height: 100vh; position: relative; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+
+<div id="page-content">
+
+<section id="hero"></section>
+
+<main id="blocks"></main>
+
+<!-- transparent placeholder — same height as fixed panel, reveals it -->
+<div id="np-wrapper"></div>
+
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+// ── PROJECT DATA ──────────────────────────────────────────────────────
+const PROJECT = {
+  slug:  'imperial-3d',
+  title: 'Imperial 3D',
+  client:'Imperial · AB InBev',
+  year:   2022,
+  cat:   ['Motion', '3D'],
+  col:   [1.00, 0.85, 0.20],
+  next: {
+    slug:  'pilsener-3d',
+    title: 'Pilsener 3D',
+    vimeo: '1128639657',
+  },
+  hero: {
+    type: 'video',
+    src:  'https://player.vimeo.com/video/1128639657?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1',
+  },
+  blocks: [
+    // ── 1. Case overview ──────────────────────────────────────────────
+    {
+      type:     'case-overview',
+      headline: 'People stopped paying<br>attention to sunsets.',
+      sub:      'Corona found a way to bring that ritual back.',
+    },
+    // ── 2. Context / Idea / Execution / How it works ──────────────────
+    {
+      type:  'editorial',
+      label: 'Context',
+      paragraphs: [
+        'Corona is a brand built on disconnection, nature, and the ritual of the Golden Hour. Sunset has always been one of its strongest brand assets.',
+        'But even at Corona Sunsets — a global platform created to celebrate that moment — sunsets were starting to become just another backdrop.',
+        'In a world dominated by screens and distractions, we saw an opportunity: not to create a new ritual, but to reclaim one that was already ours.',
+      ],
+    },
+    {
+      type:  'editorial',
+      label: 'Idea',
+      paragraphs: [
+        'Inspired by one of the oldest human orientation techniques — using the Earth\'s rotation, the horizon, and the extension of the arm — we transformed Corona\'s iconic bottle into a natural sunset timer.',
+        'By aligning it with the horizon, anyone could estimate how many minutes were left until sunset.',
+        'A simple analog gesture became an invitation to pause, find the right spot, and truly experience the moment.',
+      ],
+    },
+    {
+      type:  'editorial',
+      label: 'Execution',
+      paragraphs: [
+        'Suntimer came to life across Corona Sunsets activations in Guatemala, adding a new layer to an already established global experience.',
+        'More than 14,000 people experienced it and reconnected with the sunset through a simple physical gesture.',
+        'The bottle was no longer just part of the moment. It became a tool to live the brand\'s promise in the most tangible way possible.',
+      ],
+    },
+    {
+      type:  'editorial',
+      label: 'How it works',
+      paragraphs: [
+        'Using the horizon, the sun\'s position, and the bottle as a visual guide, people could estimate how much daylight remained before sunset.',
+        'What had always been an iconic Corona bottle became a real-time invitation to stop, look up, and cherish the Golden Hour.',
+      ],
+    },
+    // ── 3. Gallery ────────────────────────────────────────────────────
+    {
+      type: 'mp4',
+      src:  'assets/COVER.mp4',
+    },
+    {
+      type:  'image-stack',
+      items: [
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774426981/1_ub7qc7.png',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427113/2_jrlhmi.png',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427151/3_y3yqnp.gif',
+        'https://res.cloudinary.com/dsxwplxz8/video/upload/v1774436494/5_2_rg04ja.webm',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427140/6_cff7hz.png',
+        'https://res.cloudinary.com/dsxwplxz8/image/upload/v1774427138/7_snwwd6.png',
+      ],
+    },
+    // ── 4. Recognition ────────────────────────────────────────────────
+    {
+      type:  'awards',
+      intro: 'Recognized across Direct, Design, Innovation, Ambient, Packaging, and Brand Experience.',
+      columns: [
+        {
+          icon:     'eye',
+          festival: 'El Ojo de Iberoamérica',
+          main:     'Silver',
+          sub:      'Directo: Productos',
+          extras: [
+            '4 Shortlists',
+            'Directo: Eventos y Acciones',
+            'Design: Diseño de Producto',
+            'El Ojo Innovación: Producto',
+            'Mejor Idea de Centroamérica & Caribe',
+          ],
+        },
+        {
+          icon:     'diamond',
+          festival: 'Design',
+          main:     '2 Shortlists',
+          sub:      null,
+          extras: [
+            'Best Use / Limited Edition',
+            'Package & Product Design / Innovation',
+          ],
+        },
+        {
+          icon:     'wave',
+          festival: 'Festival / Innovation',
+          main:     '6 Shortlists',
+          sub:      null,
+          extras: [
+            'Live Experience',
+            'Best Use of Ambient Media',
+            'Outdoor / Public Space / Ambient',
+            'Events / Experience',
+            'Activations',
+            'Direct Marketing',
+          ],
+        },
+        {
+          icon:     'star',
+          festival: 'FDA',
+          main:     '4 Recognitions',
+          sub:      null,
+          extras: [
+            'Best Idea Guatemala',
+            'Gold — Branding / Packaging',
+            'Silver — Brand Experience / Street Activations',
+            'Silver — Innovation / Packaging',
+            'Shortlist — Direct',
+          ],
+        },
+      ],
+    },
+    {
+      type: 'credits',
+      groups: [
+        {
+          label: 'Leadership',
+          people: [
+            { name: 'Victor Pardo',           role: 'Chairman Creative Officer' },
+            { name: 'Manuel Madrid',          role: 'CEO' },
+            { name: 'Lukas Calderón Giraldo', role: 'Director General Creativo' },
+          ],
+        },
+        {
+          label: 'Creative',
+          people: [
+            { name: 'Fernando Reiter',    role: 'Creative Director' },
+            { name: 'Miguel Giraldo',     role: 'Creative Director' },
+            { name: 'Daniel Búcaro',      role: 'Senior Creative' },
+            { name: 'Elisa Ajosal',       role: 'Copywriter' },
+            { name: 'Luis Ovando',        role: 'Art Director' },
+            { name: 'Diego Leonel Apen',  role: 'Art Director' },
+            { name: 'Nifdel Rivera',      role: 'Motion' },
+          ],
+        },
+        {
+          label: 'Production',
+          people: [
+            { name: 'Annelise Menendez', role: 'Account Director' },
+            { name: 'Nina Gordillo',     role: 'Production Manager' },
+            { name: 'Eduardo Castañeda', role: 'Editor' },
+            { name: 'Michael Monzón',    role: 'Editor' },
+          ],
+        },
+        {
+          label: 'Collaborators',
+          people: [
+            { name: 'Camilo Lucena',     role: 'Head Composer — Estudios Machina' },
+            { name: 'Andrés Castrillón', role: 'Colorist — Whisky Films' },
+            { name: 'Pablo Lopez',       role: 'Film — Mento Media' },
+          ],
+        },
+      ],
+    },
+    {
+      type:    'closing',
+      content: 'Because every single sunset<br>deserves to be cherished.',
+    },
+  ],
+};
+window.PROJECT = PROJECT;
+
+// ── RENDER ────────────────────────────────────────────────────────────
+(function render(p) {
+  document.documentElement.style.setProperty('--accent', 'rgb(58,102,204)');
+  document.title = `${p.title} — Nifdel Rivera`;
+
+  // Hero
+  const hero = document.getElementById('hero');
+  if (p.hero.type === 'video') {
+    hero.innerHTML = `
+      <iframe src="${p.hero.src}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      <div class="hero-overlay"></div>
+      <div class="hero-meta">
+        <div class="hero-cat">${p.cat[0].toUpperCase()}</div>
+        <div class="hero-title">${p.title}</div>
+      </div>`;
+  } else {
+    hero.innerHTML = `
+      <img src="${p.hero.src}" alt="${p.title}">
+      <div class="hero-overlay"></div>
+      <div class="hero-meta">
+        <div class="hero-cat">${p.cat[0].toUpperCase()}</div>
+        <div class="hero-title">${p.title}</div>
+      </div>`;
+  }
+
+  // Blocks
+  const container = document.getElementById('blocks');
+  p.blocks.forEach(b => {
+    const el = document.createElement('div');
+    let caption = null;
+    switch (b.type) {
+
+      // ── EDITORIAL ───────────────────────────────────────────────────
+      case 'case-overview': {
+        el.className = 'block-case-overview';
+        // Split headline on <br> → each line gets a mask wrapper
+        const _ovLines = b.headline.split('<br>').map(line =>
+          `<span class="ov-line"><span class="js-ov-line">${line}</span></span>`
+        ).join('');
+        el.innerHTML = `
+          <div class="overview-headline">${_ovLines}</div>
+          <div class="overview-sub">${b.sub}</div>`;
+        break;
+      }
+
+      case 'editorial': {
+        el.className = 'editorial-pin-wrap';
+        const [_first, ..._rest] = b.paragraphs;
+        el.innerHTML = `
+          <div class="editorial-stage">
+            <div class="ep-label">${b.label}</div>
+            <div class="ep-headline">${_first}</div>
+            ${_rest.length ? `<div class="ep-body">${_rest.map(p => `<p>${p}</p>`).join('')}</div>` : ''}
+          </div>`;
+        break;
+      }
+
+      case 'insight':
+        el.className = 'block-insight reveal';
+        el.innerHTML = `
+          <div class="insight-credit">${b.credit || ''}</div>
+          <div class="insight-text">${b.lines.join('<br>')}</div>`;
+        break;
+
+      case 'idea':
+        el.className = 'block-idea reveal';
+        el.innerHTML = `
+          <div class="idea-label">THE IDEA</div>
+          <div class="idea-text">${b.content}</div>`;
+        break;
+
+      case 'contribution':
+        el.className = 'block-contribution reveal';
+        el.innerHTML = `
+          <div class="contribution-label">CONTRIBUTION</div>
+          <div class="contribution-text">${b.content}</div>`;
+        break;
+
+      case 'closing':
+        el.className = 'block-closing reveal';
+        el.innerHTML = `
+          <div class="closing-rule"></div>
+          <div class="closing-text">${b.content}</div>`;
+        break;
+
+      case 'credits':
+        el.className = 'block-credits reveal';
+        el.innerHTML = `
+          <div class="credits-header">
+            <div class="credits-section-label">Credits</div>
+            <div class="credits-agency">el taier DDB Centro</div>
+          </div>
+          <div class="credits-groups">
+            ${b.groups.map(g => `
+              <div class="credits-group">
+                <div class="credits-group-label">${g.label}</div>
+                <div class="credits-rows">
+                  ${g.people.map(p => `
+                    <div class="credits-row">
+                      <span class="credits-name">${p.name}</span>
+                      <span class="credits-role">${p.role}</span>
+                    </div>`).join('')}
+                </div>
+              </div>`).join('')}
+          </div>`;
+        break;
+
+      case 'awards': {
+        el.className = 'block-awards reveal-full';
+        const _icons = {
+          eye:     `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="14" cy="14" rx="12" ry="7.5" stroke="white" stroke-width="1.5"/><circle cx="14" cy="14" r="3.5" fill="white"/><circle cx="14" cy="14" r="1.2" fill="#020408"/></svg>`,
+          diamond: `<svg viewBox="0 0 28 28" fill="none"><polygon points="14,3 25,14 14,25 3,14" stroke="white" stroke-width="1.5"/><polygon points="14,9 20,14 14,19 8,14" stroke="white" stroke-width="1" opacity=".5"/></svg>`,
+          wave:    `<svg viewBox="0 0 28 28" fill="none"><path d="M2 16 Q5.5 9 9 16 Q12.5 23 16 16 Q19.5 9 23 16 Q25 19.5 27 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M2 11 Q5.5 4 9 11 Q12.5 18 16 11 Q19.5 4 23 11" stroke="white" stroke-width="1" stroke-linecap="round" opacity=".35"/></svg>`,
+          star:    `<svg viewBox="0 0 28 28" fill="none"><polygon points="14,2.5 16.9,10.2 25,10.2 18.5,15.3 21,23 14,18.3 7,23 9.5,15.3 3,10.2 11.1,10.2" stroke="white" stroke-width="1.4" stroke-linejoin="round"/></svg>`,
+        };
+        const _getIcon = icon => _icons[icon] || (icon ? `<img src="${icon}" alt="" style="width:28px;height:28px;object-fit:contain;display:block;">` : '');
+        el.innerHTML = `
+          <div class="awards-label">RECOGNITION</div>
+          ${b.intro ? `<div class="awards-intro">${b.intro}</div>` : ''}
+          <div class="awards-grid">
+            ${b.columns.map(col => {
+              const _tier = /silver/i.test(col.main)    ? 'silver'
+                          : /gold/i.test(col.main)      ? 'gold'
+                          : /shortlist/i.test(col.main) ? 'shortlist'
+                          : 'recognition';
+              return `
+              <div class="award-col" data-tier="${_tier}">
+                <div class="award-icon">${_getIcon(col.icon)}</div>
+                <div class="award-face award-face--front">
+                  <div class="award-overline">${col.festival}</div>
+                  <div class="award-main">${col.main}</div>
+                  ${col.sub ? `<div class="award-main-sub">${col.sub}</div>` : ''}
+                </div>
+                <div class="award-face award-face--back">
+                  <div class="award-back-label">${col.festival}</div>
+                  <ul class="award-sub-list">
+                    ${col.extras.map((e, i) => `<li style="--i:${i}">${e}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>`;
+        break;
+      }
+
+      // ── STANDARD ────────────────────────────────────────────────────
+      case 'section-label':
+        el.className   = 'block-section-label';
+        el.textContent = b.content;
+        break;
+      case 'text':
+        el.className   = 'block-text';
+        el.textContent = b.content;
+        break;
+      case 'video':
+        el.className = 'block-video reveal-full';
+        el.innerHTML = `<iframe src="${b.src}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+        caption = b.caption || null;
+        break;
+      case 'quote':
+        el.className   = 'block-quote';
+        el.textContent = b.content;
+        break;
+      case 'image':
+        el.className = `block-image${b.layout === 'full' ? ' full' : ''}`;
+        el.innerHTML = b.src
+          ? `<img src="${b.src}" alt="${b.caption || ''}">`
+          : `<div class="block-placeholder"><span>↑ IMAGEN</span><span>${b.caption || 'PLACEHOLDER'}</span></div>`;
+        caption = b.caption || null;
+        break;
+      case 'image-grid':
+        el.className = `block-grid cols-${b.cols || 2}`;
+        el.innerHTML = b.items.map(item =>
+          item.src
+            ? `<img src="${item.src}" alt="${item.caption || ''}">`
+            : `<div class="block-placeholder" style="aspect-ratio:16/9"><span>↑ IMAGEN</span><span>${item.caption || ''}</span></div>`
+        ).join('');
+        break;
+      case 'mp4':
+        el.className = 'block-mp4 reveal-full';
+        el.innerHTML = `<video src="${b.src}" autoplay loop muted playsinline></video>`;
+        break;
+      case 'image-stack':
+        el.className = 'block-stack';
+        el.innerHTML = b.items.map(src => {
+          const isVideo = /\.(mp4|webm|ogg|mov)(\?|$)/i.test(src);
+          return isVideo
+            ? `<video src="${src}" autoplay loop muted playsinline style="width:100%;display:block;"></video>`
+            : `<img src="${src}" alt="">`;
+        }).join('');
+        break;
+      case 'embed':
+        el.className = 'block-embed';
+        el.style.aspectRatio = b.aspectRatio || '16/9';
+        el.innerHTML = `<iframe src="${b.src}" frameborder="0" allowfullscreen></iframe>`;
+        break;
+    }
+    container.appendChild(el);
+    if (caption) el.insertAdjacentHTML('afterend', `<p class="block-caption">${caption}</p>`);
+  });
+
+
+})(PROJECT);
+</script>
+
+<script type="module">
+import gsap          from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm'
+import ScrollTrigger  from 'https://cdn.jsdelivr.net/npm/gsap@3.13.0/ScrollTrigger/+esm'
+import Lenis          from 'https://cdn.jsdelivr.net/npm/lenis@1.3.13/+esm'
+import { initCursor } from '../../core/cursor.js'
+import { initPage }   from '../../core/transitions.js'
+import { initShell }  from '../../core/page-shell.js'
+
+gsap.registerPlugin(ScrollTrigger)
+window.gsap = gsap  // transitions.js lo necesita como global
+
+// ── SHELL — inyecta nav, side-nav, scroll-hint, next-project ─────────
+const _p = window.PROJECT
+initShell({ backIdx: 6, title: _p.title, next: _p.next })
+
+// ── NEXT PROJECT FIXED REVEAL ─────────────────────────────────────────
+;(function initNPReveal() {
+  const panel   = document.getElementById('next-project')
+  const wrapper = document.getElementById('np-wrapper')
+  const iframe  = document.getElementById('np-iframe')
+  if (!panel || !wrapper) return
+
+  const PEEK = 80
+
+  function update() {
+    const rect   = wrapper.getBoundingClientRect()
+    const vh     = window.innerHeight
+    const panelH = panel.offsetHeight
+
+    const entered = Math.max(0, vh - rect.top)
+    const near    = rect.top < vh + 40
+    const clipPx  = near
+      ? Math.max(0, panelH - Math.max(PEEK, entered))
+      : panelH
+
+    panel.style.clipPath = `inset(${clipPx.toFixed(0)}px 0 0 0)`
+
+    if (iframe) {
+      const progress = Math.max(0, Math.min(1, entered / panelH))
+      const vy = (1 - progress) * 40
+      iframe.style.transform = `translate(-50%, calc(-50% + ${vy.toFixed(1)}px))`
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true })
+  update()
+})()
+
+initCursor()
+initPage({ delay: 0.1 })
+
+// ── AUDIO — Vimeo hero volume ─────────────────────────────────────────
+let _heroPlayer = null
+let _audioOn    = false
+const _audioBtn   = document.getElementById('audio-btn')
+const _audioLabel = document.getElementById('ab-label')
+
+function _applyAudioState(on) {
+  _audioOn = on
+  if (on) {
+    _audioBtn.classList.add('playing')
+    _audioLabel.textContent = 'Audio On'
+  } else {
+    _audioBtn.classList.remove('playing')
+    _audioLabel.textContent = 'Enable Audio'
+  }
+}
+function _setAudio(on) {
+  if (!_heroPlayer) return
+  if (on) {
+    _heroPlayer.setVolume(0.7).then(() => _heroPlayer.setMuted(false)).then(() => _applyAudioState(true)).catch(() => {})
+  } else {
+    _heroPlayer.setMuted(true).then(() => _applyAudioState(false))
+  }
+}
+window.addEventListener('load', () => {
+  const iframe = document.querySelector('#hero iframe')
+  if (!iframe || !window.Vimeo) return
+  _heroPlayer = new Vimeo.Player(iframe)
+  _heroPlayer.ready().then(() => _setAudio(true))
+})
+document.addEventListener('click', () => { if (!_audioOn) _setAudio(true) }, { once: true })
+_audioBtn.addEventListener('click', e => { e.stopPropagation(); _setAudio(!_audioOn) })
+
+// ── LENIS ────────────────────────────────────────────────────────────
+const lenis = new Lenis({ duration: 1.3, smoothWheel: true, smoothTouch: false })
+lenis.on('scroll', ScrollTrigger.update)
+gsap.ticker.add(time => lenis.raf(time * 1000))
+gsap.ticker.lagSmoothing(0)
+
+// ── SCROLL HINT ───────────────────────────────────────────────────────
+const _hint = document.getElementById('scroll-hint')
+if (_hint) {
+  // Fade in on load
+  gsap.fromTo(_hint, { opacity: 0 }, { opacity: 1, duration: 1.0, delay: 1.4, ease: 'power2.out' })
+
+  // Icon pulse — scale only (no position)
+  const _hintIcon = document.getElementById('scroll-hint-icon')
+  if (_hintIcon) {
+    gsap.to(_hintIcon, {
+      scale: 1.10,
+      duration: 1.2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 1.4,
+    })
+  }
+
+  // Label pulse — opacity only
+  const _hintLabel = document.getElementById('scroll-hint-label')
+  if (_hintLabel) {
+    gsap.to(_hintLabel, {
+      opacity: 0.12,
+      duration: 1.2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 1.4,
+    })
+  }
+
+  // Click → scroll to next-project via Lenis
+  _hint.addEventListener('click', () => {
+    const _npw = document.getElementById('np-wrapper')
+    if (_npw) lenis.scrollTo(_npw, { offset: 0, duration: 1.6, easing: t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t })
+  })
+
+  // Hide when next-project wrapper enters viewport
+  ScrollTrigger.create({
+    trigger: '#np-wrapper',
+    start: 'top 90%',
+    onEnter:     () => gsap.to(_hint, { opacity: 0, duration: 0.5, ease: 'power2.out' }),
+    onLeaveBack: () => gsap.to(_hint, { opacity: 1, duration: 0.5, ease: 'power2.out' }),
+  })
+}
+
+// ── CASE OVERVIEW — line mask reveal ─────────────────────────────────
+gsap.from('.js-ov-line', {
+  yPercent: 110,
+  duration: 1.15,
+  stagger: 0.10,
+  ease: 'power3.out',
+  scrollTrigger: { trigger: '.block-case-overview', start: 'top 82%' }
+})
+gsap.fromTo('.overview-sub',
+  { opacity: 0, y: 22 },
+  { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out',
+    scrollTrigger: { trigger: '.block-case-overview', start: 'top 82%', delay: 0.18 }
+  }
+)
+
+// ── EDITORIAL PINS ────────────────────────────────────────────────────
+gsap.utils.toArray('.editorial-pin-wrap').forEach(wrap => {
+  const stage    = wrap.querySelector('.editorial-stage')
+  const label    = wrap.querySelector('.ep-label')
+  const headline = wrap.querySelector('.ep-headline')
+  const paras    = gsap.utils.toArray(wrap.querySelectorAll('.ep-body p'))
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger:    wrap,
+      start:      'top top',
+      end:        'bottom bottom',
+      scrub:      1.4,
+      pin:        stage,
+      pinSpacing: false,
+    }
+  })
+
+  // 0.00 → 0.14 — label + headline entran solos (título se queda fijo)
+  tl.fromTo(label,
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, ease: 'none' }, 0)
+    .fromTo(headline,
+      { scale: 0.88, opacity: 0, filter: 'blur(18px)' },
+      { scale: 1,    opacity: 1, filter: 'blur(0px)',  ease: 'none' }, 0.03)
+
+  // 0.14 → 0.18 — hold solo del título (se "asienta")
+
+  // 0.18 → 0.38 — párrafos aparecen
+  if (paras.length) {
+    tl.fromTo(paras,
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, stagger: 0.07, ease: 'none' }, 0.18)
+  }
+
+  // 0.38 → 0.72 — hold completo, lector lee
+
+  // 0.72 → 0.88 — exit rápido, todo sale junto
+  tl.to(headline,
+      { scale: 1.04, opacity: 0, filter: 'blur(10px)', ease: 'none' }, 0.72)
+    .to(label,
+      { opacity: 0, ease: 'none' }, 0.72)
+
+  if (paras.length) {
+    tl.to(paras,
+      { opacity: 0, y: -10, stagger: { each: 0.02, from: 'end' }, ease: 'none' }, 0.72)
+  }
+  // 0.88 → 1.0 — buffer mínimo antes del siguiente
+})
+
+// ── STANDARD SCROLL REVEALS (awards, credits, closing, mp4, stack) ───
+gsap.utils.toArray('.reveal, .reveal-full').forEach(el => {
+  gsap.fromTo(el,
+    { y: 40, opacity: 0 },
+    { y: 0,  opacity: 1, duration: 1.0, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%' }
+    }
+  )
+})
+
+// ── IMAGE STACK — one by one ─────────────────────────────────────────
+gsap.utils.toArray('.block-stack > *').forEach(item => {
+  gsap.fromTo(item,
+    { opacity: 0, y: 40, scale: 0.98, filter: 'blur(16px)' },
+    { opacity: 1, y: 0,  scale: 1,    filter: 'blur(0px)',
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: item,
+        start:  'top 95%',
+        end:    'top 40%',
+        scrub:  0.8,
+      }
+    }
+  )
+})
+
+ScrollTrigger.refresh()
+</script>
+</body>
+</html>
